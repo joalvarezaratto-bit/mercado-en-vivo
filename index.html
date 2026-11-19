@@ -108,6 +108,48 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .opts button.on{border-color:var(--acc);color:var(--acc)}
 .stale{color:var(--acc)}
 @media(max-width:600px){main{padding:10px 10px 40px}.big{font-size:28px}.hbar{padding:6px 10px;gap:8px}.conn{margin-left:0}.chart{height:280px}.kpis{grid-template-columns:repeat(2,1fr)}}
+
+/* ---- campana / última hora */
+.bell{position:relative;background:none;border:1px solid var(--line);color:var(--tx);width:34px;height:30px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.bell:hover,.bell.open{border-color:var(--acc);color:var(--acc)}
+.bell svg{width:17px;height:17px}
+.bell .bdg{position:absolute;top:-6px;right:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--dn);color:#fff;font:600 10px/17px "IBM Plex Mono";text-align:center}
+.bell.ring svg{animation:ring .9s}
+@keyframes ring{10%,50%{transform:rotate(14deg)}30%,70%{transform:rotate(-14deg)}90%{transform:rotate(0)}}
+#npanel{position:fixed;top:50px;right:12px;z-index:40;width:min(440px,calc(100vw - 24px));max-height:min(72vh,640px);display:none;flex-direction:column;background:#141920;border:1px solid var(--line);border-top:2px solid var(--acc);box-shadow:0 16px 40px rgba(0,0,0,.6)}
+#npanel.open{display:flex}
+.nph{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--line);font:600 11px "IBM Plex Mono";letter-spacing:.12em;color:var(--acc)}
+.nph button{background:none;border:0;color:var(--mut);font:11px "IBM Plex Mono";cursor:pointer}.nph button:hover{color:var(--tx)}
+.nfil{display:flex;gap:4px;padding:6px 12px;border-bottom:1px solid var(--line)}
+.nfil button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:2px 8px;cursor:pointer}.nfil button.on{color:#000;background:var(--acc);border-color:var(--acc)}
+.nlist{overflow:auto}
+.ni{display:block;padding:9px 12px 9px 14px;border-bottom:1px solid var(--line);text-decoration:none;cursor:pointer;position:relative}
+.ni:hover{background:rgba(255,255,255,.03)}
+.ni.nuevo::before{content:"";position:absolute;left:5px;top:15px;width:5px;height:5px;border-radius:50%;background:var(--acc)}
+.ni .mt{display:flex;gap:6px;align-items:center;font:10.5px "IBM Plex Mono";color:var(--mut)}
+.ni .tt{display:block;font-weight:500;margin-top:2px}.ni .ms{display:block;font-size:12px;color:var(--mut);white-space:pre-line}
+.tg{font:600 9.5px "IBM Plex Mono";padding:1px 5px;letter-spacing:.04em}
+.tg.alta{background:var(--dn);color:#fff}.tg.media{border:1px solid var(--acc);color:var(--acc)}.tg.dato{background:var(--blue);color:#000}
+.nvac{padding:18px 12px;color:var(--mut);font-size:13px}
+#ntoasts{position:fixed;top:118px;right:14px;z-index:35;display:flex;flex-direction:column;gap:8px;width:min(400px,calc(100vw - 28px))}
+.nt{background:#1b2027;border:1px solid var(--line);border-left:4px solid var(--acc);padding:10px 30px 10px 12px;box-shadow:0 10px 28px rgba(0,0,0,.55);cursor:pointer;animation:in2 .3s;position:relative}
+.nt.alta{border-left-color:var(--dn)}.nt.dato{border-left-color:var(--blue)}
+.nt .x{position:absolute;top:4px;right:6px;background:none;border:0;color:var(--mut);font-size:16px;cursor:pointer}
+.nt .tt{display:block;font-weight:600;margin-top:2px}.nt .ms{display:block;font-size:12px;color:var(--mut);white-space:pre-line}
+.nt .bar{position:absolute;left:0;bottom:0;height:2px;background:var(--acc);animation:shrink linear forwards}
+@keyframes shrink{from{width:100%}to{width:0}}
+@keyframes in2{from{transform:translateX(20px);opacity:0}}
+.uh{display:none;align-items:center;gap:10px;background:#1a0f10;border:1px solid rgba(255,77,79,.45);border-left:4px solid var(--dn);padding:7px 12px;margin-bottom:12px;cursor:pointer;text-decoration:none}
+.uh.on{display:flex}.uh.dato{background:#0d171c;border-color:rgba(79,195,247,.45);border-left-color:var(--blue)}
+.uh .lb{font:600 11px "IBM Plex Mono";letter-spacing:.1em;color:var(--dn);white-space:nowrap}.uh.dato .lb{color:var(--blue)}
+.uh .tx{flex:1;min-width:0;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uh .hc{font:11px "IBM Plex Mono";color:var(--mut);white-space:nowrap}
+.ev .real{font:600 12px "IBM Plex Mono";padding:1px 6px;margin-left:6px;white-space:nowrap}
+.ev .real.up{background:rgba(46,204,113,.15)}.ev .real.dn{background:rgba(255,77,79,.15)}.ev .real.fl{background:rgba(170,180,192,.15)}
+.ev.flash{animation:evf 2.5s}
+@keyframes evf{0%,40%{background:rgba(79,195,247,.3)}100%{background:transparent}}
+.nwlive{border-left:3px solid var(--dn);padding-left:8px}
+@media(max-width:600px){#npanel{top:auto;bottom:0;right:0;left:0;width:auto;max-height:80vh}#ntoasts{top:auto;bottom:14px}}
 </style>
 </head>
 <body>
@@ -116,13 +158,21 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <span class="brand">MERCADO EN VIVO · ES · NQ · BTC</span>
     <span class="live"><i></i>EN VIVO</span>
     <div class="clocks"><span>Santiago <b id="clkCL" class="m">--:--:--</b></span><span>Nueva York <b id="clkNY" class="m">--:--:--</b></span><span id="rthCd"></span></div>
-    <div class="conn"><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
+    <button class="bell" id="bell" title="Noticias y datos en tiempo real" aria-label="Notificaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="bdg" id="bdg" hidden>0</span></button>
+    <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
 </header>
 <div id="alertas"></div>
+<div id="ntoasts"></div>
+<div id="npanel" role="dialog" aria-label="Notificaciones">
+  <div class="nph"><span>NOTICIAS Y DATOS · EN VIVO</span><span><button id="nLeer">marcar leído</button> · <button id="nCerrar">cerrar ✕</button></span></div>
+  <div class="nfil"><button data-f="todo" class="on">Todo</button><button data-f="alta">Importantes</button><button data-f="dato">Datos</button></div>
+  <div class="nlist" id="nlist"><div class="nvac">Conectando…</div></div>
+</div>
 <main>
   <div class="status" id="status"></div>
+  <a class="uh" id="uh" target="_blank" rel="noopener noreferrer"><span class="lb" id="uhLb">ÚLTIMA HORA</span><span class="tx" id="uhTx"></span><span class="hc" id="uhHc"></span></a>
   <div class="grid">
     <section class="card" id="card-ES"></section>
     <section class="card" id="card-NQ"></section>
@@ -133,7 +183,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <div class="panel"><ul class="keys" id="puntos"></ul></div>
 
   <div class="two">
-    <div><h2>Agenda de hoy <small>hora Chile · cuenta regresiva</small></h2><div class="panel" id="agenda"></div></div>
+    <div id="agendaSec"><h2>Agenda de hoy <small>hora Chile · el dato real aparece apenas sale</small></h2><div class="panel" id="agenda"></div></div>
     <div><h2>Megacaps en vivo <small>vs cierre de ayer</small></h2><div class="panel"><div class="mc" id="megacaps"></div></div></div>
   </div>
 
@@ -151,14 +201,14 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <h2>Mercados globales <small>con retraso (Yahoo) · hora del último dato</small></h2>
   <div class="three" id="global"></div>
 
-  <h2>Titulares</h2>
+  <h2>Titulares <small>los marcados en rojo llegaron en vivo</small></h2>
   <div class="panel" id="news"></div>
 
   <h2>Alertas y verificación</h2>
   <div class="two">
     <div class="panel">
       <p style="margin:0 0 8px">Avisos cuando el precio cruza un nivel clave (PDH, PDL, overnight, Asia, Londres, medianoche, movimiento implícito…).</p>
-      <div class="opts"><button id="bAl" class="on">Avisos en pantalla: sí</button><button id="bSnd">Sonido: no</button><button id="bNot">Notificaciones: no</button></div>
+      <div class="opts"><button id="bAl" class="on">Avisos en pantalla: sí</button><button id="bSnd">Sonido: no</button><button id="bNot">Notificaciones: no</button><button id="bNws" class="on">Avisos de noticias: sí</button></div>
     </div>
     <div class="panel"><ul class="verif" id="verif"></ul></div>
   </div>
@@ -197,7 +247,7 @@ function tzOffsetSec(tz, tsSec) {           // segundos a sumar a UTC para ver h
   const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
   return Math.round((asUTC - tsSec * 1000) / 1000);
 }
-const horaCL = iso => new Date(iso).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit"});
+const horaCL = iso => new Date(iso).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
 const ahoraNY = () => partes("America/New_York");
 function fechaNY() { const p = ahoraNY(); return `${p.year}-${p.month}-${p.day}`; }
 function dur(ms) {
@@ -415,6 +465,142 @@ function opciones() {
   pinta();
 }
 
+/* ============================================================ noticias y datos en vivo (ntfy) */
+const NTFY_TOPIC = "mev-94b6bd7831997445";
+const NOTIS = [];                       // más reciente primero
+const NIDS = new Set();
+const DATOS = {};                       // orig (agenda) -> {act, cons, prev, dir}
+const DPEND = [];                       // datos recibidos (se re-aplican cuando llega/renueva la agenda)
+let nVisto = store.get("nVisto", Date.now() / 1000 - 3600), nFiltro = "todo", nHistoria = true;
+OPT.nws = OPT.nws ?? true;
+function realHTML(e) {
+  const d = DATOS[e.orig]; if (!d) return "";
+  const c = d.dir === "1" ? "up" : d.dir === "-1" ? "dn" : "fl", fl = d.dir === "1" ? "▲" : d.dir === "-1" ? "▼" : "=";
+  return ` <span class="real ${c}" title="Dato real">${fl} ${esc(d.act)}</span>`;
+}
+function linkSeguro(u) { try { const x = new URL(u); if (x.protocol === "https:") return x.href; } catch (e) {} return null; }
+function normEv(t) {
+  t = " " + t.toLowerCase() + " ";
+  [[/\bm\/m\b/g, "mom"], [/\by\/y\b/g, "yoy"], [/\bq\/q\b/g, "qoq"], [/non-?farm employment change/g, "nonfarm payrolls"],
+   [/unemployment claims/g, "initial jobless claims"], [/\buom\b/g, "michigan"], [/\bphilly\b/g, "philadelphia"], [/\(mom\)/g, "mom"], [/\(yoy\)/g, "yoy"]]
+    .forEach(([a, b]) => t = t.replace(a, b));
+  const ruido = new Set(["prelim", "final", "advance", "flash", "us", "u", "s", "p", "global", "the", "of", "index", "ny", "change", "rate", "fed", "actual"]);
+  return new Set((t.match(/[a-z]+/g) || []).filter(w => !ruido.has(w)));
+}
+function agendaPorNombre(ev, t) {         // dato de FinancialJuice -> fila de la agenda
+  if (!DATA) return null;
+  const a = normEv(ev); let mejor = null, ms = 0;
+  for (const e of DATA.agenda) {
+    const dt = t * 1000 - new Date(e.t).getTime(); if (dt < -120e3 || dt > 60 * 60e3) continue;
+    const b = normEv(e.orig), pa = [...a].filter(x => ["mom", "yoy", "qoq"].includes(x)), pb = [...b].filter(x => ["mom", "yoy", "qoq"].includes(x));
+    if (pa.length && pb.length && pa[0] !== pb[0]) continue;
+    const a0 = [...a].filter(x => !pb.concat(pa).includes(x)), b0 = new Set([...b].filter(x => !pb.concat(pa).includes(x)));
+    const sim = a0.filter(x => b0.has(x)).length / Math.max(a0.length, b0.size, 1);
+    if (sim > ms) { ms = sim; mejor = e; }
+  }
+  return ms >= 0.6 ? mejor : null;
+}
+function parsear(m) {
+  const kv = {}, tags = m.tags || [];
+  tags.forEach(x => { const i = x.indexOf("="); if (i > 0) kv[x.slice(0, i)] = x.slice(i + 1); });
+  const tipo = tags.includes("dato") ? "dato" : "noticia", nivel = tags.includes("alta") ? "alta" : "media";
+  const lineas = (m.message || "").split("\n");
+  return {id: m.id, t: m.time, tipo, nivel, titulo: (m.title || "").replace(/^🔴\s*/, "").replace(/^📊\s*/, ""),
+    en: tipo === "noticia" ? lineas[0] : "", ms: tipo === "noticia" ? lineas.slice(1).join("\n").replace(/^—\s*/, "") : m.message || "",
+    link: linkSeguro(m.click) || "#", src: kv.src || "", kv, silencio: tags.includes("silencio")};
+}
+function aplicarDato(n, animar) {
+  let orig = n.kv.orig;
+  if (!orig || !DATA?.agenda.some(e => e.orig === orig)) { const e = agendaPorNombre(n.kv.ev || n.titulo, n.t); orig = e && e.orig; }
+  if (!orig || DATOS[orig]) return;
+  DATOS[orig] = {act: n.kv.act, cons: n.kv.cons, prev: n.kv.prev, dir: n.kv.dir};
+  if (DATA) { pintarAgenda(); if (animar) { const el = document.querySelector(`.ev[data-orig="${CSS.escape(orig)}"]`); if (el) el.classList.add("flash"); } }
+}
+function chime(alta) {
+  if (!OPT.snd) return;
+  try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    (alta ? [988, 1319, 988] : [784, 1047]).forEach((f, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t0 = audioCtx.currentTime + i * .14;
+      o.type = "sine"; o.frequency.value = f; o.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(.09, t0 + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + .3); o.start(t0); o.stop(t0 + .32); }); } catch (e) {}
+}
+function abrirNoti(n) {
+  marcarLeido(n.t);
+  if (n.tipo === "dato") { cerrarPanel(); $("agendaSec").scrollIntoView({behavior: "smooth", block: "start"});
+    const orig = n.kv.orig || agendaPorNombre(n.kv.ev || n.titulo, n.t)?.orig; const el = orig && document.querySelector(`.ev[data-orig="${CSS.escape(orig)}"]`);
+    if (el) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); } }
+  else if (n.link !== "#") window.open(n.link, "_blank", "noopener");
+}
+function toast(n) {
+  const d = document.createElement("div"), dura = n.nivel === "alta" || n.tipo === "dato" ? 30000 : 15000;
+  d.className = `nt ${n.tipo === "dato" ? "dato" : n.nivel}`;
+  d.innerHTML = `<button class="x" aria-label="Cerrar">×</button><span class="mt m" style="font-size:10.5px;color:var(--mut)">${etiqueta(n)} ${esc(n.src)} · ${horaCL(n.t * 1000)}</span>` +
+    `<span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "dato" ? n.ms : n.en)}</span><span class="bar" style="animation-duration:${dura}ms"></span>`;
+  d.onclick = ev => { d.remove(); if (!ev.target.classList.contains("x")) abrirNoti(n); };
+  $("ntoasts").prepend(d); setTimeout(() => d.remove(), dura);
+  while ($("ntoasts").children.length > 3) $("ntoasts").lastChild.remove();
+}
+const etiqueta = n => n.tipo === "dato" ? `<span class="tg dato">DATO</span>` : n.nivel === "alta" ? `<span class="tg alta">IMPORTANTE</span>` : `<span class="tg media">NOTICIA</span>`;
+function ultimaHora() {
+  const n = NOTIS.find(x => x.nivel === "alta" && Date.now() / 1000 - x.t < 4 * 3600);
+  const uh = $("uh"); if (!n) { uh.classList.remove("on"); return; }
+  uh.classList.add("on"); uh.classList.toggle("dato", n.tipo === "dato");
+  $("uhLb").textContent = n.tipo === "dato" ? "DATO" : "ÚLTIMA HORA"; $("uhTx").textContent = n.titulo;
+  const min = Math.round((Date.now() / 1000 - n.t) / 60); $("uhHc").textContent = `${n.src} · ${min < 1 ? "ahora" : "hace " + (min < 60 ? min + " min" : Math.round(min / 60) + " h")}`;
+  uh.href = n.tipo === "dato" ? "#agendaSec" : n.link; uh.target = n.tipo === "dato" ? "" : "_blank";
+  uh.onclick = ev => { if (n.tipo === "dato") { ev.preventDefault(); abrirNoti(n); } else marcarLeido(n.t); };
+}
+function pintarNotis() {
+  const sinLeer = NOTIS.filter(n => n.t > nVisto).length;
+  $("bdg").hidden = !sinLeer; $("bdg").textContent = sinLeer > 99 ? "99+" : sinLeer;
+  const l = NOTIS.filter(n => nFiltro === "todo" || (nFiltro === "dato" ? n.tipo === "dato" : n.nivel === "alta"));
+  $("nlist").innerHTML = l.length ? "" : `<div class="nvac">${nHistoria ? "Conectando…" : "Sin avisos en las últimas 12 horas. Apenas salga una noticia importante o un dato, aparece aquí."}</div>`;
+  l.slice(0, 80).forEach(n => {
+    const a = document.createElement("a"); a.className = "ni" + (n.t > nVisto ? " nuevo" : "");
+    a.innerHTML = `<span class="mt">${etiqueta(n)}<span>${horaCL(n.t * 1000)}</span><span>· ${esc(n.src)}</span></span><span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "dato" ? n.ms : n.en)}</span>`;
+    a.onclick = () => abrirNoti(n); $("nlist").appendChild(a);
+  });
+  ultimaHora();
+}
+function marcarLeido(t) { if (t > nVisto) { nVisto = t; store.set("nVisto", nVisto); pintarNotis(); } }
+function cerrarPanel() { $("npanel").classList.remove("open"); $("bell").classList.remove("open"); }
+function nuevaNoti(m) {
+  if (m.event !== "message" || NIDS.has(m.id)) return;
+  NIDS.add(m.id);
+  const n = parsear(m);
+  if (n.tipo === "dato") { DPEND.push(n); aplicarDato(n, !nHistoria); }
+  if (n.silencio) return;
+  NOTIS.push(n); NOTIS.sort((a, b) => b.t - a.t);
+  const reciente = !nHistoria && Date.now() / 1000 - n.t < 600;
+  if (reciente) {
+    $("bell").classList.remove("ring"); void $("bell").offsetWidth; $("bell").classList.add("ring");
+    if (OPT.nws) { toast(n); chime(n.nivel === "alta" || n.tipo === "dato"); }
+    if (OPT.not && OPT.nws && "Notification" in window && Notification.permission === "granted") {
+      try { const nt = new Notification((n.tipo === "dato" ? "📊 " : n.nivel === "alta" ? "🔴 " : "") + n.titulo, {body: n.tipo === "dato" ? n.ms : n.en, tag: n.id});
+        nt.onclick = () => { window.focus(); abrirNoti(n); nt.close(); }; } catch (e) {}
+    }
+  }
+  clearTimeout(nuevaNoti.tm); nuevaNoti.tm = setTimeout(() => { pintarNotis(); if (DATA && n.tipo === "noticia") pintarNews(); }, 150);
+}
+function ntfyConectar() {
+  let es;
+  try { es = new EventSource(`https://ntfy.sh/${NTFY_TOPIC}/sse?since=12h`); } catch (e) { $("dNW").className = "dot bad"; return; }
+  es.onopen = () => { $("dNW").className = "dot ok"; setTimeout(() => { nHistoria = false; pintarNotis(); }, 1500); };
+  es.onmessage = ev => { try { nuevaNoti(JSON.parse(ev.data)); } catch (e) {} };
+  es.onerror = () => { $("dNW").className = "dot wait"; };
+}
+function notisUI() {
+  $("bell").onclick = ev => { ev.stopPropagation(); const o = $("npanel").classList.toggle("open"); $("bell").classList.toggle("open", o); };
+  $("nCerrar").onclick = cerrarPanel;
+  $("nLeer").onclick = () => marcarLeido(Date.now() / 1000);
+  document.querySelectorAll(".nfil button").forEach(b => b.onclick = () => { nFiltro = b.dataset.f;
+    document.querySelectorAll(".nfil button").forEach(x => x.classList.toggle("on", x === b)); pintarNotis(); });
+  document.addEventListener("click", ev => { if (!$("npanel").contains(ev.target) && ev.target !== $("bell")) cerrarPanel(); });
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape") cerrarPanel(); });
+  const pinta = () => { $("bNws").textContent = "Avisos de noticias: " + (OPT.nws ? "sí" : "no"); $("bNws").classList.toggle("on", OPT.nws); store.set("opt", OPT); };
+  $("bNws").onclick = () => { OPT.nws = !OPT.nws; pinta(); }; pinta();
+  setInterval(ultimaHora, 30000);
+}
+
 /* ============================================================ gráficos */
 const TF = Object.assign({ES: "5m", NQ: "5m", BTC: "5m"}, store.get("tf", {}));
 const CH = {};
@@ -628,8 +814,8 @@ function pintarAgenda() {
   $("agenda").innerHTML = evs.map(e => {
     const past = e.ms <= now, esNext = next && e === next;
     const manana = new Date(e.t).toLocaleDateString("en-CA", {timeZone: "America/New_York"}) !== fechaNY() ? " <span class='mut'>(mañana)</span>" : "";
-    return `<div class="ev ${past ? "past" : ""} ${esNext ? "next" : ""}"><span class="m">${horaCL(e.t)}${manana}</span>` +
-      `<span><span class="imp ${e.impacto}">${esc(e.pais)}</span>${esc(e.titulo)}${e.esperado ? ` <span class="mut">· esp. ${esc(e.esperado)}</span>` : ""}${e.anterior ? ` <span class="mut">· ant. ${esc(e.anterior)}</span>` : ""}</span>` +
+    return `<div class="ev ${past && !DATOS[e.orig] ? "past" : ""} ${esNext ? "next" : ""}" data-orig="${esc(e.orig)}"><span class="m">${horaCL(e.t)}${manana}</span>` +
+      `<span><span class="imp ${e.impacto}">${esc(e.pais)}</span>${esc(e.titulo)}${realHTML(e)}${e.esperado ? ` <span class="mut">· esp. ${esc(e.esperado)}</span>` : ""}${e.anterior ? ` <span class="mut">· ant. ${esc(e.anterior)}</span>` : ""}</span>` +
       `<span class="cd" data-ms="${e.ms}">${past ? "✓" : ""}</span></div>`;
   }).join("") || "<p class='mut'>Sin eventos relevantes de EE.UU. hoy.</p>";
 }
@@ -664,7 +850,9 @@ function pintarGlobal() {
         `<td class="n">${fmt(x.precio, x.bono ? 3 : 2)}${x.bono ? "%" : ""}</td><td class="n ${cl(x.chg)}">${x.bono ? sg(x.chg * 100, 1) + " pb" : pc(x.pct)}</td><td>${spark(x.serie)}</td></tr>`; }).join("") + "</table></div>").join("");
 }
 function pintarNews() {
-  $("news").innerHTML = DATA.news.map(x => {
+  const vivas = NOTIS.filter(n => n.tipo === "noticia").slice(0, 8).map(n =>
+    `<a class="nw nwlive" href="${esc(n.link)}" target="_blank" rel="noopener noreferrer"><span class="meta">EN VIVO · ${esc(n.src)} · ${horaCL(n.t * 1000)}</span><span class="es">${esc(n.titulo)}</span><span class="en">${esc(n.en)}</span></a>`).join("");
+  $("news").innerHTML = vivas + DATA.news.map(x => {
     const h = (Date.now() / 1000 - x.ts) / 3600;
     const hace = h < 1 ? Math.max(1, Math.round(h * 60)) + " min" : Math.round(h) + " h";
     let link = "#"; try { const u = new URL(x.link); if (u.protocol === "https:") link = u.href; } catch (e) {}
@@ -703,6 +891,7 @@ function pintarEstado() {
 const esFeriado = () => !!DATA?.feriados?.[fechaNY()];
 
 function pintarInforme() {
+  DPEND.forEach(n => aplicarDato(n, false));
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit"}) + " Chile";
@@ -745,7 +934,7 @@ function reloj() {
 }
 
 (async function inicio() {
-  opciones();
+  opciones(); notisUI(); ntfyConectar();
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids();
   setInterval(hlMids, 3000);
