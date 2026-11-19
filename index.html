@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mercado en vivo · ES NQ BTC</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{--bg:#0b0d10;--panel:#12161b;--panel2:#0d1014;--line:#222a33;--tx:#e6e9ee;--mut:#8592a3;--acc:#ff9f1a;--up:#2ecc71;--dn:#ff4d4f;--fl:#aab4c0;--blue:#4fc3f7;--vio:#ce93d8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+.m{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+a{color:inherit}
+.up{color:var(--up)}.dn{color:var(--dn)}.fl{color:var(--fl)}.mut{color:var(--mut)}.acc{color:var(--acc)}
+header{position:sticky;top:0;z-index:20;background:rgba(11,13,16,.96);backdrop-filter:blur(6px);border-bottom:2px solid var(--acc)}
+.hbar{display:flex;align-items:center;gap:14px;padding:8px 16px;flex-wrap:wrap}
+.brand{font:600 12px "IBM Plex Mono";letter-spacing:.16em;color:var(--acc);white-space:nowrap}
+.live{display:inline-flex;align-items:center;gap:6px;font:600 11px "IBM Plex Mono";color:var(--dn)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--dn);animation:pulse 1.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,77,79,.7)}70%{box-shadow:0 0 0 8px rgba(255,77,79,0)}100%{box-shadow:0 0 0 0 rgba(255,77,79,0)}}
+.clocks{display:flex;gap:14px;font:12px "IBM Plex Mono";color:var(--mut);flex-wrap:wrap}
+.clocks b{color:var(--tx);font-weight:500}
+.conn{margin-left:auto;display:flex;gap:10px;font:11px "IBM Plex Mono";color:var(--mut)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#555;margin-right:4px;vertical-align:1px}
+.dot.ok{background:var(--up)}.dot.bad{background:var(--dn)}.dot.wait{background:var(--acc)}
+.tape{display:flex;overflow-x:auto;border-top:1px solid var(--line);scrollbar-width:none}
+.tape::-webkit-scrollbar{display:none}
+.tk{flex:0 0 auto;padding:6px 14px;border-right:1px solid var(--line);min-width:118px}
+.tk .n{font:10px "IBM Plex Mono";color:var(--mut);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.tk .v{font:600 15px "IBM Plex Mono";font-variant-numeric:tabular-nums;transition:color .4s}
+.tk .c{font:11px "IBM Plex Mono"}
+.flash-up{animation:fu .6s}.flash-dn{animation:fd .6s}
+@keyframes fu{0%{background:rgba(46,204,113,.35)}100%{background:transparent}}
+@keyframes fd{0%{background:rgba(255,77,79,.35)}100%{background:transparent}}
+main{max-width:1440px;margin:0 auto;padding:14px 16px 40px}
+#alertas{position:fixed;right:14px;bottom:14px;z-index:30;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 28px))}
+.al{background:#1b2027;border:1px solid var(--acc);border-left:4px solid var(--acc);padding:9px 12px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:in .25s}
+.al.upx{border-left-color:var(--up)}.al.dnx{border-left-color:var(--dn)}
+@keyframes in{from{transform:translateY(10px);opacity:0}}
+.status{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pill{font:600 11px "IBM Plex Mono";padding:3px 8px;border:1px solid var(--line);background:var(--panel)}
+.pill.open{color:var(--up);border-color:rgba(46,204,113,.5)}.pill.closed{color:var(--mut)}.pill.warn{color:#000;background:var(--acc);border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:1180px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--acc);min-width:0}
+.ch{display:flex;justify-content:space-between;align-items:baseline;padding:10px 14px 0}
+.ch h3{margin:0;font-size:14px}.ch .sym{font:11px "IBM Plex Mono";color:var(--mut)}
+.px{padding:2px 14px 0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.big{font:600 34px "IBM Plex Mono";font-variant-numeric:tabular-nums;letter-spacing:-.01em;padding:0 4px;margin-left:-4px}
+.chg{font:13px "IBM Plex Mono"}
+.sub{padding:0 14px;font-size:12px;color:var(--mut)}
+.sub b{color:var(--tx);font-weight:500}
+.loc{padding:6px 14px 0;font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 14px}
+.kpis div{background:var(--panel2);padding:6px 8px;min-width:0}
+.kpis span{display:block;font:10px "IBM Plex Mono";color:var(--mut);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpis b{font:500 13px "IBM Plex Mono";font-variant-numeric:tabular-nums}
+.meter{padding:0 14px 8px}
+.meter .lbl{display:flex;justify-content:space-between;font:10px "IBM Plex Mono";color:var(--mut)}
+.meter .bar{position:relative;height:8px;background:var(--panel2);margin:3px 0}
+.meter .fill{position:absolute;top:0;bottom:0;background:rgba(255,159,26,.25)}
+.meter .mk{position:absolute;top:-3px;width:3px;height:14px;background:var(--acc);transition:left .3s}
+.meter .mid{position:absolute;top:0;bottom:0;width:1px;background:var(--mut)}
+.chart{height:330px;border-top:1px solid var(--line);position:relative}
+.tf{display:flex;gap:4px;padding:6px 14px;border-top:1px solid var(--line);align-items:center;flex-wrap:wrap}
+.tf button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 8px;cursor:pointer}
+.tf button.on{color:#000;background:var(--acc);border-color:var(--acc)}
+.tf .leg{margin-left:auto;font:10px "IBM Plex Mono";color:var(--mut);display:flex;gap:8px;flex-wrap:wrap}
+.tf .leg i{display:inline-block;width:10px;height:2px;vertical-align:3px;margin-right:3px}
+table{width:100%;border-collapse:collapse}
+td{padding:4px 8px;border-bottom:1px solid var(--line);font-size:12.5px}
+td.n{text-align:right;white-space:nowrap;font-family:"IBM Plex Mono";font-variant-numeric:tabular-nums}
+.lad td:first-child{color:var(--mut)}
+.lad tr.now td{background:rgba(255,159,26,.13);color:var(--acc);font-weight:600}
+.lad tr.near td{background:rgba(255,159,26,.05)}
+.lad tr.hide{display:none}
+.ladwrap{max-height:360px;overflow:auto;border-top:1px solid var(--line)}
+.more{display:block;width:100%;background:none;border:0;border-top:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:6px;cursor:pointer}
+h2{font:600 12px "IBM Plex Mono";letter-spacing:.14em;color:var(--acc);text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:6px;margin:26px 0 12px;display:flex;justify-content:space-between;gap:10px}
+h2 small{color:var(--mut);letter-spacing:0;text-transform:none;font-weight:400}
+.panel{background:var(--panel);border:1px solid var(--line);padding:10px 14px}
+.keys{margin:0;padding-left:18px}.keys li{margin:0 0 8px}.keys b{color:#fff}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:12px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:980px){.two,.three{grid-template-columns:1fr}}
+.mc{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.mc div{background:var(--panel2);padding:7px 9px}
+.mc .s{font:600 12px "IBM Plex Mono"}.mc .p{font:500 15px "IBM Plex Mono";font-variant-numeric:tabular-nums}.mc .c{font:12px "IBM Plex Mono"}
+.ev{display:grid;grid-template-columns:58px 1fr auto;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);align-items:center}
+.ev.past{opacity:.5}.ev.next{background:rgba(255,159,26,.08);margin:0 -14px;padding:6px 14px}
+.imp{font:600 10px "IBM Plex Mono";padding:1px 5px;margin-right:5px}
+.imp.High{background:var(--dn);color:#000}.imp.Medium{background:var(--acc);color:#000}.imp.Low{border:1px solid var(--line);color:var(--mut)}
+.cd{font:12px "IBM Plex Mono";color:var(--acc);white-space:nowrap}
+.nw{display:block;padding:8px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.nw .meta{display:block;font:11px "IBM Plex Mono";color:var(--acc)}.nw .es{display:block;font-weight:500}.nw .en{display:block;font-size:12px;color:var(--mut)}
+.nw:hover .es{color:var(--acc)}
+.liq{font:12px "IBM Plex Mono";max-height:150px;overflow:auto}
+.liq div{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--line)}
+.brow{display:grid;grid-template-columns:52px 1fr 1fr 64px;gap:8px;align-items:center;padding:3px 0;font-size:12.5px}
+.brow .b{height:8px;background:var(--panel2)}.brow .b i{display:block;height:100%}
+.verif{list-style:none;margin:0;padding:0;font:12px "IBM Plex Mono"}.verif li{padding:2px 0}
+footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px;margin-top:28px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts button{background:var(--panel);border:1px solid var(--line);color:var(--tx);font:12px "IBM Plex Mono";padding:5px 10px;cursor:pointer}
+.opts button.on{border-color:var(--acc);color:var(--acc)}
+.stale{color:var(--acc)}
+@media(max-width:600px){main{padding:10px 10px 40px}.big{font-size:28px}.hbar{padding:6px 10px;gap:8px}.conn{margin-left:0}.chart{height:280px}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbar">
+    <span class="brand">MERCADO EN VIVO · ES · NQ · BTC</span>
+    <span class="live"><i></i>EN VIVO</span>
+    <div class="clocks"><span>Santiago <b id="clkCL" class="m">--:--:--</b></span><span>Nueva York <b id="clkNY" class="m">--:--:--</b></span><span id="rthCd"></span></div>
+    <div class="conn"><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
+  </div>
+  <div class="tape" id="tape"></div>
+</header>
+<div id="alertas"></div>
+<main>
+  <div class="status" id="status"></div>
+  <div class="grid">
+    <section class="card" id="card-ES"></section>
+    <section class="card" id="card-NQ"></section>
+    <section class="card" id="card-BTC"></section>
+  </div>
+
+  <h2>Lo que hay que saber <small id="genTxt"></small></h2>
+  <div class="panel"><ul class="keys" id="puntos"></ul></div>
+
+  <div class="two">
+    <div><h2>Agenda de hoy <small>hora Chile · cuenta regresiva</small></h2><div class="panel" id="agenda"></div></div>
+    <div><h2>Megacaps en vivo <small>vs cierre de ayer</small></h2><div class="panel"><div class="mc" id="megacaps"></div></div></div>
+  </div>
+
+  <div class="two">
+    <div><h2>Resultados corporativos <small>cap. &gt; 40 B USD</small></h2><div class="panel"><table id="earn"></table>
+      <p class="mut" style="font-size:11px;margin:6px 0 0">EPS según Nasdaq: a veces compara cifra contable (GAAP) con consenso ajustado.</p></div></div>
+    <div><h2>Bitcoin: derivados y flujos</h2><div class="panel" id="btcder"></div></div>
+  </div>
+
+  <div class="two">
+    <div><h2>Sesión de ayer · sectores</h2><div class="panel" id="sect"></div></div>
+    <div><h2>Lo que viene <small>alto impacto EE.UU.</small></h2><div class="panel" id="semana"></div></div>
+  </div>
+
+  <h2>Mercados globales <small>con retraso (Yahoo) · hora del último dato</small></h2>
+  <div class="three" id="global"></div>
+
+  <h2>Titulares</h2>
+  <div class="panel" id="news"></div>
+
+  <h2>Alertas y verificación</h2>
+  <div class="two">
+    <div class="panel">
+      <p style="margin:0 0 8px">Avisos cuando el precio cruza un nivel clave (PDH, PDL, overnight, Asia, Londres, medianoche, movimiento implícito…).</p>
+      <div class="opts"><button id="bAl" class="on">Avisos en pantalla: sí</button><button id="bSnd">Sonido: no</button><button id="bNot">Notificaciones: no</button></div>
+    </div>
+    <div class="panel"><ul class="verif" id="verif"></ul></div>
+  </div>
+
+  <footer>
+    <p><b>Precios en vivo:</b> S&amp;P 500 y Nasdaq 100 contado vía perpetuos de Hyperliquid (xyz:SP500, xyz:XYZ100), que replican el índice al segundo. <b>ES ≈ / NQ ≈</b> = contado en vivo + base (diferencia futuro − contado medida en las mismas velas de 5 min; se recalcula cada 15 min). Bitcoin y Ether: Binance (operaciones en tiempo real). Megacaps: perpetuos de Hyperliquid 24/7.</p>
+    <p><b>Con retraso:</b> futuros Yahoo (~10 min), VIX, bonos, dólar, materias primas y bolsas globales. Niveles de ES/NQ en hora de Nueva York (sesión regular 9:30–16:00; overnight desde 18:00). BTC en día UTC.</p>
+    <p>Informativo: describe hechos, no es recomendación de inversión. <span id="avisos"></span></p>
+  </footer>
+</main>
+
+<script>
+"use strict";
+/* ============================================================ utilidades */
+const $ = id => document.getElementById(id);
+const NF = {};
+const fmt = (x, d = 2) => (x === null || x === undefined || isNaN(x)) ? "—" :
+  (NF[d] || (NF[d] = new Intl.NumberFormat("es-CL", {minimumFractionDigits: d, maximumFractionDigits: d}))).format(x);
+const sg = (x, d = 2) => (x > 0 ? "+" : "") + fmt(x, d);
+const pc = (x, d = 2) => (x === null || x === undefined || isNaN(x)) ? "—" : sg(x, d) + "%";
+const cl = x => x > 0 ? "up" : (x < 0 ? "dn" : "fl");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const soloNegrita = s => esc(s).replace(/&lt;(\/?)b&gt;/g, "<$1b>");
+const store = {get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+               set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }};
+
+function partes(tz, d = new Date()) {
+  const p = {};
+  new Intl.DateTimeFormat("en-US", {timeZone: tz, hour12: false, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short"}).formatToParts(d).forEach(x => p[x.type] = x.value);
+  p.hour = p.hour === "24" ? "00" : p.hour;
+  return p;
+}
+function tzOffsetSec(tz, tsSec) {           // segundos a sumar a UTC para ver hora local en el gráfico
+  const p = partes(tz, new Date(tsSec * 1000));
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+  return Math.round((asUTC - tsSec * 1000) / 1000);
+}
+const horaCL = iso => new Date(iso).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit"});
+const ahoraNY = () => partes("America/New_York");
+function fechaNY() { const p = ahoraNY(); return `${p.year}-${p.month}-${p.day}`; }
+function dur(ms) {
+  if (ms < 0) return "";
+  const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
+  return h ? `${h} h ${String(m).padStart(2, "0")} min` : `${m}:${String(ss).padStart(2, "0")}`;
+}
+
+/* ============================================================ estado */
+let DATA = null;
+const LIVE = {
+  "xyz:SP500": null, "xyz:XYZ100": null, BTC: null, ETH: null,
+  btc24o: null, eth24o: null, mids: {}, mark: null, funding: null, nextFunding: null,
+};
+const INST = {
+  ES: {coin: "xyz:SP500", dec: 2, nombre: "S&P 500 · futuro ES", corto: "ES"},
+  NQ: {coin: "xyz:XYZ100", dec: 2, nombre: "Nasdaq 100 · futuro NQ", corto: "NQ"},
+  BTC: {dec: 0, nombre: "Bitcoin", corto: "BTC"},
+};
+const SES = {ES: {hi: null, lo: null, onhi: null, onlo: null}, NQ: {hi: null, lo: null, onhi: null, onlo: null}};
+
+function precioFut(k) {          // ES ≈ contado en vivo + base
+  const f = DATA?.fut?.[k]; const c = LIVE[INST[k].coin];
+  if (!f || c === null) return null;
+  return f.base !== null && f.base !== undefined ? c + f.base : null;
+}
+function precio(k) { return k === "BTC" ? LIVE.BTC : precioFut(k); }
+
+/* ============================================================ niveles */
+function niveles(k) {
+  if (!DATA) return [];
+  const L = [];
+  const add = (n, v, c, grafico = true) => { if (v !== null && v !== undefined && !isNaN(v)) L.push({n, v, c, g: grafico}); };
+  if (k === "BTC") {
+    const b = DATA.btc;
+    add("Máx. ayer (UTC)", b.pdh, "#4fc3f7"); add("Mín. ayer (UTC)", b.pdl, "#4fc3f7");
+    add("Apertura diaria", b.do, "#ff9f1a"); add("Apertura semanal", b.wo, "#ce93d8");
+    add("Máx. Asia", b.asia_h, "#80cbc4"); add("Mín. Asia", b.asia_l, "#80cbc4");
+    add("Máx. Londres", b.lon_h, "#fff59d", false); add("Mín. Londres", b.lon_l, "#fff59d", false);
+    add("Máx. sem. anterior", b.pwh, "#9575cd", false); add("Mín. sem. anterior", b.pwl, "#9575cd", false);
+    add("Máx. 30 días", b.max30, "#8592a3", false); add("Mín. 30 días", b.min30, "#8592a3", false);
+    add("Media 50d", b.sma50, "#8592a3", false); add("Media 200d", b.sma200, "#8592a3", false);
+    return L;
+  }
+  const f = DATA.fut[k];
+  if (!f) return L;
+  add("Máx. ayer (PDH)", f.pdh, "#4fc3f7"); add("Mín. ayer (PDL)", f.pdl, "#4fc3f7");
+  add("Cierre ayer", f.pdc, "#aab4c0"); add("Medio de ayer", f.pd_mid, "#607080", false);
+  add("Máx. overnight", Math.max(f.onh ?? -Infinity, SES[k].onhi ?? -Infinity), "#ce93d8");
+  add("Mín. overnight", Math.min(f.onl ?? Infinity, SES[k].onlo ?? Infinity), "#ce93d8");
+  add("Máx. Asia", f.asia_h, "#80cbc4", false); add("Mín. Asia", f.asia_l, "#80cbc4", false);
+  add("Máx. Londres", f.lon_h, "#fff59d", false); add("Mín. Londres", f.lon_l, "#fff59d", false);
+  add("Apertura medianoche", f.mo, "#ff9f1a"); add("Apertura 8:30", f.o830, "#ffcc80", false);
+  if (SES[k].hi !== null) { add("Máx. de hoy (RTH)", SES[k].hi, "#2ecc71"); add("Mín. de hoy (RTH)", SES[k].lo, "#ff4d4f"); }
+  if (f.mov) { add("Mov. implícito ↑", f.mov.sup, "#ff8a65"); add("Mov. implícito ↓", f.mov.inf, "#ff8a65"); }
+  add("Apertura semanal", f.wo, "#9575cd", false);
+  add("Máx. sem. anterior", f.pwh, "#9575cd", false); add("Mín. sem. anterior", f.pwl, "#9575cd", false);
+  add("Máx. 20 días", f.max20, "#8592a3", false); add("Mín. 20 días", f.min20, "#8592a3", false);
+  add("Media 20d", f.sma20, "#8592a3", false); add("Media 50d", f.sma50, "#8592a3", false);
+  return L.filter(x => isFinite(x.v));
+}
+
+/* ============================================================ tarjetas */
+function tarjeta(k) {
+  const I = INST[k], el = $("card-" + k);
+  const sym = k === "BTC" ? "BTCUSDT · Binance" : (k === "ES" ? "ES ≈ US500 + base" : "NQ ≈ US100 + base");
+  el.innerHTML = `
+  <div class="ch"><h3>${I.nombre}</h3><span class="sym">${sym}</span></div>
+  <div class="px"><span class="big" id="${k}-p">—</span><span class="chg" id="${k}-c"></span></div>
+  <div class="sub" id="${k}-sub"></div>
+  <div class="loc" id="${k}-loc"></div>
+  <div class="kpis" id="${k}-k"></div>
+  <div class="meter" id="${k}-meter"></div>
+  <div class="tf" id="${k}-tf"></div>
+  <div class="chart" id="${k}-chart"></div>
+  <div class="ladwrap"><table class="lad" id="${k}-lad"></table></div>
+  <button class="more" id="${k}-more">ver todos los niveles</button>`;
+  $(k + "-more").onclick = () => { LADALL[k] = !LADALL[k]; $(k + "-more").textContent = LADALL[k] ? "ver solo los más cercanos" : "ver todos los niveles"; pintarNiveles(k, true); };
+  const tfs = k === "BTC" ? ["1m", "5m", "15m", "1h"] : ["1m", "5m", "15m"];
+  const tfEl = $(k + "-tf");
+  tfEl.innerHTML = tfs.map(t => `<button data-t="${t}" class="${t === TF[k] ? "on" : ""}">${t}</button>`).join("") +
+    `<span class="leg"><span><i style="background:#4fc3f7"></i>ayer</span><span><i style="background:#ce93d8"></i>overnight</span><span><i style="background:#ff9f1a"></i>medianoche</span><span><i style="background:#ff8a65"></i>mov. impl.</span></span>`;
+  tfEl.querySelectorAll("button").forEach(b => b.onclick = () => { TF[k] = b.dataset.t; store.set("tf", TF);
+    tfEl.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); cargarGrafico(k); });
+}
+const LADALL = {ES: false, NQ: false, BTC: false};
+const LAST = {}, LASTSHOWN = {};
+
+function pintarPrecio(k) {
+  const p = precio(k); if (p === null) return;
+  const I = INST[k], pe = $(k + "-p");
+  const prev = LASTSHOWN[k];
+  if (prev !== undefined && p !== prev) {
+    pe.style.color = p > prev ? "var(--up)" : "var(--dn)";
+    clearTimeout(pe._t); pe._t = setTimeout(() => pe.style.color = "", 700);
+  }
+  LASTSHOWN[k] = p;
+  pe.textContent = fmt(p, I.dec);
+  let ref, refTxt;
+  if (k === "BTC") { ref = LIVE.btc24o; refTxt = "24 h"; }
+  else { ref = DATA.fut[k].pdc; refTxt = "vs cierre " + fmt(ref, 2); }
+  if (ref) $(k + "-c").innerHTML = `<span class="${cl(p - ref)}">${sg(p - ref, I.dec)} · ${pc((p / ref - 1) * 100)}</span> <span class="mut">${refTxt}</span>`;
+  if (k !== "BTC") {
+    const f = DATA.fut[k], c = LIVE[I.coin], prevC = DATA.contado_prev[I.coin];
+    $(k + "-sub").innerHTML = `Contado ${k === "ES" ? "US500" : "US100"} <b class="m">${fmt(c, 2)}</b>` +
+      (prevC ? ` <span class="${cl(c - prevC)}">${pc((c / prevC - 1) * 100)}</span>` : "") +
+      ` · base <b class="m">${sg(f.base, 2)}</b> · futuro Yahoo <span class="m">${fmt(f.precio, 2)}</span> <span class="mut">(${horaNYde(f.hora_dato)} NY, retrasado)</span>`;
+  } else {
+    $(k + "-sub").innerHTML = `Ether <b class="m">${fmt(LIVE.ETH, 2)}</b> ${LIVE.eth24o ? `<span class="${cl(LIVE.ETH - LIVE.eth24o)}">${pc((LIVE.ETH / LIVE.eth24o - 1) * 100)}</span>` : ""}` +
+      (LIVE.mark ? ` · perpetuo <b class="m">${fmt(LIVE.mark, 1)}</b>` : "");
+  }
+}
+const horaNYde = iso => iso ? new Date(iso).toLocaleTimeString("es-CL", {timeZone: "America/New_York", hour: "2-digit", minute: "2-digit"}) : "";
+
+function ubicacion(k, p) {
+  const L = niveles(k);
+  const g = n => L.find(x => x.n.startsWith(n))?.v;
+  const pdh = g("Máx. ayer"), pdl = g("Mín. ayer");
+  let s = "";
+  if (pdh !== undefined && pdl !== undefined) {
+    if (p > pdh) s = `<b class="up">Sobre el máximo de ayer</b> (+${fmt(p - pdh, INST[k].dec)})`;
+    else if (p < pdl) s = `<b class="dn">Bajo el mínimo de ayer</b> (${fmt(p - pdl, INST[k].dec)})`;
+    else s = `Dentro del rango de ayer (<b>${Math.round((p - pdl) / (pdh - pdl) * 100)}%</b>)`;
+  }
+  const arriba = L.filter(x => x.v > p).sort((a, b) => a.v - b.v)[0];
+  const abajo = L.filter(x => x.v <= p).sort((a, b) => b.v - a.v)[0];
+  if (arriba) s += ` · ↑ ${esc(arriba.n)} <b class="m">${fmt(arriba.v, INST[k].dec)}</b> <span class="up">(${sg(arriba.v - p, INST[k].dec)})</span>`;
+  if (abajo) s += ` · ↓ ${esc(abajo.n)} <b class="m">${fmt(abajo.v, INST[k].dec)}</b> <span class="dn">(${sg(abajo.v - p, INST[k].dec)})</span>`;
+  return s;
+}
+
+function pintarNiveles(k, forzar) {
+  const p = precio(k); if (p === null || !DATA) return;
+  const d = INST[k].dec, L = niveles(k).slice().sort((a, b) => b.v - a.v);
+  $(k + "-loc").innerHTML = ubicacion(k, p);
+  let filas = [], idx = L.findIndex(x => x.v <= p); if (idx < 0) idx = L.length;
+  const rows = [...L.slice(0, idx).map(x => ({...x, lado: 1})), {now: true}, ...L.slice(idx).map(x => ({...x, lado: -1}))];
+  const ni = rows.findIndex(r => r.now);
+  rows.forEach((r, i) => {
+    const lejos = Math.abs(i - ni) > 5 && !LADALL[k];
+    if (r.now) filas.push(`<tr class="now"><td>▶ Precio en vivo</td><td class="n">${fmt(p, d)}</td><td class="n"></td></tr>`);
+    else filas.push(`<tr class="${lejos ? "hide" : ""} ${Math.abs(i - ni) === 1 ? "near" : ""}"><td><i style="display:inline-block;width:8px;height:8px;background:${r.c};margin-right:6px"></i>${esc(r.n)}</td>` +
+      `<td class="n">${fmt(r.v, d)}</td><td class="n ${r.lado > 0 ? "up" : "dn"}">${sg(r.v - p, d)}</td></tr>`);
+  });
+  $(k + "-lad").innerHTML = filas.join("");
+  // medidor: movimiento implícito (futuros) o rango 24h (BTC)
+  let lo, hi, lblL, lblR, titulo;
+  if (k === "BTC") { lo = DATA.btc.pdl; hi = DATA.btc.pdh; titulo = "Posición en el rango de ayer"; }
+  else { const m = DATA.fut[k].mov; if (m) { lo = m.inf; hi = m.sup; titulo = `Movimiento implícito hoy ±${fmt(m.pct, 2)}% (opciones)`; } }
+  if (lo && hi) {
+    const pos = Math.max(0, Math.min(100, (p - lo) / (hi - lo) * 100));
+    $(k + "-meter").innerHTML = `<div class="lbl"><span>${fmt(lo, d)}</span><span>${titulo}</span><span>${fmt(hi, d)}</span></div>
+      <div class="bar"><div class="mid" style="left:50%"></div><div class="mk" style="left:calc(${pos}% - 1px)"></div></div>`;
+  }
+  // kpis
+  if (k === "BTC") {
+    const b = DATA.btc;
+    $(k + "-k").innerHTML = `<div><span>Funding (vivo)</span><b>${LIVE.funding !== null ? fmt(LIVE.funding * 100, 4) + "%" : "—"}</b></div>
+      <div><span>Próximo pago</span><b id="fundCd">—</b></div><div><span>OI 24 h</span><b class="${cl(DATA.der.oi_24h_pct)}">${pc(DATA.der.oi_24h_pct, 1)}</b></div>
+      <div><span>ATR 14d</span><b>${fmt(b.atr, 0)}</b></div>`;
+  } else {
+    const f = DATA.fut[k];
+    const onh = Math.max(f.onh, SES[k].onhi ?? -Infinity), onl = Math.min(f.onl, SES[k].onlo ?? Infinity);
+    const rth = SES[k].hi !== null ? SES[k].hi - SES[k].lo : null;
+    $(k + "-k").innerHTML = `<div><span>Rango ayer</span><b>${fmt(f.rango_ayer, 1)}</b></div><div><span>ATR 14d</span><b>${fmt(f.atr, 1)}</b></div>
+      <div><span>${rth !== null ? "Rango hoy" : "Rango ON"}</span><b>${fmt(rth !== null ? rth : onh - onl, 1)}</b></div>
+      <div><span>${rth !== null ? "Hoy / ATR" : "ON / ATR"}</span><b>${f.atr ? Math.round((rth !== null ? rth : onh - onl) / f.atr * 100) + "%" : "—"}</b></div>`;
+  }
+}
+
+/* ============================================================ alertas por cruce de nivel */
+const OPT = store.get("opt", {al: true, snd: false, not: false});
+const COOL = {};
+let audioCtx = null;
+function beep(up) {
+  if (!OPT.snd) return;
+  try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
+    o.frequency.value = up ? 880 : 520; g.gain.setValueAtTime(.08, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + .35);
+    o.start(); o.stop(audioCtx.currentTime + .36); } catch (e) {}
+}
+function alerta(txt, up) {
+  if (!OPT.al) return;
+  const d = document.createElement("div"); d.className = "al " + (up ? "upx" : "dnx");
+  d.innerHTML = txt; $("alertas").prepend(d);
+  setTimeout(() => d.remove(), 20000);
+  while ($("alertas").children.length > 4) $("alertas").lastChild.remove();
+  beep(up);
+  if (OPT.not && "Notification" in window && Notification.permission === "granted") {
+    try { new Notification("Mercado en vivo", {body: txt.replace(/<[^>]+>/g, "")}); } catch (e) {}
+  }
+}
+function revisarCruces(k, p) {
+  const prev = LAST[k]; LAST[k] = p;
+  if (prev === undefined || prev === null || !DATA) return;
+  for (const l of niveles(k)) {
+    if (l.n.includes("de hoy")) continue;
+    const arriba = prev < l.v && p >= l.v, abajo = prev > l.v && p <= l.v;
+    if (!arriba && !abajo) continue;
+    const key = k + l.n; if (COOL[key] && Date.now() - COOL[key] < 10 * 60e3) continue;
+    COOL[key] = Date.now();
+    const hora = new Date().toLocaleTimeString("es-CL", {timeZone: "America/Santiago"});
+    alerta(`<b>${INST[k].corto}</b> cruzó ${arriba ? "<b class='up'>al alza</b>" : "<b class='dn'>a la baja</b>"} ${esc(l.n)} <b class="m">${fmt(l.v, INST[k].dec)}</b> <span class="mut">· ${hora}</span>`, arriba);
+  }
+}
+function opciones() {
+  const pinta = () => { $("bAl").textContent = "Avisos en pantalla: " + (OPT.al ? "sí" : "no"); $("bAl").classList.toggle("on", OPT.al);
+    $("bSnd").textContent = "Sonido: " + (OPT.snd ? "sí" : "no"); $("bSnd").classList.toggle("on", OPT.snd);
+    $("bNot").textContent = "Notificaciones: " + (OPT.not ? "sí" : "no"); $("bNot").classList.toggle("on", OPT.not); store.set("opt", OPT); };
+  $("bAl").onclick = () => { OPT.al = !OPT.al; pinta(); };
+  $("bSnd").onclick = () => { OPT.snd = !OPT.snd; pinta(); if (OPT.snd) beep(true); };
+  $("bNot").onclick = async () => {
+    if (!OPT.not && "Notification" in window) { try { const r = await Notification.requestPermission(); OPT.not = r === "granted"; } catch (e) { OPT.not = false; } }
+    else OPT.not = false; pinta(); };
+  pinta();
+}
+
+/* ============================================================ gráficos */
+const TF = Object.assign({ES: "5m", NQ: "5m", BTC: "5m"}, store.get("tf", {}));
+const CH = {};
+const TFSEC = {"1m": 60, "5m": 300, "15m": 900, "1h": 3600};
+function crearGrafico(k) {
+  const el = $(k + "-chart");
+  if (!window.LightweightCharts) { el.innerHTML = "<p class='mut' style='padding:14px'>No se pudo cargar la librería de gráficos.</p>"; return; }
+  const chart = LightweightCharts.createChart(el, {
+    autoSize: true, layout: {background: {color: "#12161b"}, textColor: "#8592a3", fontFamily: "IBM Plex Mono", fontSize: 11},
+    grid: {vertLines: {color: "#1a2028"}, horzLines: {color: "#1a2028"}},
+    rightPriceScale: {borderColor: "#222a33"}, timeScale: {borderColor: "#222a33", timeVisible: true, secondsVisible: false, rightOffset: 6},
+    crosshair: {mode: 0}, localization: {priceFormatter: v => fmt(v, INST[k].dec)},
+  });
+  const s = chart.addCandlestickSeries({upColor: "#2ecc71", downColor: "#ff4d4f", wickUpColor: "#2ecc71", wickDownColor: "#ff4d4f", borderVisible: false,
+    priceFormat: {type: "price", precision: INST[k].dec, minMove: k === "BTC" ? 1 : 0.25}});
+  CH[k] = {chart, s, lines: [], last: null, tz: k === "BTC" ? "UTC" : "America/New_York"};
+}
+function dibujarLineas(k) {
+  const c = CH[k]; if (!c) return;
+  c.lines.forEach(l => c.s.removePriceLine(l)); c.lines = [];
+  for (const l of niveles(k).filter(x => x.g)) {
+    c.lines.push(c.s.createPriceLine({price: l.v, color: l.c, lineWidth: 1, lineStyle: l.n.startsWith("Mov.") ? 1 : 2, axisLabelVisible: true, title: l.n.replace(/ \(.*\)/, "")}));
+  }
+}
+const off = (k, t) => t + tzOffsetSec(CH[k].tz, t);
+async function cargarGrafico(k) {
+  if (!CH[k]) crearGrafico(k); const c = CH[k]; if (!c) return;
+  const iv = TF[k], sec = TFSEC[iv];
+  let bars = [];
+  try {
+    if (k === "BTC") {
+      const r = await fetch(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${iv}&limit=500`).then(r => r.json());
+      bars = r.map(x => ({time: off(k, x[0] / 1000), open: +x[1], high: +x[2], low: +x[3], close: +x[4]}));
+    } else {
+      const base = DATA?.fut?.[k]?.base ?? 0, now = Date.now();
+      const horas = iv === "1m" ? 8 : (iv === "5m" ? 36 : 96);
+      const r = await fetch("https://api.hyperliquid.xyz/info", {method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({type: "candleSnapshot", req: {coin: INST[k].coin, interval: iv, startTime: now - horas * 3600e3, endTime: now}})}).then(r => r.json());
+      bars = r.map(x => ({time: off(k, x.t / 1000), open: +x.o + base, high: +x.h + base, low: +x.l + base, close: +x.c + base}));
+      calcularSesion(k, r, base);
+    }
+  } catch (e) { console.warn("historial", k, e); }
+  c.s.setData(bars); c.last = bars[bars.length - 1] || null; c.sec = sec;
+  dibujarLineas(k);
+  c.chart.timeScale().scrollToRealTime();
+  if (k !== "BTC") suscribirVelas(k);
+  else if (bnWS && bnWS._iv !== TF.BTC) { bnHost--; try { bnWS.close(); } catch (e) {} }
+}
+function calcularSesion(k, velas, base) {   // máx/mín de la sesión regular de hoy y extremos overnight vivos
+  const hoy = fechaNY(); let hi = null, lo = null, onhi = null, onlo = null;
+  for (const v of velas) {
+    const p = partes("America/New_York", new Date(v.t));
+    const f = `${p.year}-${p.month}-${p.day}`, hm = +p.hour * 60 + +p.minute;
+    const h = +v.h + base, l = +v.l + base;
+    if (f === hoy && hm >= 570 && hm < 960) { hi = hi === null ? h : Math.max(hi, h); lo = lo === null ? l : Math.min(lo, l); }
+  }
+  SES[k].hi = hi; SES[k].lo = lo;
+}
+function actualizarVela(k, tSec, o, h, l, cc) {
+  const c = CH[k]; if (!c || !c.sec) return;
+  const t = off(k, Math.floor(tSec / c.sec) * c.sec);
+  if (c.last && t < c.last.time) return;
+  if (c.last && t === c.last.time) { c.last = {...c.last, high: Math.max(c.last.high, h), low: Math.min(c.last.low, l), close: cc}; }
+  else c.last = {time: t, open: o, high: h, low: l, close: cc};
+  try { c.s.update(c.last); } catch (e) {}
+}
+
+/* ============================================================ Hyperliquid (índices contado) */
+let hlWS = null, hlSubs = new Set(), hlPing = null, hlRetry = 1000;
+function hlSend(o) { if (hlWS && hlWS.readyState === 1) hlWS.send(JSON.stringify(o)); }
+function suscribirVelas(k) {
+  const coin = INST[k].coin, iv = TF[k];
+  for (const s of [...hlSubs]) { const [c, i] = s.split("|"); if (c === coin && i !== "1m" && i !== iv) { hlSend({method: "unsubscribe", subscription: {type: "candle", coin: c, interval: i}}); hlSubs.delete(s); } }
+  const key = coin + "|" + iv; if (!hlSubs.has(key)) { hlSubs.add(key); hlSend({method: "subscribe", subscription: {type: "candle", coin, interval: iv}}); }
+}
+function hlConectar() {
+  $("dHL").className = "dot wait";
+  hlWS = new WebSocket("wss://api.hyperliquid.xyz/ws");
+  hlWS.onopen = () => {
+    hlRetry = 1000; $("dHL").className = "dot ok";
+    hlSubs = new Set(["xyz:SP500|1m", "xyz:XYZ100|1m"]);
+    hlSend({method: "subscribe", subscription: {type: "candle", coin: "xyz:SP500", interval: "1m"}});
+    hlSend({method: "subscribe", subscription: {type: "candle", coin: "xyz:XYZ100", interval: "1m"}});
+    ["ES", "NQ"].forEach(k => CH[k] && suscribirVelas(k));
+    clearInterval(hlPing); hlPing = setInterval(() => hlSend({method: "ping"}), 30000);
+  };
+  hlWS.onmessage = ev => {
+    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (m.channel !== "candle") return;
+    const v = m.data, coin = v.s, px = +v.c;
+    LIVE[coin] = px; LIVE.tHL = Date.now();
+    for (const k of ["ES", "NQ"]) {
+      if (INST[k].coin !== coin) continue;
+      const base = DATA?.fut?.[k]?.base; if (base === null || base === undefined) continue;
+      const p = px + base;
+      // extremos vivos de la sesión regular / overnight
+      const n = ahoraNY(), hm = +n.hour * 60 + +n.minute;
+      if (hm >= 570 && hm < 960 && !esFeriado()) { SES[k].hi = SES[k].hi === null ? p : Math.max(SES[k].hi, p); SES[k].lo = SES[k].lo === null ? p : Math.min(SES[k].lo, p); }
+      else if (hm < 570 || hm >= 1080) { SES[k].onhi = Math.max(SES[k].onhi ?? -Infinity, p); SES[k].onlo = Math.min(SES[k].onlo ?? Infinity, p); }
+      if (v.i === TF[k]) actualizarVela(k, v.t / 1000, +v.o + base, +v.h + base, +v.l + base, p);
+      revisarCruces(k, p); MARK[k] = true;
+    }
+  };
+  hlWS.onclose = () => { $("dHL").className = "dot bad"; clearInterval(hlPing); setTimeout(hlConectar, hlRetry = Math.min(hlRetry * 2, 30000)); };
+  hlWS.onerror = () => { try { hlWS.close(); } catch (e) {} };
+}
+async function hlMids() {
+  try {
+    const r = await fetch("https://api.hyperliquid.xyz/info", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({type: "allMids", dex: "xyz"})}).then(r => r.json());
+    for (const [k, v] of Object.entries(r)) LIVE.mids[k] = +v;
+    if (LIVE["xyz:SP500"] === null && r["xyz:SP500"]) LIVE["xyz:SP500"] = +r["xyz:SP500"];
+    if (LIVE["xyz:XYZ100"] === null && r["xyz:XYZ100"]) LIVE["xyz:XYZ100"] = +r["xyz:XYZ100"];
+    pintarMegacaps(); MARK.ES = MARK.NQ = true;
+  } catch (e) {}
+}
+
+/* ============================================================ Binance (cripto) */
+let bnWS = null, bnRetry = 1000, bnHost = 0, bnfWS = null, bnfRetry = 1000;
+const BN_HOSTS = ["wss://stream.binance.com:9443", "wss://data-stream.binance.vision"];
+function bnConectar() {
+  $("dBN").className = "dot wait";
+  const iv = TF.BTC;
+  bnWS = new WebSocket(`${BN_HOSTS[bnHost % 2]}/stream?streams=btcusdt@aggTrade/ethusdt@aggTrade/btcusdt@miniTicker/ethusdt@miniTicker/btcusdt@kline_${iv}`);
+  bnWS._iv = iv;
+  bnWS.onopen = () => { bnRetry = 1000; $("dBN").className = "dot ok"; };
+  bnWS.onmessage = ev => {
+    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    const s = m.stream, d = m.data;
+    if (s === "btcusdt@aggTrade") { LIVE.BTC = +d.p; revisarCruces("BTC", LIVE.BTC); MARK.BTC = true; }
+    else if (s === "ethusdt@aggTrade") { LIVE.ETH = +d.p; MARK.BTC = true; }
+    else if (s === "btcusdt@miniTicker") LIVE.btc24o = +d.o;
+    else if (s === "ethusdt@miniTicker") LIVE.eth24o = +d.o;
+    else if (s.includes("@kline_")) { const k = d.k; if (k.i === TF.BTC) actualizarVela("BTC", k.t / 1000, +k.o, +k.h, +k.l, +k.c); }
+  };
+  bnWS.onclose = () => { $("dBN").className = "dot bad"; bnHost++; setTimeout(bnConectar, bnRetry = Math.min(bnRetry * 2, 30000)); };
+  bnWS.onerror = () => { try { bnWS.close(); } catch (e) {} };
+}
+function bnfConectar() {
+  bnfWS = new WebSocket("wss://fstream.binance.com/stream?streams=btcusdt@markPrice@1s/btcusdt@forceOrder");
+  bnfWS.onopen = () => bnfRetry = 1000;
+  bnfWS.onmessage = ev => {
+    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    const d = m.data;
+    if (m.stream.includes("markPrice")) { LIVE.mark = +d.p; LIVE.funding = +d.r; LIVE.nextFunding = d.T; }
+    else if (m.stream.includes("forceOrder")) {
+      const o = d.o, usd = +o.q * +o.ap; if (usd < 50000) return;
+      const box = $("liq"); if (!box) return;
+      const lado = o.S === "SELL" ? "long liquidado" : "short liquidado";
+      const row = document.createElement("div");
+      row.innerHTML = `<span class="${o.S === "SELL" ? "dn" : "up"}">${lado}</span><span>${fmt(usd / 1e3, 0)} K USD @ ${fmt(+o.ap, 0)}</span><span class="mut">${new Date(o.T).toLocaleTimeString("es-CL", {timeZone: "America/Santiago"})}</span>`;
+      box.prepend(row); while (box.children.length > 30) box.lastChild.remove();
+      const vacio = $("liqVacio"); if (vacio) vacio.remove();
+    }
+  };
+  bnfWS.onclose = () => setTimeout(bnfConectar, bnfRetry = Math.min(bnfRetry * 2, 30000));
+  bnfWS.onerror = () => { try { bnfWS.close(); } catch (e) {} };
+}
+
+/* ============================================================ cinta superior */
+function pintarCinta() {
+  if (!DATA) return;
+  const it = [];
+  for (const k of ["ES", "NQ"]) {
+    const p = precioFut(k), f = DATA.fut[k];
+    if (p !== null) it.push({n: k + " ≈ (vivo)", v: fmt(p, 2), c: (p / f.pdc - 1) * 100});
+  }
+  for (const [coin, n] of [["xyz:SP500", "US500 contado"], ["xyz:XYZ100", "US100 contado"]]) {
+    const p = LIVE[coin], prev = DATA.contado_prev[coin]; if (p !== null) it.push({n, v: fmt(p, 2), c: prev ? (p / prev - 1) * 100 : null});
+  }
+  if (LIVE.BTC) it.push({n: "BTC (vivo)", v: fmt(LIVE.BTC, 0), c: LIVE.btc24o ? (LIVE.BTC / LIVE.btc24o - 1) * 100 : null});
+  if (LIVE.ETH) it.push({n: "ETH (vivo)", v: fmt(LIVE.ETH, 2), c: LIVE.eth24o ? (LIVE.ETH / LIVE.eth24o - 1) * 100 : null});
+  for (const g of DATA.global) for (const x of g.items) if (["^VIX", "^TNX", "DX-Y.NYB", "CL=F", "GC=F"].includes(x.s))
+    it.push({n: x.nm + " ·ret.", v: fmt(x.precio, x.bono ? 3 : 2) + (x.bono ? "%" : ""), c: x.bono ? null : x.pct, pb: x.bono ? x.chg * 100 : null});
+  const tape = $("tape");
+  if (tape.children.length !== it.length) tape.innerHTML = it.map((_, i) => `<div class="tk"><div class="n"></div><div class="v" id="tk${i}"></div><div class="c"></div></div>`).join("");
+  it.forEach((x, i) => {
+    const el = tape.children[i]; el.querySelector(".n").textContent = x.n;
+    const v = el.querySelector(".v");
+    if (v.textContent !== x.v && v.textContent) { const up = parseFloat(x.v.replace(/\./g, "").replace(",", ".")) > parseFloat(v.textContent.replace(/\./g, "").replace(",", "."));
+      el.classList.remove("flash-up", "flash-dn"); void el.offsetWidth; el.classList.add(up ? "flash-up" : "flash-dn"); }
+    v.textContent = x.v;
+    el.querySelector(".c").innerHTML = x.pb !== null && x.pb !== undefined ? `<span class="${cl(x.pb)}">${sg(x.pb, 1)} pb</span>` : (x.c !== null && x.c !== undefined ? `<span class="${cl(x.c)}">${pc(x.c)}</span>` : "");
+  });
+}
+
+/* ============================================================ secciones del informe */
+function pintarMegacaps() {
+  if (!DATA) return;
+  const arr = DATA.megacaps.map(m => { const live = LIVE.mids[m.coin]; const p = live ?? m.pre; return {...m, p, pct: (p / m.prev - 1) * 100, live: live !== undefined}; })
+    .sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
+  $("megacaps").innerHTML = arr.map(m => `<div><div class="s">${esc(m.s)} ${m.live ? "" : "<span class='mut'>·</span>"}</div><div class="p">${fmt(m.p, 2)}</div><div class="c ${cl(m.pct)}">${pc(m.pct)}</div></div>`).join("");
+  pintarEarnings();
+}
+function pintarEarnings() {
+  const filas = DATA.earnings.map(e => {
+    const cuando = {"time-pre-market": "antes apertura", "time-after-hours": "tras el cierre"}[e.hora] || "sin hora";
+    const live = LIVE.mids[e.coin], pre = e.pre;
+    let eps = `est. ${fmt(e.est, 2)}`;
+    if (e.real !== null && e.real !== undefined) eps = `${fmt(e.real, 2)} vs ${fmt(e.cons, 2)} <span class="${cl(e.sorpresa)}">(${pc(e.sorpresa, 1)})</span>`;
+    else if (e.reportado) eps += " <span class='mut'>· real aún no cargado</span>";
+    return `<tr><td><b>${esc(e.s)}</b> <span class="mut">${esc(e.nombre.slice(0, 24))}</span></td><td>${e.dia}, ${cuando}</td><td class="n">${fmt(e.cap / 1e9, 0)} B</td><td class="n">${eps}</td>` +
+      `<td class="n ${cl(pre)}">${pre !== null && pre !== undefined ? pc(pre, 1) : "—"}</td></tr>`;
+  });
+  $("earn").innerHTML = `<tr><td class="mut">Empresa</td><td class="mut">Cuándo</td><td class="n mut">Cap.</td><td class="n mut">EPS real vs est.</td><td class="n mut">Premarket*</td></tr>` + (filas.join("") || "<tr><td colspan=5 class=mut>Sin resultados grandes</td></tr>");
+}
+function pintarAgenda() {
+  const now = Date.now(); let next = null;
+  const evs = DATA.agenda.map(e => ({...e, ms: new Date(e.t).getTime()}));
+  evs.forEach(e => { if (e.ms > now && (e.impacto !== "Low") && !next) next = e; });
+  if (!DATA.calendario_ok) { $("agenda").innerHTML = "<p class='dn'>Calendario no disponible (ForexFactory no respondió). Revisa forexfactory.com.</p>"; return; }
+  $("agenda").innerHTML = evs.map(e => {
+    const past = e.ms <= now, esNext = next && e === next;
+    const manana = new Date(e.t).toLocaleDateString("en-CA", {timeZone: "America/New_York"}) !== fechaNY() ? " <span class='mut'>(mañana)</span>" : "";
+    return `<div class="ev ${past ? "past" : ""} ${esNext ? "next" : ""}"><span class="m">${horaCL(e.t)}${manana}</span>` +
+      `<span><span class="imp ${e.impacto}">${esc(e.pais)}</span>${esc(e.titulo)}${e.esperado ? ` <span class="mut">· esp. ${esc(e.esperado)}</span>` : ""}${e.anterior ? ` <span class="mut">· ant. ${esc(e.anterior)}</span>` : ""}</span>` +
+      `<span class="cd" data-ms="${e.ms}">${past ? "✓" : ""}</span></div>`;
+  }).join("") || "<p class='mut'>Sin eventos relevantes de EE.UU. hoy.</p>";
+}
+function pintarCuentas() {
+  document.querySelectorAll(".cd[data-ms]").forEach(el => { const ms = +el.dataset.ms - Date.now(); el.textContent = ms > 0 ? "en " + dur(ms) : "✓"; });
+  if (LIVE.nextFunding && $("fundCd")) $("fundCd").textContent = dur(LIVE.nextFunding - Date.now());
+}
+function pintarSemana() {
+  const ev = DATA.semana.slice().sort((a, b) => a.t.localeCompare(b.t)).slice(0, 12);
+  $("semana").innerHTML = ev.map(e => {
+    const d = new Date(e.t);
+    return `<div class="ev"><span class="m">${d.toLocaleDateString("es-CL", {timeZone: "America/Santiago", weekday: "short", day: "numeric"})}</span>` +
+      `<span><span class="imp High">USD</span>${esc(e.titulo)} <span class="mut">${horaCL(e.t)}${e.esperado ? " · esp. " + esc(e.esperado) : ""}</span></span><span></span></div>`;
+  }).join("") || "<p class='mut'>Sin eventos de alto impacto cargados para los próximos días.</p>";
+}
+function pintarSectores() {
+  const mx = Math.max(0.5, ...DATA.sectores.map(x => Math.abs(x.pct)));
+  const sec = DATA.sectores.slice().sort((a, b) => b.pct - a.pct);
+  $("sect").innerHTML = `<table>${DATA.contado.map(x => `<tr><td>${esc(x.nm)}</td><td class="n">${fmt(x.precio, 2)}</td><td class="n ${cl(x.pct)}">${pc(x.pct)}</td></tr>`).join("")}</table>` +
+    `<div style="margin-top:10px">${sec.map(x => `<div class="brow"><span class="m">${esc(x.s)}</span><span class="mut">${esc(x.nm)}</span><span class="b"><i style="width:${Math.abs(x.pct) / mx * 100}%;background:var(--${x.pct >= 0 ? "up" : "dn"})"></i></span><span class="n m ${cl(x.pct)}">${pc(x.pct)}</span></div>`).join("")}</div>`;
+}
+function spark(vals) {
+  if (!vals || vals.length < 2) return "";
+  const lo = Math.min(...vals), hi = Math.max(...vals), r = hi - lo || 1;
+  const pts = vals.map((v, i) => `${(i * 70 / (vals.length - 1)).toFixed(1)},${(18 - (v - lo) / r * 18).toFixed(1)}`).join(" ");
+  return `<svg width="70" height="18" viewBox="0 0 70 18"><polyline points="${pts}" fill="none" stroke="${vals[vals.length - 1] >= vals[0] ? "#2ecc71" : "#ff4d4f"}" stroke-width="1.3"/></svg>`;
+}
+function pintarGlobal() {
+  $("global").innerHTML = DATA.global.map(g => `<div class="panel"><div class="mut m" style="font-size:11px;text-transform:uppercase;margin-bottom:4px">${esc(g.grupo)}</div><table>` +
+    g.items.map(x => { const viejo = (Date.now() / 1000 - x.t) > 20 * 3600;
+      return `<tr><td>${esc(x.nm)}${viejo ? ` <span class="mut">· ${new Date(x.t * 1000).toLocaleDateString("es-CL", {day: "2-digit", month: "2-digit"})}</span>` : ""}</td>` +
+        `<td class="n">${fmt(x.precio, x.bono ? 3 : 2)}${x.bono ? "%" : ""}</td><td class="n ${cl(x.chg)}">${x.bono ? sg(x.chg * 100, 1) + " pb" : pc(x.pct)}</td><td>${spark(x.serie)}</td></tr>`; }).join("") + "</table></div>").join("");
+}
+function pintarNews() {
+  $("news").innerHTML = DATA.news.map(x => {
+    const h = (Date.now() / 1000 - x.ts) / 3600;
+    const hace = h < 1 ? Math.max(1, Math.round(h * 60)) + " min" : Math.round(h) + " h";
+    let link = "#"; try { const u = new URL(x.link); if (u.protocol === "https:") link = u.href; } catch (e) {}
+    return `<a class="nw" href="${esc(link)}" target="_blank" rel="noopener noreferrer"><span class="meta">${esc(x.fuente)} · hace ${hace}</span><span class="es">${esc(x.es)}</span><span class="en">${esc(x.en)}</span></a>`;
+  }).join("") || "<p class='mut'>Sin titulares.</p>";
+}
+function pintarBtcDer() {
+  const d = DATA.der || {}, etf = DATA.etf || [];
+  const mx = Math.max(1, ...etf.map(x => Math.abs(x[1] || 0)));
+  $("btcder").innerHTML = `<table>
+    <tr><td>Interés abierto (Binance)</td><td class="n">${fmt(d.oi_btc, 0)} BTC</td><td class="n ${cl(d.oi_24h_pct)}">${pc(d.oi_24h_pct, 1)} 24 h</td></tr>
+    <tr><td>Long / Short (cuentas)</td><td class="n">${fmt(d.long_short, 2)}</td><td></td></tr>
+    <tr><td>Coinbase premium</td><td class="n ${cl(d.premium_pct)}">${pc(d.premium_pct, 3)}</td><td></td></tr>
+    <tr><td>Fear &amp; Greed</td><td class="n">${d.fear_greed ? d.fear_greed[0] : "—"}</td><td class="n mut">${d.fear_greed ? esc(d.fear_greed[1]) : ""}</td></tr></table>
+    <div class="mut m" style="font-size:11px;margin:10px 0 4px">FLUJOS ETF SPOT (M USD, Farside)</div>
+    ${etf.map(([f, v]) => `<div class="brow"><span class="m">${esc(f.slice(0, 6))}</span><span class="b" style="grid-column:span 2"><i style="width:${Math.abs(v || 0) / mx * 100}%;background:var(--${(v || 0) >= 0 ? "up" : "dn"})"></i></span><span class="n m ${cl(v)}">${v ? sg(v, 1) : "pend."}</span></div>`).join("")}
+    <div class="mut m" style="font-size:11px;margin:10px 0 4px">LIQUIDACIONES EN VIVO (&gt; 50 K USD, Binance)</div>
+    <div class="liq" id="liq"><div id="liqVacio" class="mut">esperando…</div></div>`;
+}
+function pintarEstado() {
+  const n = ahoraNY(), hm = +n.hour * 60 + +n.minute, dia = n.weekday, hoy = fechaNY();
+  const fer = DATA?.feriados?.[hoy], ant = DATA?.cierres_anticipados?.[hoy];
+  const habil = !["Sat", "Sun"].includes(dia) && !fer;
+  const cierre = ant ? 780 : 960;
+  const pills = [];
+  if (habil && hm >= 570 && hm < cierre) pills.push(`<span class="pill open">● Wall Street ABIERTO · cierra en ${dur(((cierre - hm) * 60 - +n.second) * 1000)}</span>`);
+  else if (habil && hm < 570) pills.push(`<span class="pill closed">Wall Street abre en ${dur(((570 - hm) * 60 - +n.second) * 1000)} (9:30 NY)</span>`);
+  else pills.push(`<span class="pill closed">Wall Street cerrado${fer ? " · " + esc(fer) : ""}</span>`);
+  const globex = !(dia === "Sat" || (dia === "Sun" && hm < 1080) || (dia === "Fri" && hm >= 1020) || (hm >= 1020 && hm < 1080));
+  pills.push(`<span class="pill ${globex ? "open" : "closed"}">Futuros CME ${globex ? "operando" : "en pausa"}</span>`);
+  (DATA?.estado_mercado || []).forEach(m => pills.push(`<span class="pill warn">${esc(m)}</span>`));
+  if (DATA?.vix) pills.push(`<span class="pill">VIX ${fmt(DATA.vix.precio, 2)} <span class="${cl(-DATA.vix.pct)}">${pc(DATA.vix.pct, 1)}</span></span>`);
+  $("status").innerHTML = pills.join("");
+  $("rthCd").textContent = "";
+}
+const esFeriado = () => !!DATA?.feriados?.[fechaNY()];
+
+function pintarInforme() {
+  $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
+  const g = new Date(DATA.generado);
+  $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit"}) + " Chile";
+  pintarAgenda(); pintarSemana(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
+  $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
+}
+
+/* ============================================================ carga de datos */
+async function cargarDatos(primera) {
+  try {
+    const r = await fetch("data.json?v=" + Math.floor(Date.now() / 30000), {cache: "no-store"});
+    const d = await r.json();
+    const nuevo = !DATA || d.generado !== DATA.generado;
+    DATA = d;
+    if (nuevo) {
+      pintarInforme();
+      if (primera) { ["ES", "NQ", "BTC"].forEach(tarjeta); ["ES", "NQ", "BTC"].forEach(cargarGrafico); }
+      else ["ES", "NQ", "BTC"].forEach(k => { dibujarLineas(k); MARK[k] = true; });
+    }
+    const edad = (Date.now() / 1000 - DATA.ts) / 60;
+    $("dDJ").className = "dot " + (edad < 40 ? "ok" : "wait");
+    $("dataAge").textContent = edad < 60 ? `${Math.round(edad)} min` : `${Math.round(edad / 60)} h`;
+  } catch (e) { $("dDJ").className = "dot bad"; console.warn(e); }
+}
+
+/* ============================================================ bucle de pintado */
+const MARK = {ES: false, NQ: false, BTC: false};
+let lastLad = 0;
+function frame() {
+  const t = performance.now();
+  for (const k of ["ES", "NQ", "BTC"]) if (MARK[k] && DATA) { pintarPrecio(k); MARK[k] = false; }
+  if (DATA && t - lastLad > 400) { lastLad = t; ["ES", "NQ", "BTC"].forEach(k => pintarNiveles(k)); pintarCinta(); }
+  requestAnimationFrame(frame);
+}
+function reloj() {
+  const c = partes("America/Santiago"), n = ahoraNY();
+  $("clkCL").textContent = `${c.hour}:${c.minute}:${c.second}`; $("clkNY").textContent = `${n.hour}:${n.minute}:${n.second}`;
+  pintarCuentas(); if (DATA) pintarEstado();
+}
+
+(async function inicio() {
+  opciones();
+  await cargarDatos(true);
+  hlConectar(); bnConectar(); bnfConectar(); hlMids();
+  setInterval(hlMids, 3000);
+  setInterval(() => cargarDatos(false), 60000);
+  setInterval(reloj, 1000); reloj();
+  setInterval(() => { if (DATA) pintarAgenda(); }, 60000);
+  setInterval(() => { const u = LIVE.tHL; if (u && Date.now() - u > 120000) $("dHL").className = "dot wait"; }, 5000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { ["ES", "NQ", "BTC"].forEach(cargarGrafico); cargarDatos(false); } });
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
