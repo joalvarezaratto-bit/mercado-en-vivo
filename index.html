@@ -197,6 +197,47 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .ni .xp,.nt .xp{display:block;font-size:12px;color:#d7dde5;margin-top:4px}
 .ni .chips,.nt .chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 @media(max-width:600px){.cable .cl span{display:none}.cable a{font-size:12px;padding:0 12px}}
+/* ---- comité macro */
+.cm{background:linear-gradient(180deg,#151a21,#11151a);border:1px solid var(--line);border-top:3px solid var(--acc);margin:14px 0 18px;padding:16px 18px}
+.cm-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.cm-k{font:600 11px "IBM Plex Mono";letter-spacing:.14em;color:var(--acc)}
+.cm-meta{font:11px "IBM Plex Mono";color:var(--mut);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.cm-meta button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 9px;cursor:pointer}
+.cm-t{font:600 22px/1.25 "IBM Plex Sans",system-ui,sans-serif;margin:8px 0 6px;color:#fff;text-wrap:balance}
+.tono{font:600 10.5px "IBM Plex Mono";padding:2px 7px;border:1px solid}.tono.off{color:var(--dn);border-color:rgba(255,77,79,.5)}.tono.on{color:var(--up);border-color:rgba(46,204,113,.5)}.tono.mx{color:var(--acc);border-color:rgba(255,159,26,.5)}
+.cm-r{font-size:14.5px;line-height:1.6;color:#d7dde5;max-width:110ch;margin:4px 0 14px}
+.cm-s{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sg{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--mut);padding:10px 12px}
+.sg.alcista{border-left-color:var(--up)}.sg.bajista{border-left-color:var(--dn)}.sg.neutral{border-left-color:var(--acc)}
+.sg .a{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sg .n{font:600 12px "IBM Plex Mono";letter-spacing:.08em;color:var(--mut)}
+.sg .v{font:600 17px "IBM Plex Mono";text-transform:uppercase}.sg.alcista .v{color:var(--up)}.sg.bajista .v{color:var(--dn)}.sg.neutral .v{color:var(--acc)}
+.sg .c{font:11px "IBM Plex Mono";color:var(--mut)}.sg .c b{color:var(--tx)}
+.sg p{font-size:12.5px;line-height:1.5;color:#c3cbd5;margin:6px 0 0}
+.cm h3{font:600 11px "IBM Plex Mono";letter-spacing:.12em;color:var(--acc);text-transform:uppercase;margin:16px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
+.cm-ojo{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.oj{background:rgba(255,212,59,.06);border:1px solid rgba(255,212,59,.28);padding:9px 11px}
+.oj .q{font-weight:600;color:var(--yel);font-size:13.5px}.oj .w{font:600 12px "IBM Plex Mono";color:#fff;margin-top:3px}.oj .y{font-size:12.5px;color:#c3cbd5;margin-top:4px;line-height:1.45}
+.cm-reg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.rgx{background:var(--panel2);border:1px solid var(--line);padding:9px 11px}
+.rgx .n{font:600 12px "IBM Plex Mono";color:var(--tx);letter-spacing:.06em;text-transform:uppercase}.rgx .e{font:12px "IBM Plex Mono";color:var(--blue);margin:4px 0}.rgx .l{font-size:12.5px;line-height:1.5;color:#c3cbd5}
+.cm-two{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.cmt{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.cmt .r{font:600 11.5px "IBM Plex Mono";color:var(--acc)}.cmt .i{font-size:13px;line-height:1.55;color:#d7dde5}
+.lv{display:grid;grid-template-columns:118px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.lv .w{font:12px "IBM Plex Mono";color:var(--mut)}.lv .e{font-weight:600}.lv .x{color:#c3cbd5;font-size:12.5px;margin-top:2px;line-height:1.45}
+.lv.alta .e{color:var(--yel)}
+.esc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.es{background:var(--panel2);border:1px solid var(--line);padding:9px 11px}.es .n{display:flex;justify-content:space-between;font:600 12px "IBM Plex Mono"}
+.es .bar{height:4px;background:var(--line);margin:6px 0}.es .bar i{display:block;height:100%}
+.es .d{font-size:12.5px;line-height:1.5;color:#c3cbd5}.es .g{font-size:12px;color:var(--mut);margin-top:5px}
+.tm{padding:7px 0;border-bottom:1px solid var(--line)}.tm .t{font-weight:600}.tm .p{font-size:12.5px;color:#c3cbd5;margin-top:2px;line-height:1.45}.tm .a{font:11px "IBM Plex Mono";color:var(--blue);margin-top:3px}
+.rsk{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:#d7dde5}
+.pst{background:rgba(255,159,26,.08);border-left:4px solid var(--acc);padding:10px 14px;font-size:14px;line-height:1.6;color:#fff;margin-top:14px}
+.pst b{font:600 11px "IBM Plex Mono";letter-spacing:.1em;color:var(--acc);display:block;margin-bottom:3px}
+.cm.min .cm-mas{display:none}
+.cm-ver{display:block;width:100%;margin-top:12px;background:var(--panel2);border:1px solid var(--acc);color:var(--acc);font:600 12px "IBM Plex Mono";padding:9px;cursor:pointer}.cm-ver:hover{background:var(--acc);color:#000}
+@media(max-width:900px){.cm-s,.esc,.cm-two{grid-template-columns:1fr}.cmt{grid-template-columns:1fr;gap:2px}.cm-t{font-size:19px}}
 </style>
 </head>
 <body>
@@ -222,6 +263,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <div class="status" id="status"></div>
   <div class="zn" id="zn"><span class="zl" id="znL"></span><span class="zt" id="znT"></span><span class="zc" id="znC"></span></div>
   <a class="uh" id="uh" target="_blank" rel="noopener noreferrer"><span class="lb" id="uhLb">ÚLTIMA HORA</span><span class="tx" id="uhTx"></span><span class="hc" id="uhHc"></span></a>
+  <section class="cm" id="comite" hidden></section>
   <div class="grid">
     <section class="card" id="card-ES"></section>
     <section class="card" id="card-NQ"></section>
@@ -1127,6 +1169,47 @@ function pintarInforme() {
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
 
+/* ============================================================ comité macro */
+let COMITE = null;
+async function cargarComite() {
+  try {
+    const r = await fetch("comite.json?v=" + Math.floor(Date.now() / 60000), {cache: "no-store"});
+    if (!r.ok) return;
+    const c = await r.json();
+    if (COMITE && c.generado === COMITE.generado) return;
+    COMITE = c; pintarComite();
+  } catch (e) { console.warn("comité", e); }
+}
+function pintarComite() {
+  const c = COMITE, el = $("comite"); if (!c) return;
+  const g = new Date(c.generado);
+  const horas = (Date.now() - g) / 3.6e6;
+  const fecha = g.toLocaleString("es-CL", {timeZone: "America/Santiago", weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
+  const tono = {"risk-off": ["off", "RISK-OFF"], "risk-on": ["on", "RISK-ON"], "mixto": ["mx", "MIXTO"]}[c.tono_mercado] || ["mx", c.tono_mercado];
+  const sg = (n, x) => `<div class="sg ${esc(x.sesgo)}"><div class="a"><span class="n">${n}</span><span class="v">${esc(x.sesgo)}</span></div><div class="c">convicción <b>${esc(x.conviccion)}</b></div><p>${esc(x.por_que)}</p></div>`;
+  const col = {Base: "var(--acc)", Alcista: "var(--up)", Bajista: "var(--dn)"};
+  let min = true; try { min = localStorage.getItem("cmMin") !== "0"; } catch (e) {}
+  el.className = "cm" + (min ? " min" : "");
+  el.innerHTML =
+    `<div class="cm-h"><span class="cm-k">◆ COMITÉ MACRO DE LA MAÑANA</span><span class="cm-meta"><span class="tono ${tono[0]}">${esc(tono[1])}</span><span>${esc(fecha)} Chile${horas > 20 ? " · ⚠ no es de hoy" : ""}</span><button id="cmTg">${min ? "ver informe completo ▾" : "resumir ▴"}</button></span></div>` +
+    `<div class="cm-t">${esc(c.titular)}</div><p class="cm-r">${esc(c.resumen)}</p>` +
+    `<div class="cm-s">${sg("S&amp;P 500", c.sesgos.SP500)}${sg("NASDAQ 100", c.sesgos.Nasdaq)}${sg("BITCOIN", c.sesgos.Bitcoin)}</div>` +
+    `<h3>Dónde poner el ojo hoy</h3><div class="cm-ojo">${c.ojo.map(o => `<div class="oj"><div class="q">${esc(o.que)}</div><div class="w">${esc(o.nivel_u_hora)}</div><div class="y">${esc(o.por_que)}</div></div>`).join("")}</div>` +
+    `<div class="cm-mas">` +
+    `<h3>Cómo vienen los mercados</h3><div class="cm-reg">${c.regiones.map(x => `<div class="rgx"><div class="n">${esc(x.region)}</div><div class="e">${esc(x.estado)}</div><div class="l">${esc(x.lectura)}</div></div>`).join("")}</div>` +
+    `<div class="cm-two"><div><h3>La mesa del comité</h3>${c.comite.map(x => `<div class="cmt"><span class="r">${esc(x.rol)}</span><span class="i">${esc(x.intervencion)}</span></div>`).join("")}</div>` +
+    `<div><h3>Lo que viene</h3>${c.lo_que_viene.map(x => `<div class="lv ${esc(x.importancia)}"><span class="w">${esc(x.cuando)}</span><span><span class="e">${esc(x.evento)}</span><div class="x">${esc(x.que_esperar)}</div></span></div>`).join("")}` +
+    `<h3>Temas del día</h3>${c.temas.map(x => `<div class="tm"><div class="t">${esc(x.tema)}</div><div class="p">${esc(x.por_que_importa)}</div><div class="a">${esc(x.activos)}</div></div>`).join("")}</div></div>` +
+    `<h3>Escenarios para la sesión</h3><div class="esc">${c.escenarios.map(x => `<div class="es"><div class="n"><span style="color:${col[x.nombre] || "var(--tx)"}">${esc(x.nombre)}</span><span>${x.probabilidad_pct}%</span></div><div class="bar"><i style="width:${Math.min(100, x.probabilidad_pct)}%;background:${col[x.nombre] || "var(--mut)"}"></i></div><div class="d">${esc(x.descripcion)}</div><div class="g">Disparador: ${esc(x.disparador)}</div></div>`).join("")}</div>` +
+    `<h3>Riesgos para esta lectura</h3><ul class="rsk">${c.riesgos.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` +
+    `</div>` +
+    `<div class="pst"><b>POSTURA DEL COMITÉ</b>${esc(c.postura_del_comite)}</div>` +
+    (min ? `<button class="cm-ver" id="cmTg2">Ver informe completo: mercados por región, la mesa del comité, lo que viene, escenarios y riesgos ▾</button>` : "");
+  el.hidden = false;
+  if ($("cmTg2")) $("cmTg2").onclick = () => $("cmTg").click();
+  $("cmTg").onclick = () => { const m = !el.classList.contains("min"); try { localStorage.setItem("cmMin", m ? "1" : "0"); } catch (e) {} pintarComite(); };
+}
+
 /* ============================================================ carga de datos */
 async function cargarDatos(primera) {
   try {
@@ -1167,6 +1250,7 @@ function reloj() {
   setInterval(() => refrescarRx(false), 2000);
   setInterval(hlMids, 3000);
   setInterval(() => cargarDatos(false), 60000);
+  cargarComite(); setInterval(cargarComite, 120000);
   setInterval(reloj, 1000); reloj();
   setInterval(() => { if (DATA) pintarAgenda(); }, 60000);
   setInterval(() => { const u = LIVE.tHL; if (u && Date.now() - u > 120000) $("dHL").className = "dot wait"; }, 5000);
