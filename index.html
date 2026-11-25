@@ -292,6 +292,15 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .rl-k b{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle}.rl-k .sp{flex:1}
 .rl-k button,.mp-t button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 9px;cursor:pointer}
 .rl-k button.on,.mp-t button.on{background:var(--acc);color:#000;border-color:var(--acc)}
+/* ---- rendimiento por plazo */
+.rd{width:100%;border-collapse:collapse;font:12px "IBM Plex Mono"}.rd th{font-weight:500;color:var(--mut);font-size:10.5px;text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)}
+.rd th:first-child,.rd td:first-child{text-align:left;font-family:"IBM Plex Sans",sans-serif}.rd td{padding:4px 4px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.rd tr.gx{cursor:pointer}.rd tr.gx:hover td:first-child{color:var(--acc)}.rd td.c{color:#fff}
+@media(max-width:600px){.rd .h6{display:none}}
+/* ---- estructura del VIX */
+.vx-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.vx-s{font:600 15px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.06em}
+.vx-c{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.vx-c div{background:var(--panel2);padding:8px;text-align:center}
+.vx-c .n{font-size:11px;color:var(--mut)}.vx-c .v{font:600 20px "IBM Plex Mono"}
 /* ---- mapa de calor */
 .mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 #mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
@@ -345,7 +354,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -370,8 +379,13 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   </div>
 
   <div class="two" id="pulsoSec">
-    <div><h2>Pulso de riesgo · en vivo <small>10 señales entre activos · 0 = pánico, 100 = euforia</small></h2><div class="panel" id="pulso"><p class="mut">Calculando…</p></div></div>
+    <div><h2>Pulso de riesgo · en vivo <small>11 señales entre activos · 0 = pánico, 100 = euforia</small></h2><div class="panel" id="pulso"><p class="mut">Calculando…</p></div></div>
     <div><h2>Rendimiento relativo <small>ES · NQ · BTC · % desde el inicio de la ventana</small></h2><div class="panel"><div class="rl-k" id="relK"></div><div id="rel-chart"></div></div></div>
+  </div>
+
+  <div class="two" id="vixSec">
+    <div><h2>Rendimiento por plazo <small>día · semana · mes · 3 meses · en el año · 12 meses · toca uno para ver su gráfico</small></h2><div class="panel" id="rend"><p class="mut">Cargando…</p></div></div>
+    <div><h2>Estructura del VIX <small>miedo a 9 días · 30 días · 3 meses</small></h2><div class="panel" id="vixc"><p class="mut">Cargando…</p></div></div>
   </div>
 
   <div class="two" id="moversSec">
@@ -388,9 +402,9 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 
   <aside class="l-side">
     <div id="sesSec"><h2>Sesiones <small>hora Chile</small></h2><div class="panel"><div class="ses" id="ses"></div><div class="sl" id="sesL"></div></div></div>
-    <div id="misAlSec"><h2>Mis alertas de precio <small>suena y avisa aunque estés en otra pestaña</small></h2><div class="panel">
+    <div id="misAlSec"><h2>Mis alertas de precio <small>en la página y en tu celular por Telegram</small></h2><div class="panel">
       <div class="ma-f"><select id="maK"><option>ES</option><option>NQ</option><option>BTC</option></select><input id="maV" type="number" step="any" placeholder="precio"><button id="maA">+ alerta</button></div>
-      <div class="ma-l" id="maL"></div></div></div>
+      <div class="ma-l" id="maL"></div><div id="maSync" class="d" style="font-size:11px;margin-top:6px">📱 conectando…</div></div></div>
   <h2 id="cableSec">Cable de noticias · en vivo <small>en amarillo lo que puede mover el mercado · cómo puede pegar en cada activo</small></h2>
   <div class="panel"><div class="cabf" id="cabF"><button data-f="todo" class="on">Todo</button><button data-f="rel">Relevantes</button><button data-f="eeuu">EE.UU.</button><button data-f="int">Internacional</button><button data-f="cripto">Cripto</button></div><div class="cab" id="cab"><p class="mut">Conectando…</p></div></div>
 
@@ -1351,7 +1365,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1429,6 +1443,7 @@ function pulsoComp() {
   if (LIVE.BTC && LIVE.btc24o) { const v = (LIVE.BTC / LIVE.btc24o - 1) * 100; add("Bitcoin 24 h", pc(v), v / 3, 1, cl(v)); }
   const vix = gq("^VIX");
   if (vix) add("VIX (miedo)", fmt(vix.precio, 2) + " · " + pc(vix.pct, 1), 0.5 * (20 - vix.precio) / 8 + 0.5 * (-vix.pct / 8), 2, vix.pct > 0 ? "dn" : "up");
+  const vc = DATA?.vixc; if (vc) add("Curva VIX (30d ÷ 3M)", fmt(vc.ratio, 2) + (vc.ratio >= 1 ? " invertida" : ""), (0.92 - vc.ratio) / 0.1, 1.25, vc.ratio >= 0.93 ? "dn" : "up");
   const sox = gq("SOXX"); if (sox) add("Semis (SOXX)", pc(sox.pct), sox.pct / 2.5, 1, cl(sox.pct));
   const tnx = gq("^TNX"); if (tnx) add("Bono 10 años", sg(tnx.chg * 100, 1) + " pb", -tnx.chg * 100 / 8, 1, tnx.chg > 0 ? "dn" : "up");
   const dxy = gq("DX-Y.NYB"); if (dxy) add("Dólar (DXY)", pc(dxy.pct), -dxy.pct / 0.5, 0.75, dxy.pct > 0 ? "dn" : "up");
@@ -1448,6 +1463,45 @@ function pintarPulso() {
     `<div class="pr-g"><i style="left:calc(${sc.toFixed(1)}% - 2px)"></i></div><div class="pr-e"><span>PÁNICO</span><span>NEUTRAL</span><span>EUFORIA</span></div>` +
     `<table class="pr-t">${c.map(x => `<tr><td>${esc(x.n)}</td><td class="n ${x.cls}">${esc(x.txt)}</td><td style="width:120px"><div class="pr-b"><i style="${x.sc >= 0 ? `left:50%;width:${x.sc * 50}%;background:var(--up)` : `left:${50 + x.sc * 50}%;width:${-x.sc * 50}%;background:var(--dn)`}"></i></div></td></tr>`).join("")}</table>` +
     `<p class="mut" style="font-size:11px;margin:8px 0 0">Indicador propio: ES, NQ y BTC en vivo; el resto con ~10 min de retraso. Barra verde = empuja hacia apetito por riesgo, roja = hacia aversión. Lectura de contexto, no es una señal de entrada.</p>`;
+}
+
+/* ============================================================ rendimiento por plazo */
+const REND_COL = [["d1", "1D", 2], ["s1", "1S", 4], ["m1", "1M", 8], ["m3", "3M", 12], ["ytd", "Año", 25], ["a1", "12M", 25]];
+function celdaRend(v, lim, bono, extra = "") {
+  if (v === null || v === undefined) return `<td class="mut ${extra}">—</td>`;
+  const x = Math.max(-1, Math.min(1, (bono ? -v / (lim * 10) : v / lim))), a = (0.15 + 0.6 * Math.abs(x)).toFixed(2);
+  const bg = Math.abs(x) < 0.04 ? "transparent" : x > 0 ? `rgba(46,204,113,${a})` : `rgba(255,77,79,${a})`;
+  return `<td class="c ${extra}" style="background:${bg}">${bono ? sg(v, 0) + " pb" : pc(v, Math.abs(v) >= 10 ? 1 : 2)}</td>`;
+}
+function pintarRend() {
+  const L = DATA?.rend; if (!L || !L.length) { $("rend").innerHTML = `<p class="mut">Sin datos por ahora.</p>`; return; }
+  $("rend").innerHTML = `<table class="rd"><tr><th>Activo</th><th>Precio</th>${REND_COL.map(([k, n], i) => `<th class="${i >= 4 ? "h6" : ""}">${n}</th>`).join("")}</tr>` +
+    L.map(r => `<tr class="${TVSYM[r.s] && gq(r.s) ? "gx" : ""}" data-s="${r.s}"><td>${esc(r.nm)}</td><td>${fmt(r.precio, r.precio < 20 ? (r.bono ? 3 : 4) : r.precio < 1000 ? 2 : 0)}${r.bono ? "%" : ""}</td>` +
+      REND_COL.map(([k, , lim], i) => celdaRend(r[k], lim, r.bono, i >= 4 ? "h6" : "")).join("") + `</tr>`).join("") + `</table>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">Cierres diarios de Yahoo (se actualiza cada 15 min). Bono 10 años: cambio del rendimiento en puntos básicos, en rojo cuando sube (presiona a las acciones). Verde = sube, rojo = baja; más intenso = movimiento más grande para ese plazo.</p>`;
+  $("rend").onclick = e => { const tr = e.target.closest("tr.gx"); if (tr) gmAbrir(tr.dataset.s); };
+}
+
+/* ============================================================ estructura del VIX */
+function pintarVixC() {
+  const v = DATA?.vixc; if (!v) { $("vixc").innerHTML = `<p class="mut">Sin datos por ahora.</p>`; return; }
+  const r = v.ratio, back = v.v9 > v.v30 && v.v30 > v.v3m;
+  const [lab, col, txt] = r >= 1 ? ["Backwardation", "var(--dn)", back
+      ? "La curva está invertida: el miedo de corto plazo supera al de 3 meses. Es típico de ventas fuertes y días con movimientos amplios; el mercado paga por protegerse YA. Suele marcar estrés alto (a veces cerca de un piso, pero no avisa cuándo)."
+      : "El VIX de 30 días está sobre el de 3 meses: el mercado está nervioso en el corto plazo. Esperar rangos amplios y reducir tamaño."]
+    : r >= 0.93 ? ["Plana · alerta", "#ff9f1a", "La curva casi no tiene pendiente: el miedo de corto plazo se acerca al de largo. Zona de transición; si se invierte, pasa a modo estrés."]
+    : ["Contango · calma", "var(--up)", "Curva normal: el corto plazo está más tranquilo que el de 3 meses. Es el estado habitual de un mercado sano y de tendencias alcistas ordenadas."];
+  const rs = v.v30_serie.map((x, i) => v.v3m_serie[i] ? x / v.v3m_serie[i] : null).filter(Boolean);
+  const mn = Math.min(0.8, ...rs), mx = Math.max(1.1, ...rs), Y = x => (1 - (x - mn) / (mx - mn)) * 50 + 4, X = i => i / (rs.length - 1) * 300;
+  const pts = [[0, v.v9], [1, v.v30], [2, v.v3m]], ymn = Math.min(...pts.map(p => p[1])) * 0.9, ymx = Math.max(...pts.map(p => p[1])) * 1.05;
+  const cy = y => 60 - (y - ymn) / (ymx - ymn) * 50;
+  $("vixc").innerHTML = `<div class="vx-h"><span class="vx-s" style="color:${col}">${lab}</span><span class="mut" style="font-size:12px">VIX ÷ VIX 3M = <b class="m">${fmt(r, 2)}</b> · sobre 1 = estrés</span></div>` +
+    `<div class="vx-c"><div><div class="n">9 días</div><div class="v">${fmt(v.v9, 2)}</div></div><div><div class="n">30 días (VIX)</div><div class="v">${fmt(v.v30, 2)}</div></div><div><div class="n">3 meses</div><div class="v">${fmt(v.v3m, 2)}</div></div></div>` +
+    `<svg viewBox="0 0 300 66" style="width:100%;height:66px"><polyline fill="none" stroke="${col}" stroke-width="2.5" points="${pts.map(([i, y]) => `${30 + i * 120},${cy(y)}`).join(" ")}"/>${pts.map(([i, y]) => `<circle cx="${30 + i * 120}" cy="${cy(y)}" r="4" fill="${col}"/>`).join("")}</svg>` +
+    `<p style="font-size:12.5px;line-height:1.5;margin:6px 0 10px">${txt}</p>` +
+    `<div class="mut" style="font-size:11px">Relación VIX / VIX 3M · últimos 20 días</div>` +
+    `<svg viewBox="0 0 300 58" preserveAspectRatio="none" style="width:100%;height:58px"><line x1="0" x2="300" y1="${Y(1)}" y2="${Y(1)}" stroke="var(--dn)" stroke-dasharray="3 3" stroke-width="1"/><polyline fill="none" stroke="var(--acc)" stroke-width="1.8" points="${rs.map((x, i) => `${X(i)},${Y(x)}`).join(" ")}"/></svg>` +
+    `<p class="mut" style="font-size:11px;margin:4px 0 0">Línea roja = 1 (curva plana). Por encima, el mercado está en modo estrés. Datos de cierre de Yahoo (CBOE), con retraso.</p>`;
 }
 
 /* ============================================================ rendimiento relativo */
@@ -1626,7 +1680,28 @@ function calcOut() {
 
 /* ============================================================ mis alertas de precio */
 let MISAL = store.get("misal", []);
-function misAlGuardar() { store.set("misal", MISAL); pintarMisAl(); ["ES", "NQ", "BTC"].forEach(k => { dibujarLineas(k); MARK[k] = true; }); }
+/* La lista se sincroniza por ntfy (<canal>-misal): el vigilante del servidor la lee y avisa por Telegram,
+   y cualquier equipo que abra la página ve las mismas alertas. Gana la versión más nueva (ts). */
+const NTFY_MISAL = NTFY_TOPIC + "-misal";
+let misalTs = store.get("misalTs", 0), misalSync = false;
+function misAlPublicar() {
+  misalTs = Date.now(); store.set("misalTs", misalTs);
+  fetch("https://ntfy.sh/", {method: "POST", body: JSON.stringify({topic: NTFY_MISAL,
+    message: JSON.stringify({ts: misalTs, src: "pagina", lista: MISAL})})}).catch(() => {});
+}
+function misAlGuardar(publicar = true) { store.set("misal", MISAL); if (publicar) misAlPublicar(); pintarMisAl();
+  ["ES", "NQ", "BTC"].forEach(k => { dibujarLineas(k); MARK[k] = true; }); }
+function misAlConectar() {
+  let vistoTs = 0;
+  try {
+    const es = new EventSource(`https://ntfy.sh/${NTFY_MISAL}/sse?since=12h`);
+    es.onopen = () => { $("maSync").textContent = "📱 conectado: avisa al celular (Telegram)"; $("maSync").className = "d up";
+      setTimeout(() => { misalSync = true; if (misalTs > vistoTs && MISAL.length || (!vistoTs && MISAL.length)) misAlPublicar(); }, 3000); };
+    es.onmessage = ev => { try { const d = JSON.parse(JSON.parse(ev.data).message); vistoTs = Math.max(vistoTs, d.ts || 0);
+      if ((d.ts || 0) > misalTs) { misalTs = d.ts; store.set("misalTs", misalTs); MISAL = (d.lista || []).filter(a => INST[a.k]); misAlGuardar(false); } } catch (e) {} };
+    es.onerror = () => { $("maSync").textContent = "📱 sin conexión: solo avisa en esta página"; $("maSync").className = "d dn"; };
+  } catch (e) {}
+}
 function pintarMisAl() {
   $("maL").innerHTML = MISAL.length ? MISAL.map((a, i) => { const p = a.k === "BTC" ? LIVE.BTC : precioFut(a.k);
     const dist = p ? a.v - p : null;
@@ -1640,7 +1715,7 @@ function misAlUI() {
     MISAL.push({k, v, dir: v > p ? 1 : -1}); $("maV").value = ""; misAlGuardar();
     if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {}); };
   $("maV").addEventListener("keydown", e => { if (e.key === "Enter") $("maA").click(); });
-  pintarMisAl(); setInterval(pintarMisAl, 5000);
+  pintarMisAl(); setInterval(pintarMisAl, 5000); misAlConectar();
 }
 function revisarMisAlertas(k, prev, p) {
   let cambio = false;
