@@ -301,6 +301,18 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .vx-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.vx-s{font:600 15px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.06em}
 .vx-c{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.vx-c div{background:var(--panel2);padding:8px;text-align:center}
 .vx-c .n{font-size:11px;color:var(--mut)}.vx-c .v{font:600 20px "IBM Plex Mono"}
+/* ---- rango del día */
+.rg{margin-bottom:14px}.rg:last-of-type{margin-bottom:6px}.rg-h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12.5px;margin-bottom:5px}
+.rg-b{position:relative;height:14px;background:var(--panel2);margin:3px 0}.rg-b i{position:absolute;left:0;top:0;height:100%}
+.rg-b u{position:absolute;top:-3px;width:2px;height:20px;background:#fff;text-decoration:none}.rg-l{display:flex;justify-content:space-between;font:10.5px "IBM Plex Mono";color:var(--mut)}
+.rg-p{position:relative;height:10px;background:linear-gradient(90deg,rgba(255,77,79,.35),var(--panel2) 50%,rgba(46,204,113,.35));margin:6px 0 2px}
+.rg-p b{position:absolute;top:-4px;width:4px;height:18px;background:var(--acc);box-shadow:0 0 0 1px #000}.rg-p:after{content:"";position:absolute;left:50%;top:-2px;width:1px;height:14px;background:var(--mut)}
+/* ---- correlaciones */
+.cr{border-collapse:collapse;font:11.5px "IBM Plex Mono";width:100%}.cr td,.cr th{padding:5px 2px;text-align:center}.cr th{color:var(--mut);font-weight:500;font-size:10.5px}
+.cr td:first-child{text-align:left;color:var(--mut);font-size:10.5px;white-space:nowrap}.cr td.c{color:#fff}
+/* ---- próximo dato */
+#nxEv{font:600 11.5px "IBM Plex Mono";color:var(--acc);text-decoration:none;border:1px solid var(--acc);padding:2px 7px;white-space:nowrap}
+#nxEv.ya{color:#fff;background:var(--dn);border-color:var(--dn);animation:parp 1s steps(2) infinite}@keyframes parp{50%{opacity:.55}}
 /* ---- mapa de calor */
 .mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 #mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
@@ -349,12 +361,12 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <div class="hbar">
     <span class="brand">MERCADO EN VIVO · ES · NQ · BTC</span>
     <span class="live"><i></i>EN VIVO</span>
-    <div class="clocks"><span>Santiago <b id="clkCL" class="m">--:--:--</b></span><span>Nueva York <b id="clkNY" class="m">--:--:--</b></span><span id="rthCd"></span></div>
+    <div class="clocks"><span>Santiago <b id="clkCL" class="m">--:--:--</b></span><span>Nueva York <b id="clkNY" class="m">--:--:--</b></span><span id="rthCd"></span><a id="nxEv" href="#agendaSec" hidden></a></div>
     <button class="bell" id="bell" title="Noticias y datos en tiempo real" aria-label="Notificaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="bdg" id="bdg" hidden>0</span></button>
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -386,6 +398,11 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <div class="two" id="vixSec">
     <div><h2>Rendimiento por plazo <small>día · semana · mes · 3 meses · en el año · 12 meses · toca uno para ver su gráfico</small></h2><div class="panel" id="rend"><p class="mut">Cargando…</p></div></div>
     <div><h2>Estructura del VIX <small>miedo a 9 días · 30 días · 3 meses</small></h2><div class="panel" id="vixc"><p class="mut">Cargando…</p></div></div>
+  </div>
+
+  <div class="two" id="rangoSec">
+    <div><h2>Rango del día <small>cuánto recorrido ya hizo vs. su promedio (ATR 14) y vs. lo que descuentan las opciones</small></h2><div class="panel" id="rango"><p class="mut">Esperando precios…</p></div></div>
+    <div><h2>Correlaciones <small>retornos diarios · verde = se mueven juntos · rojo = al revés</small></h2><div class="panel" id="corr"><p class="mut">Cargando…</p></div></div>
   </div>
 
   <div class="two" id="moversSec">
@@ -1155,7 +1172,7 @@ function bnConectar() {
     const s = m.stream, d = m.data;
     if (s === "btcusdt@aggTrade") { LIVE.BTC = +d.p; m1Vivo("BTC", d.T, LIVE.BTC); revisarCruces("BTC", LIVE.BTC); MARK.BTC = true; }
     else if (s === "ethusdt@aggTrade") { LIVE.ETH = +d.p; MARK.BTC = true; }
-    else if (s === "btcusdt@miniTicker") LIVE.btc24o = +d.o;
+    else if (s === "btcusdt@miniTicker") { LIVE.btc24o = +d.o; LIVE.btc24h = +d.h; LIVE.btc24l = +d.l; }
     else if (s === "ethusdt@miniTicker") LIVE.eth24o = +d.o;
     else if (s.includes("@kline_")) { const k = d.k; if (k.i === TF.BTC) actualizarVela("BTC", k.t / 1000, +k.o, +k.h, +k.l, +k.c); }
   };
@@ -1365,7 +1382,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1480,6 +1497,63 @@ function pintarRend() {
       REND_COL.map(([k, , lim], i) => celdaRend(r[k], lim, r.bono, i >= 4 ? "h6" : "")).join("") + `</tr>`).join("") + `</table>` +
     `<p class="mut" style="font-size:11px;margin:8px 0 0">Cierres diarios de Yahoo (se actualiza cada 15 min). Bono 10 años: cambio del rendimiento en puntos básicos, en rojo cuando sube (presiona a las acciones). Verde = sube, rojo = baja; más intenso = movimiento más grande para ese plazo.</p>`;
   $("rend").onclick = e => { const tr = e.target.closest("tr.gx"); if (tr) gmAbrir(tr.dataset.s); };
+}
+
+/* ============================================================ rango del día */
+function pintarRango() {
+  if (!DATA) return;
+  const filas = [];
+  for (const k of ["ES", "NQ", "BTC"]) {
+    let p, hi, lo, atr, mov = null, ref, refN, d = INST[k].dec;
+    if (k === "BTC") { const b = DATA.btc; p = LIVE.BTC; hi = LIVE.btc24h; lo = LIVE.btc24l; atr = b.atr; ref = LIVE.btc24o; refN = "hace 24 h"; d = 0; }
+    else { const f = DATA.fut[k]; if (!f) continue; p = precioFut(k); atr = f.atr; mov = f.mov; ref = f.pdc; refN = "cierre de ayer";
+      hi = Math.max(f.onh ?? -Infinity, SES[k].onhi ?? -Infinity, SES[k].hi ?? -Infinity); lo = Math.min(f.onl ?? Infinity, SES[k].onlo ?? Infinity, SES[k].lo ?? Infinity);
+      if (p) { hi = Math.max(hi, p); lo = Math.min(lo, p); } }
+    if (!p || !atr || !isFinite(hi) || !isFinite(lo)) continue;
+    const r = hi - lo, uso = r / atr * 100, w = Math.min(100, uso / 1.5);
+    const col = uso < 60 ? "var(--up)" : uso < 100 ? "#ff9f1a" : "var(--dn)";
+    const lect = uso < 50 ? "queda recorrido: el día todavía no se expande" : uso < 85 ? "rango normal, con espacio para extenderse" : uso < 110 ? "ya cumplió su rango promedio: los extremos de hoy pesan más" : "día de expansión: superó su rango promedio";
+    let mv = "";
+    if (mov && ref) { const z = (p - ref) / mov.pts, pos = Math.max(0, Math.min(100, 50 + z * 50));
+      mv = `<div class="rg-p" title="posición dentro del movimiento implícito"><b style="left:calc(${pos.toFixed(1)}% - 2px)"></b></div>` +
+        `<div class="rg-l"><span>${fmt(mov.inf, 2)}</span><span>implícito ±${fmt(mov.pts, 0)} pts (${fmt(mov.pct, 2)}%) · usado ${fmt(Math.abs(z) * 100, 0)}%</span><span>${fmt(mov.sup, 2)}</span></div>`; }
+    filas.push(`<div class="rg"><div class="rg-h"><span><b>${k}</b> <span class="mut">rango hoy</span> <b class="m">${fmt(r, d)}</b> <span class="mut">de ${fmt(atr, d)} promedio</span></span><span class="m" style="color:${col}">${fmt(uso, 0)}%</span></div>` +
+      `<div class="rg-b"><i style="width:${w}%;background:${col}"></i><u style="left:calc(${100 / 1.5}% - 1px)" title="100% del ATR"></u></div>` +
+      `<div class="rg-l"><span>0</span><span style="color:${col}">${lect}</span><span>150%</span></div>${mv}</div>`);
+  }
+  $("rango").innerHTML = filas.length ? filas.join("") + `<p class="mut" style="font-size:11px;margin:4px 0 0">ES/NQ: desde la apertura de Globex (18:00 NY) hasta ahora; BTC: últimas 24 h. La raya blanca marca el 100% del ATR de 14 días. La barra de colores muestra dónde está el precio dentro del movimiento que descuentan las opciones (VIX para ES, VXN para NQ) desde el cierre de ayer: en el borde ya cubrió todo el movimiento esperado. Referencia estadística, no un techo ni un piso.</p>` : `<p class="mut">Esperando precios…</p>`;
+}
+
+/* ============================================================ correlaciones */
+let corrN = store.get("corrN", "c20");
+function pintarCorr() {
+  const C = DATA?.corr; if (!C || !C[corrN]) { $("corr").innerHTML = `<p class="mut">Sin datos por ahora.</p>`; return; }
+  const N = C.nombres, M = C[corrN];
+  const celda = v => { if (v === null) return `<td class="mut">—</td>`; const a = (0.1 + 0.75 * Math.abs(v)).toFixed(2);
+    return `<td class="c" style="background:${v >= 0 ? `rgba(46,204,113,${a})` : `rgba(255,77,79,${a})`}">${fmt(v, 2)}</td>`; };
+  const i = n => N.indexOf(n), par = (a, b) => (i(a) >= 0 && i(b) >= 0) ? M[i(a)][i(b)] : null;
+  const lee = [];
+  const bE = par("BTC", "NQ"); if (bE !== null) lee.push(`<b>BTC con Nasdaq ${fmt(bE, 2)}</b>: ${Math.abs(bE) < 0.3 ? "Bitcoin va por su cuenta; lo que pase en acciones no lo arrastra" : bE > 0 ? "Bitcoin se mueve como una acción tecnológica: una caída del NQ suele pegarle" : "Bitcoin se mueve al revés de las acciones"}.`);
+  const tE = par("10 años", "ES"); if (tE !== null) lee.push(`<b>Bono 10 años con ES ${fmt(tE, 2)}</b>: ${tE < -0.3 ? "tasas arriba = acciones abajo; vigilar los datos de inflación y las subastas" : tE > 0.3 ? "suben juntos: el mercado lee crecimiento, no miedo a la Fed" : "relación débil; la tasa no es el motor ahora"}.`);
+  const dE = par("DXY", "ES"); if (dE !== null && Math.abs(dE) >= 0.3) lee.push(`<b>Dólar con ES ${fmt(dE, 2)}</b>: ${dE < 0 ? "dólar fuerte pesa sobre las acciones" : "dólar y acciones suben juntos"}.`);
+  $("corr").innerHTML = `<div class="rl-k" style="margin-bottom:8px"><span class="mut">Ventana:</span><button data-c="c20" class="${corrN === "c20" ? "on" : ""}">20 sesiones</button><button data-c="c60" class="${corrN === "c60" ? "on" : ""}">60 sesiones</button><span class="sp"></span><span class="mut">hasta ${esc(C.hasta || "")}</span></div>` +
+    `<table class="cr"><tr><th></th>${N.map(n => `<th>${esc(n)}</th>`).join("")}</tr>${N.map((a, r) => `<tr><td>${esc(a)}</td>${M[r].map((v, c) => c === r ? `<td class="mut">·</td>` : celda(v)).join("")}</tr>`).join("")}</table>` +
+    `<div style="font-size:12.5px;line-height:1.55;margin-top:10px">${lee.map(x => `<div>• ${x}</div>`).join("")}</div>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">1 = se mueven igual, −1 = al revés, 0 = sin relación. Bono y VIX usan el cambio en puntos. Solo días en que operan todos (BTC sin fines de semana).</p>`;
+  $("corr").querySelectorAll("button[data-c]").forEach(b => b.onclick = () => { corrN = b.dataset.c; store.set("corrN", corrN); pintarCorr(); });
+}
+
+/* ============================================================ próximo dato importante */
+function pintarProxDato() {
+  const el = $("nxEv"); if (!DATA || !el) return;
+  const now = Date.now(), vistos = new Set();
+  const evs = [...(DATA.agenda || []), ...(DATA.semana || [])].filter(e => e.impacto === "High" || !e.impacto)
+    .map(e => ({...e, ms: new Date(e.t).getTime()})).filter(e => e.ms > now - 60000 && !vistos.has(e.t + e.titulo) && vistos.add(e.t + e.titulo)).sort((a, b) => a.ms - b.ms);
+  const e = evs[0]; if (!e) { el.hidden = true; return; }
+  const ms = e.ms - now; el.hidden = false;
+  el.classList.toggle("ya", ms < 15 * 60000);
+  el.textContent = ms <= 0 ? `⚡ ${e.titulo} · AHORA` : ms < 36 * 3600000 ? `⚡ ${e.titulo} en ${dur(ms)}` : `⚡ ${e.titulo} · ${new Date(e.t).toLocaleDateString("es-CL", {timeZone: "America/Santiago", weekday: "short", day: "numeric"})} ${horaCL(e.t)}`;
+  el.title = `Próximo dato de alto impacto: ${e.titulo} (${horaCL(e.t)} Chile)${e.esperado ? " · esperado " + e.esperado : ""}`;
 }
 
 /* ============================================================ estructura del VIX */
@@ -1776,12 +1850,12 @@ function frame() {
 function reloj() {
   const c = partes("America/Santiago"), n = ahoraNY();
   $("clkCL").textContent = `${c.hour}:${c.minute}:${c.second}`; $("clkNY").textContent = `${n.hour}:${n.minute}:${n.second}`;
-  pintarCuentas(); if (DATA) { pintarEstado(); pintarZona(); }
+  pintarCuentas(); if (DATA) { pintarEstado(); pintarZona(); pintarProxDato(); }
 }
 
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
-  setInterval(pintarMovers, 3000); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
+  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
