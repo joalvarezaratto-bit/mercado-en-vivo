@@ -320,6 +320,19 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .cr .v{font:600 20px "IBM Plex Mono";margin-top:2px}.cr .big{border-color:var(--acc)}.cr .big .v{color:var(--acc);font-size:26px}
 .cbt{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 8px;cursor:pointer;margin-top:4px}
 .cwarn{margin-top:10px;padding:8px 12px;border-left:4px solid var(--dn);background:rgba(255,77,79,.08);font-size:13px}
+/* ---- mis alertas */
+.ma-f{display:grid;grid-template-columns:70px 1fr auto;gap:6px}
+.ma-f select,.ma-f input{background:var(--panel2);border:1px solid var(--line);color:var(--tx);font:13px "IBM Plex Mono";padding:5px 7px;min-width:0}
+.ma-f button{background:var(--acc);border:0;color:#000;font:600 12px "IBM Plex Mono";padding:5px 10px;cursor:pointer}
+.ma-l{margin-top:8px;display:grid;gap:4px}.ma-l div{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;font:12.5px "IBM Plex Mono";background:var(--panel2);border:1px solid var(--line);padding:4px 8px}
+.ma-l button{background:none;border:0;color:var(--mut);cursor:pointer;font-size:13px}.ma-l button:hover{color:var(--dn)}
+.ma-l .d{font-size:11px;color:var(--mut)}
+/* ---- resultados de la semana */
+.ew{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.ewd{background:var(--panel2);border:1px solid var(--line);padding:8px 10px}.ewd .f{font:600 11px "IBM Plex Mono";color:var(--acc);text-transform:uppercase;margin-bottom:5px}
+.ewd div.e{display:grid;grid-template-columns:auto 1fr auto;gap:6px;font-size:12.5px;padding:3px 0;border-top:1px solid var(--line);align-items:baseline}
+.ewd .s{font-weight:600}.ewd .h{font:10.5px "IBM Plex Mono";color:var(--mut)}.ewd .c{font:10.5px "IBM Plex Mono";color:var(--mut);text-align:right}
+.tq{font:600 9.5px "IBM Plex Mono";color:#000;background:var(--blue);padding:0 4px;margin-left:4px}
 </style>
 </head>
 <body>
@@ -332,7 +345,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -375,6 +388,9 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 
   <aside class="l-side">
     <div id="sesSec"><h2>Sesiones <small>hora Chile</small></h2><div class="panel"><div class="ses" id="ses"></div><div class="sl" id="sesL"></div></div></div>
+    <div id="misAlSec"><h2>Mis alertas de precio <small>suena y avisa aunque estés en otra pestaña</small></h2><div class="panel">
+      <div class="ma-f"><select id="maK"><option>ES</option><option>NQ</option><option>BTC</option></select><input id="maV" type="number" step="any" placeholder="precio"><button id="maA">+ alerta</button></div>
+      <div class="ma-l" id="maL"></div></div></div>
   <h2 id="cableSec">Cable de noticias · en vivo <small>en amarillo lo que puede mover el mercado · cómo puede pegar en cada activo</small></h2>
   <div class="panel"><div class="cabf" id="cabF"><button data-f="todo" class="on">Todo</button><button data-f="rel">Relevantes</button><button data-f="eeuu">EE.UU.</button><button data-f="int">Internacional</button><button data-f="cripto">Cripto</button></div><div class="cab" id="cab"><p class="mut">Conectando…</p></div></div>
 
@@ -386,6 +402,9 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div id="saberSec"><h2>Lo que hay que saber <small id="genTxt"></small></h2><div class="panel"><ul class="keys" id="puntos"></ul></div></div>
     <div><h2>Megacaps en vivo <small>vs cierre de ayer</small></h2><div class="panel"><div class="mc" id="megacaps"></div></div></div>
   </div>
+
+  <h2 id="earnSemSec">Resultados de la semana <small>empresas &gt; 40 B USD · NQ = está en el Nasdaq 100 · hora del reporte</small></h2>
+  <div class="panel"><div class="ew" id="earnSem"><p class="mut">Cargando…</p></div></div>
 
   <div class="two">
     <div><h2>Resultados corporativos <small>cap. &gt; 40 B USD</small></h2><div class="panel" style="overflow-x:auto"><table id="earn"></table>
@@ -470,7 +489,8 @@ const INST = {
   NQ: {coin: "xyz:XYZ100", dec: 2, nombre: "Nasdaq 100 · futuro NQ", corto: "NQ"},
   BTC: {dec: 0, nombre: "Bitcoin", corto: "BTC"},
 };
-const SES = {ES: {hi: null, lo: null, onhi: null, onlo: null}, NQ: {hi: null, lo: null, onhi: null, onlo: null}};
+const SES = {ES: {hi: null, lo: null, onhi: null, onlo: null, orh: null, orl: null, ibh: null, ibl: null},
+             NQ: {hi: null, lo: null, onhi: null, onlo: null, orh: null, orl: null, ibh: null, ibl: null}};
 
 function precioFut(k) {          // ES ≈ contado en vivo + base
   const f = DATA?.fut?.[k]; const c = LIVE[INST[k].coin];
@@ -486,6 +506,7 @@ function niveles(k) {
   const add = (n, v, c, grafico = true) => { if (v !== null && v !== undefined && !isNaN(v)) L.push({n, v, c, g: grafico}); };
   if (k === "BTC") {
     const b = DATA.btc;
+    for (const a of MISAL.filter(a => a.k === "BTC")) add("🔔 Mi alerta", a.v, "#ffffff");
     add("Máx. ayer (UTC)", b.pdh, "#4fc3f7"); add("Mín. ayer (UTC)", b.pdl, "#4fc3f7");
     add("Apertura diaria", b.do, "#ff9f1a"); add("Apertura semanal", b.wo, "#ce93d8");
     add("Máx. Asia", b.asia_h, "#80cbc4"); add("Mín. Asia", b.asia_l, "#80cbc4");
@@ -505,6 +526,12 @@ function niveles(k) {
   add("Máx. Londres", f.lon_h, "#fff59d", false); add("Mín. Londres", f.lon_l, "#fff59d", false);
   add("Apertura medianoche", f.mo, "#ff9f1a"); add("Apertura 8:30", f.o830, "#ffcc80", false);
   if (SES[k].hi !== null) { add("Máx. de hoy (RTH)", SES[k].hi, "#2ecc71"); add("Mín. de hoy (RTH)", SES[k].lo, "#ff4d4f"); }
+  { const n = ahoraNY(), hm = +n.hour * 60 + +n.minute, hoyF = DATA && fechaNY();
+    if (SES[k].orh !== null && isFinite(SES[k].orh)) { const t = hm < 585 ? " (formándose)" : "";
+      add("Máx. rango 15m" + t, SES[k].orh, "#ffd43b"); add("Mín. rango 15m" + t, SES[k].orl, "#ffd43b"); }
+    if (SES[k].ibh !== null && isFinite(SES[k].ibh)) { const t = hm < 630 ? " (formándose)" : "";
+      add("Máx. 1ª hora (IB)" + t, SES[k].ibh, "#80deea"); add("Mín. 1ª hora (IB)" + t, SES[k].ibl, "#80deea"); } }
+  for (const a of MISAL.filter(a => a.k === k)) add("🔔 Mi alerta", a.v, "#ffffff");
   if (f.mov) { add("Mov. implícito ↑", f.mov.sup, "#ff8a65"); add("Mov. implícito ↓", f.mov.inf, "#ff8a65"); }
   add("Apertura semanal", f.wo, "#9575cd", false);
   add("Máx. sem. anterior", f.pwh, "#9575cd", false); add("Mín. sem. anterior", f.pwl, "#9575cd", false);
@@ -646,8 +673,9 @@ function alerta(txt, up) {
 function revisarCruces(k, p) {
   const prev = LAST[k]; LAST[k] = p;
   if (prev === undefined || prev === null || !DATA) return;
+  revisarMisAlertas(k, prev, p);
   for (const l of niveles(k)) {
-    if (l.n.includes("de hoy")) continue;
+    if (l.n.includes("de hoy") || l.n.includes("formándose") || l.n.startsWith("🔔")) continue;
     const arriba = prev < l.v && p >= l.v, abajo = prev > l.v && p <= l.v;
     if (!arriba && !abajo) continue;
     const key = k + l.n; if (COOL[key] && Date.now() - COOL[key] < 10 * 60e3) continue;
@@ -1026,14 +1054,17 @@ async function cargarGrafico(k) {
   else if (bnWS && bnWS._iv !== TF.BTC) { bnHost--; try { bnWS.close(); } catch (e) {} }
 }
 function calcularSesion(k, velas, base) {   // máx/mín de la sesión regular de hoy y extremos overnight vivos
-  const hoy = fechaNY(); let hi = null, lo = null, onhi = null, onlo = null;
+  const hoy = fechaNY(); let hi = null, lo = null, onhi = null, onlo = null, orh = null, orl = null, ibh = null, ibl = null;
   for (const v of velas) {
     const p = partes("America/New_York", new Date(v.t));
     const f = `${p.year}-${p.month}-${p.day}`, hm = +p.hour * 60 + +p.minute;
     const h = +v.h + base, l = +v.l + base;
     if (f === hoy && hm >= 570 && hm < 960) { hi = hi === null ? h : Math.max(hi, h); lo = lo === null ? l : Math.min(lo, l); }
+    if (f === hoy && hm >= 570 && hm < 585) { orh = orh === null ? h : Math.max(orh, h); orl = orl === null ? l : Math.min(orl, l); }
+    if (f === hoy && hm >= 570 && hm < 630) { ibh = ibh === null ? h : Math.max(ibh, h); ibl = ibl === null ? l : Math.min(ibl, l); }
   }
   SES[k].hi = hi; SES[k].lo = lo;
+  if (orh !== null) { SES[k].orh = orh; SES[k].orl = orl; } if (ibh !== null) { SES[k].ibh = ibh; SES[k].ibl = ibl; }
 }
 function actualizarVela(k, tSec, o, h, l, cc) {
   const c = CH[k]; if (!c || !c.sec) return;
@@ -1075,7 +1106,9 @@ function hlConectar() {
       const p = px + base;
       // extremos vivos de la sesión regular / overnight
       const n = ahoraNY(), hm = +n.hour * 60 + +n.minute;
-      if (hm >= 570 && hm < 960 && !esFeriado()) { SES[k].hi = SES[k].hi === null ? p : Math.max(SES[k].hi, p); SES[k].lo = SES[k].lo === null ? p : Math.min(SES[k].lo, p); }
+      if (hm >= 570 && hm < 960 && !esFeriado()) { SES[k].hi = SES[k].hi === null ? p : Math.max(SES[k].hi, p); SES[k].lo = SES[k].lo === null ? p : Math.min(SES[k].lo, p);
+        if (hm < 585) { SES[k].orh = Math.max(SES[k].orh ?? -Infinity, p); SES[k].orl = Math.min(SES[k].orl ?? Infinity, p); }
+        if (hm < 630) { SES[k].ibh = Math.max(SES[k].ibh ?? -Infinity, p); SES[k].ibl = Math.min(SES[k].ibl ?? Infinity, p); } }
       else if (hm < 570 || hm >= 1080) { SES[k].onhi = Math.max(SES[k].onhi ?? -Infinity, p); SES[k].onlo = Math.min(SES[k].onlo ?? Infinity, p); }
       if (v.i === TF[k]) actualizarVela(k, v.t / 1000, +v.o + base, +v.h + base, +v.l + base, p);
       revisarCruces(k, p); MARK[k] = true;
@@ -1318,7 +1351,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1591,6 +1624,53 @@ function calcOut() {
     (lote < C.min ? `<div class="cwarn">Con ${fmt(C.riesgo, 2)}% de riesgo el lote da ${fmt(crudo, 3)}, bajo el mínimo (${C.min}): el stop es demasiado grande para la cuenta. <b>No se toma el trade</b> o se busca un stop más corto que tenga sentido.</div>` : "");
 }
 
+/* ============================================================ mis alertas de precio */
+let MISAL = store.get("misal", []);
+function misAlGuardar() { store.set("misal", MISAL); pintarMisAl(); ["ES", "NQ", "BTC"].forEach(k => { dibujarLineas(k); MARK[k] = true; }); }
+function pintarMisAl() {
+  $("maL").innerHTML = MISAL.length ? MISAL.map((a, i) => { const p = a.k === "BTC" ? LIVE.BTC : precioFut(a.k);
+    const dist = p ? a.v - p : null;
+    return `<div><span><b>${a.k}</b> ${fmt(a.v, INST[a.k].dec)} <span class="d">${dist !== null ? (dist > 0 ? "▲ " : "▼ ") + fmt(Math.abs(dist), INST[a.k].dec) + " pts" : ""}</span></span><span class="d">${a.dir > 0 ? "al subir" : "al bajar"}</span><button data-i="${i}" title="borrar">✕</button></div>`; }).join("")
+    : `<span class="mut" style="font-size:12px">Sin alertas. Escribe un precio y toca “+ alerta”. Se dibuja como línea blanca en el gráfico.</span>`;
+  $("maL").querySelectorAll("button").forEach(b => b.onclick = () => { MISAL.splice(+b.dataset.i, 1); misAlGuardar(); });
+}
+function misAlUI() {
+  $("maA").onclick = () => { const k = $("maK").value, v = parseFloat($("maV").value); if (!(v > 0)) return;
+    const p = k === "BTC" ? LIVE.BTC : precioFut(k); if (!p) return;
+    MISAL.push({k, v, dir: v > p ? 1 : -1}); $("maV").value = ""; misAlGuardar();
+    if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {}); };
+  $("maV").addEventListener("keydown", e => { if (e.key === "Enter") $("maA").click(); });
+  pintarMisAl(); setInterval(pintarMisAl, 5000);
+}
+function revisarMisAlertas(k, prev, p) {
+  let cambio = false;
+  MISAL = MISAL.filter(a => {
+    if (a.k !== k) return true;
+    const toca = a.dir > 0 ? (prev < a.v && p >= a.v) : (prev > a.v && p <= a.v);
+    if (!toca) return true;
+    cambio = true;
+    const txt = `🔔 <b>${k}</b> llegó a tu alerta <b class="m">${fmt(a.v, INST[k].dec)}</b> ${a.dir > 0 ? "<b class='up'>subiendo</b>" : "<b class='dn'>bajando</b>"} <span class="mut">· ${horaCL(Date.now())}</span>`;
+    const d = document.createElement("div"); d.className = "al " + (a.dir > 0 ? "upx" : "dnx"); d.innerHTML = txt; $("alertas").prepend(d);
+    setTimeout(() => d.remove(), 60000);
+    const snd = OPT.snd; OPT.snd = true; beep(a.dir > 0); setTimeout(() => beep(a.dir > 0), 400); OPT.snd = snd;
+    if ("Notification" in window && Notification.permission === "granted") { try { new Notification("Alerta " + k, {body: txt.replace(/<[^>]+>/g, "")}); } catch (e) {} }
+    return false;
+  });
+  if (cambio) misAlGuardar();
+}
+
+/* ============================================================ resultados de la semana */
+function pintarEarnSem() {
+  const L = DATA?.earn_sem; if (!L) return;
+  const nq = new Set((DATA.pesos?.NDX || []).map(x => x[0]));
+  const hora = h => h === "time-pre-market" ? "antes de abrir" : h === "time-after-hours" ? "después del cierre" : "hora s/d";
+  const por = {}; L.forEach(e => (por[e.fecha] = por[e.fecha] || []).push(e));
+  $("earnSem").innerHTML = Object.entries(por).map(([f, es]) => {
+    const d = new Date(f + "T12:00:00Z").toLocaleDateString("es-CL", {weekday: "long", day: "numeric", month: "short", timeZone: "UTC"});
+    return `<div class="ewd"><div class="f">${esc(d)}</div>${es.map(e => `<div class="e"><span class="s">${esc(e.s)}${nq.has(e.s) ? '<span class="tq">NQ</span>' : ""}</span><span class="h">${hora(e.hora)}</span><span class="c">${fmt(e.cap / 1e9, 0)} B</span></div>`).join("")}</div>`;
+  }).join("") || `<p class="mut">Sin resultados de empresas grandes en los próximos 7 días hábiles.</p>`;
+}
+
 /* ============================================================ carga de datos */
 async function cargarDatos(primera) {
   try {
@@ -1625,7 +1705,7 @@ function reloj() {
 }
 
 (async function inicio() {
-  opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); ntfyConectar();
+  opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
   setInterval(pintarMovers, 3000); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
