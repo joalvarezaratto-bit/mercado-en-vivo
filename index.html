@@ -342,6 +342,8 @@ body.foco #foco{display:block!important}
 .fo-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.fo-k div{background:var(--panel2);padding:6px}.fo-k .n{font-size:10px;color:var(--mut);text-transform:uppercase}.fo-k .v{font:600 14px "IBM Plex Mono"}.fo-k .s{font-size:10.5px;color:var(--mut)}
 .fo-n{width:100%;border-collapse:collapse;font-size:12px}.fo-n td{padding:3px 4px;border-bottom:1px solid var(--line)}.fo-n td.n{text-align:right;font-family:"IBM Plex Mono";white-space:nowrap}
 .fo-n tr.fpx td{background:rgba(255,159,26,.14);font-weight:600;color:#fff}.fo-n i{display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:middle}
+#viejo{background:#3a0d0f;border:1px solid var(--dn);border-left:4px solid var(--dn);color:#fff;padding:10px 14px;margin-bottom:10px;font-size:13px;line-height:1.5}
+#viejo b{color:#ff8a8c}
 /* ---- gap */
 .gp-h{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.gp-h>div{background:var(--panel2);padding:10px}
 .gp-n{font:600 22px "IBM Plex Mono"}.gp-s{font-size:12px;line-height:1.5;margin-top:4px}
@@ -422,6 +424,7 @@ body.foco #foco{display:block!important}
   <div class="nlist" id="nlist"><div class="nvac">Conectando…</div></div>
 </div>
 <main>
+  <div id="viejo" hidden></div>
   <div class="status" id="status"></div>
   <div class="zn" id="zn"><span class="zl" id="znL"></span><span class="zt" id="znT"></span><span class="zc" id="znC"></span></div>
   <a class="uh" id="uh" target="_blank" rel="noopener noreferrer"><span class="lb" id="uhLb">ÚLTIMA HORA</span><span class="tx" id="uhTx"></span><span class="hc" id="uhHc"></span></a>
@@ -2073,8 +2076,19 @@ async function cargarDatos(primera) {
     const edad = (Date.now() / 1000 - DATA.ts) / 60;
     $("dDJ").className = "dot " + (edad < 40 ? "ok" : "wait");
     $("dataAge").textContent = edad < 60 ? `${Math.round(edad)} min` : `${Math.round(edad / 60)} h`;
+    avisoViejo(edad);
   } catch (e) { $("dDJ").className = "dot bad"; console.warn(e); }
 }
+
+function avisoViejo(edad) {
+  const v = $("viejo"); if (!v) return;
+  if (edad < 40) { v.hidden = true; return; }
+  const t = edad < 120 ? `${Math.round(edad)} minutos` : edad < 2880 ? `${Math.round(edad / 60)} horas` : `${Math.round(edad / 1440)} días`;
+  v.hidden = false;
+  v.innerHTML = `⚠️ <b>Los datos de la página tienen ${t}</b> (deberían renovarse cada 15 min). Lo más probable es que el Mac esté dormido, apagado o sin internet. ` +
+    `Los precios en vivo siguen funcionando, pero <b>niveles, gap, opciones y comité pueden estar desactualizados</b>, y las alertas por Telegram no están llegando.`;
+}
+setInterval(() => { if (DATA?.ts) avisoViejo((Date.now() / 1000 - DATA.ts) / 60); }, 60000);
 
 /* ============================================================ bucle de pintado */
 const MARK = {ES: false, NQ: false, BTC: false};
