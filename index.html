@@ -296,6 +296,30 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 #mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
 @media(max-width:600px){#mapaW{height:440px}}
+/* ---- quién mueve el índice */
+.qm{width:100%;border-collapse:collapse;font-size:12.5px}.qm td{padding:4px 4px;border-bottom:1px solid var(--line)}.qm td.n{text-align:right;font-family:"IBM Plex Mono";white-space:nowrap}
+.qm .w{color:var(--mut);font:11px "IBM Plex Mono"}.qm tr.tot td{font-weight:600;border-top:1px solid var(--mut)}.qm tr.rs td{color:var(--mut)}
+.qb{position:relative;width:140px;height:9px;background:var(--panel2)}.qb i{position:absolute;top:0;height:100%}.qb:after{content:"";position:absolute;left:50%;top:-2px;width:1px;height:13px;background:var(--mut)}
+.qm-h{display:flex;justify-content:space-between;align-items:baseline;font:12px "IBM Plex Mono";margin-bottom:6px}.qm-h b{font-size:15px}
+/* ---- sesiones */
+.ses{display:grid;gap:5px}
+.se{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center;font-size:12.5px}
+.se i{width:9px;height:9px;border-radius:50%;background:#3a4552}.se.on i{background:var(--up);box-shadow:0 0 8px var(--up)}.se.pre i{background:var(--acc)}
+.se .t{font:11.5px "IBM Plex Mono";color:var(--mut);text-align:right}.se.on .t{color:var(--up)}.se.pre .t{color:var(--acc)}
+.se .h{font:10.5px "IBM Plex Mono";color:var(--mut)}
+.sl{position:relative;height:30px;background:var(--panel2);margin-top:10px;border:1px solid var(--line)}
+.sl b{position:absolute;height:6px;opacity:.85}.sl .nw{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff}
+.sl .hx{position:absolute;bottom:1px;font:9px "IBM Plex Mono";color:var(--mut);transform:translateX(-50%)}
+/* ---- calculadora */
+.calc{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.calc label{display:flex;flex-direction:column;gap:3px;font:10.5px "IBM Plex Mono";color:var(--mut);text-transform:uppercase}
+.calc input,.calc select{background:var(--panel2);border:1px solid var(--line);color:var(--tx);font:14px "IBM Plex Mono";padding:6px 8px;width:100%;box-sizing:border-box}
+.calc input:focus,.calc select:focus{outline:none;border-color:var(--acc)}
+.cr{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px}
+.cr div{background:var(--panel2);border:1px solid var(--line);padding:8px 10px}.cr .n{font:10.5px "IBM Plex Mono";color:var(--mut);text-transform:uppercase}
+.cr .v{font:600 20px "IBM Plex Mono";margin-top:2px}.cr .big{border-color:var(--acc)}.cr .big .v{color:var(--acc);font-size:26px}
+.cbt{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 8px;cursor:pointer;margin-top:4px}
+.cwarn{margin-top:10px;padding:8px 12px;border-left:4px solid var(--dn);background:rgba(255,77,79,.08);font-size:13px}
 </style>
 </head>
 <body>
@@ -308,7 +332,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#mapaSec">Mapa de calor</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -337,11 +361,20 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div><h2>Rendimiento relativo <small>ES · NQ · BTC · % desde el inicio de la ventana</small></h2><div class="panel"><div class="rl-k" id="relK"></div><div id="rel-chart"></div></div></div>
   </div>
 
+  <div class="two" id="moversSec">
+    <div><h2>Quién mueve el Nasdaq 100 <small>puntos que aporta cada empresa · en vivo</small></h2><div class="panel" id="qmNDX"><p class="mut">Esperando precios…</p></div></div>
+    <div><h2>Quién mueve el S&amp;P 500 <small>puntos que aporta cada empresa · en vivo</small></h2><div class="panel" id="qmSPX"><p class="mut">Esperando precios…</p></div></div>
+  </div>
+
+  <h2 id="lotajeSec">Calculadora de lotaje <small>Exness · US500m / USTECm / BTCUSDm · lote = riesgo ÷ (puntos de stop × valor por punto)</small></h2>
+  <div class="panel" id="calc"></div>
+
   <h2 id="mapaSec">Mapa de calor <small>tamaño = capitalización · color = variación del día · en vivo (TradingView)</small></h2>
   <div class="panel"><div class="mp-t" id="mapaT"><button data-m="SPX500" class="on">S&amp;P 500</button><button data-m="NASDAQ100">Nasdaq 100</button><button data-m="cripto">Cripto</button></div><div id="mapaW"><p class="mut" style="padding:14px">El mapa se carga al llegar a esta sección…</p></div></div>
   </div>
 
   <aside class="l-side">
+    <div id="sesSec"><h2>Sesiones <small>hora Chile</small></h2><div class="panel"><div class="ses" id="ses"></div><div class="sl" id="sesL"></div></div></div>
   <h2 id="cableSec">Cable de noticias · en vivo <small>en amarillo lo que puede mover el mercado · cómo puede pegar en cada activo</small></h2>
   <div class="panel"><div class="cabf" id="cabF"><button data-f="todo" class="on">Todo</button><button data-f="rel">Relevantes</button><button data-f="eeuu">EE.UU.</button><button data-f="int">Internacional</button><button data-f="cripto">Cripto</button></div><div class="cab" id="cab"><p class="mut">Conectando…</p></div></div>
 
@@ -1438,6 +1471,126 @@ function mapaUI() {
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting && !mapaCargado) { mapaCargado = true; mapaDibujar(); o.disconnect(); } }, {rootMargin: "300px"}).observe($("mapaW"));
 }
 
+/* ============================================================ quién mueve el índice */
+function pintarMovers() {
+  const P = DATA?.pesos; if (!P) return;
+  for (const [k, coin, el] of [["NDX", "xyz:XYZ100", "qmNDX"], ["SPX", "xyz:SP500", "qmSPX"]]) {
+    const prevIdx = DATA.contado_prev?.[coin], idx = LIVE[coin];
+    if (!prevIdx || !idx) continue;
+    const filas = [];
+    for (const [t, w] of P[k]) {
+      const px = LIVE.mids["xyz:" + t], prev = P.prev[t];
+      if (!px || !prev) continue;
+      const pct = (px / prev - 1) * 100;
+      filas.push({t, w, pct, pts: prevIdx * w / 100 * pct / 100});
+    }
+    if (!filas.length) continue;
+    const total = idx - prevIdx, suma = filas.reduce((a, x) => a + x.pts, 0), resto = total - suma;
+    const pesoV = filas.reduce((a, x) => a + x.w, 0);
+    filas.sort((a, b) => Math.abs(b.pts) - Math.abs(a.pts));
+    const mx = Math.max(1, ...filas.map(x => Math.abs(x.pts)), Math.abs(resto));
+    const bar = v => `<div class="qb"><i style="${v >= 0 ? `left:50%;width:${v / mx * 50}%;background:var(--up)` : `left:${50 + v / mx * 50}%;width:${-v / mx * 50}%;background:var(--dn)`}"></i></div>`;
+    const sube = filas.filter(x => x.pts > 0).reduce((a, x) => a + x.pts, 0), baja = filas.filter(x => x.pts < 0).reduce((a, x) => a + x.pts, 0);
+    $(el).innerHTML = `<div class="qm-h"><span>Índice <b class="${cl(total)}">${sg(total, 1)} pts</b> (${pc((idx / prevIdx - 1) * 100)})</span><span><span class="up">${sg(sube, 1)}</span> / <span class="dn">${sg(baja, 1)}</span></span></div>` +
+      `<table class="qm">${filas.slice(0, 12).map(x => `<tr><td><b>${esc(x.t)}</b> <span class="w">${fmt(x.w, 1)}%</span></td><td class="n ${cl(x.pct)}">${pc(x.pct)}</td><td class="n ${cl(x.pts)}">${sg(x.pts, 1)}</td><td>${bar(x.pts)}</td></tr>`).join("")}` +
+      `<tr class="rs"><td>Resto del índice <span class="w">${fmt(100 - pesoV, 0)}% del peso</span></td><td></td><td class="n">${sg(resto, 1)}</td><td>${bar(resto)}</td></tr>` +
+      `<tr class="tot"><td>Total</td><td></td><td class="n ${cl(total)}">${sg(total, 1)}</td><td></td></tr></table>` +
+      `<p class="mut" style="font-size:11px;margin:6px 0 0">Pesos del ETF ${k === "NDX" ? "QQQ" : "SPY"} (${esc(P.dia)}) × variación vs cierre de ayer. Puntos del índice contado (≈ puntos de ${k === "NDX" ? "NQ" : "ES"}).</p>`;
+  }
+}
+
+/* ============================================================ sesiones */
+function epochEn(tz, y, m, d, h, mi) {               // hora local de `tz` → epoch (s)
+  let t = Date.UTC(y, m - 1, d, h, mi) / 1000;
+  t -= tzOffsetSec(tz, t); t = Date.UTC(y, m - 1, d, h, mi) / 1000 - tzOffsetSec(tz, t);
+  return t;
+}
+const SESIONES = [
+  {n: "Tokio", tz: "Asia/Tokyo", a: [9, 0], c: [15, 0], col: "#ce93d8"},
+  {n: "Londres", tz: "Europe/London", a: [8, 0], c: [16, 30], col: "#4fc3f7"},
+  {n: "Nueva York (contado)", tz: "America/New_York", a: [9, 30], c: [16, 0], col: "#ff9f1a", us: true},
+  {n: "Ventana apertura 9:30–10:15", tz: "America/New_York", a: [9, 30], c: [10, 15], col: "#ffd43b", us: true, fino: true},
+];
+function sesionTramos(S, desde, hasta) {               // tramos [o,c] entre dos instantes
+  const out = [];
+  for (let t = desde - 86400 * 2; t < hasta + 86400; t += 86400) {
+    const p = partes(S.tz, new Date(t * 1000)); const y = +p.year, m = +p.month, d = +p.day;
+    const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay(); if (dow === 0 || dow === 6) continue;
+    const iso = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    if (S.us && DATA?.feriados?.[iso]) continue;
+    const o = epochEn(S.tz, y, m, d, ...S.a);
+    let c = epochEn(S.tz, y, m, d, ...S.c);
+    if (S.us && !S.fino && DATA?.cierres_anticipados?.[iso]) c = epochEn(S.tz, y, m, d, 13, 0);
+    if (!out.some(x => x[0] === o)) out.push([o, c]);
+  }
+  return out.sort((a, b) => a[0] - b[0]);
+}
+const durS = s => { s = Math.max(0, Math.round(s / 60)); const h = Math.floor(s / 60), m = s % 60; return h >= 24 ? `${Math.floor(h / 24)} d ${h % 24} h` : h ? `${h} h ${m} min` : `${m} min`; };
+function pintarSesiones() {
+  const now = Date.now() / 1000;
+  $("ses").innerHTML = SESIONES.map(S => {
+    const tr = sesionTramos(S, now, now + 86400 * 5);
+    const ab = tr.find(([o, c]) => now >= o && now < c), prox = tr.find(([o]) => o > now);
+    const cls = ab ? "on" : (prox && prox[0] - now < 3600 ? "pre" : "");
+    const txt = ab ? `abierta · cierra en ${durS(ab[1] - now)}` : prox ? `abre en ${durS(prox[0] - now)}` : "cerrada";
+    const h = ab || prox;
+    return `<div class="se ${cls}"><i></i><span>${esc(S.n)}<br><span class="h">${h ? horaCL(h[0] * 1000) + "–" + horaCL(h[1] * 1000) + " Chile" : ""}</span></span><span class="t">${txt}</span></div>`;
+  }).join("");
+  // línea de 24 h (hora Chile, de 00:00 a 24:00 de hoy)
+  const p = partes("America/Santiago"), ini = epochEn("America/Santiago", +p.year, +p.month, +p.day, 0, 0), fin = ini + 86400;
+  const pos = t => Math.max(0, Math.min(100, (t - ini) / 864));
+  let html = "";
+  SESIONES.forEach((S, i) => sesionTramos(S, ini, fin).forEach(([o, c]) => { if (c <= ini || o >= fin) return;
+    html += `<b style="left:${pos(o)}%;width:${pos(c) - pos(o)}%;top:${3 + i * 5}px;background:${S.col}" title="${esc(S.n)}"></b>`; }));
+  for (const h of [0, 6, 12, 18]) html += `<span class="hx" style="left:${h / 24 * 100 + (h ? 0 : 2)}%">${h}h</span>`;
+  html += `<span class="nw" style="left:${pos(now)}%"></span>`;
+  $("sesL").innerHTML = html;
+}
+
+/* ============================================================ calculadora de lotaje */
+const CALC_INST = {US500m: {coin: "xyz:SP500", vpp: 1, dec: 2}, USTECm: {coin: "xyz:XYZ100", vpp: 1, dec: 2}, BTCUSDm: {coin: "BTC", vpp: 1, dec: 1}};
+let CALC = store.get("calc", {inst: "US500m", saldo: 1000, riesgo: 0.5, entrada: "", stop: "", spread: 0, vpp: {}, min: 0.01, paso: 0.01});
+function calcUI() {
+  const C = CALC;
+  $("calc").innerHTML = `<div class="calc">
+    <label>Instrumento<select id="cI">${Object.keys(CALC_INST).map(k => `<option ${k === C.inst ? "selected" : ""}>${k}</option>`).join("")}</select></label>
+    <label>Saldo (USD)<input id="cS" type="number" step="any" value="${C.saldo}"></label>
+    <label>Riesgo (%)<input id="cR" type="number" step="0.1" value="${C.riesgo}"></label>
+    <label>Entrada<input id="cE" type="number" step="any" value="${C.entrada}"><button class="cbt" id="cEv">usar precio actual</button></label>
+    <label>Stop<input id="cX" type="number" step="any" value="${C.stop}"></label>
+    <label>Spread (puntos)<input id="cP" type="number" step="any" value="${C.spread}"></label>
+    <label>Valor por punto × lote<input id="cV" type="number" step="any" value="${C.vpp[C.inst] ?? CALC_INST[C.inst].vpp}"></label>
+    <label>Lote mín. / paso<input id="cM" type="text" value="${C.min} / ${C.paso}"></label>
+  </div><div id="cOut"></div>
+  <p class="mut" style="font-size:11px;margin:8px 0 0">Valor por punto: en Exness US500m y USTECm es 1 USD por punto por lote (BTCUSDm: 1 USD por cada 1 USD de movimiento). Revísalo en MT5 → Especificación del contrato y corrígelo aquí si tu cuenta es distinta; queda guardado. "Precio actual" usa el contado en vivo, que puede diferir unos puntos del CFD.</p>`;
+  const leer = () => {
+    C.inst = $("cI").value; C.saldo = +$("cS").value; C.riesgo = +$("cR").value; C.entrada = $("cE").value; C.stop = $("cX").value;
+    C.spread = +$("cP").value || 0; C.vpp[C.inst] = +$("cV").value || CALC_INST[C.inst].vpp;
+    const [mn, ps] = $("cM").value.split("/").map(x => +String(x).replace(",", ".").trim()); C.min = mn || 0.01; C.paso = ps || 0.01;
+    store.set("calc", C); calcOut();
+  };
+  $("calc").querySelectorAll("input,select").forEach(e => e.addEventListener("input", leer));
+  $("cI").addEventListener("change", () => { $("cV").value = C.vpp[$("cI").value] ?? CALC_INST[$("cI").value].vpp; leer(); });
+  $("cEv").onclick = e => { e.preventDefault(); const k = CALC_INST[$("cI").value]; const p = k.coin === "BTC" ? LIVE.BTC : LIVE[k.coin];
+    if (p) { $("cE").value = (+p).toFixed(k.dec); leer(); } };
+  calcOut();
+}
+function calcOut() {
+  const C = CALC, e = parseFloat(C.entrada), x = parseFloat(C.stop), vpp = C.vpp[C.inst] ?? CALC_INST[C.inst].vpp, d = CALC_INST[C.inst].dec;
+  if (!(e > 0 && x > 0 && e !== x && C.saldo > 0 && C.riesgo > 0)) { $("cOut").innerHTML = `<p class="mut" style="margin:12px 0 0">Completa entrada y stop para calcular.</p>`; return; }
+  const largo = x < e, dist = Math.abs(e - x) + C.spread, riesgo = C.saldo * C.riesgo / 100;
+  const crudo = riesgo / (dist * vpp), lote = Math.floor(crudo / C.paso + 1e-9) * C.paso, real = lote * dist * vpp;
+  const r = n => largo ? e + n * Math.abs(e - x) : e - n * Math.abs(e - x);
+  $("cOut").innerHTML = `<div class="cr">
+    <div class="big"><div class="n">Lotes</div><div class="v">${lote >= C.min ? fmt(lote, 2) : "—"}</div></div>
+    <div><div class="n">Dirección</div><div class="v ${largo ? "up" : "dn"}">${largo ? "LARGO ▲" : "CORTO ▼"}</div></div>
+    <div><div class="n">Stop (con spread)</div><div class="v">${fmt(dist, d)} pts</div></div>
+    <div><div class="n">Riesgo objetivo</div><div class="v">${fmt(riesgo, 2)} USD</div></div>
+    <div><div class="n">Riesgo real</div><div class="v">${fmt(real, 2)} USD</div></div>
+    <div><div class="n">TP 1R · 2R · 3R</div><div class="v" style="font-size:14px">${fmt(r(1), d)}<br>${fmt(r(2), d)}<br>${fmt(r(3), d)}</div></div></div>` +
+    (lote < C.min ? `<div class="cwarn">Con ${fmt(C.riesgo, 2)}% de riesgo el lote da ${fmt(crudo, 3)}, bajo el mínimo (${C.min}): el stop es demasiado grande para la cuenta. <b>No se toma el trade</b> o se busca un stop más corto que tenga sentido.</div>` : "");
+}
+
 /* ============================================================ carga de datos */
 async function cargarDatos(primera) {
   try {
@@ -1472,7 +1625,8 @@ function reloj() {
 }
 
 (async function inicio() {
-  opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); ntfyConectar();
+  opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); ntfyConectar();
+  setInterval(pintarMovers, 3000); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
