@@ -265,6 +265,37 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .gm-i button.on{background:var(--acc);color:#000;border-color:var(--acc)}.gm-x{color:var(--tx)}.gm-x:hover{border-color:var(--acc)}
 #gchart{flex:1;min-height:0}
 @media(max-width:600px){.gm{height:100%}.gm-i{margin-left:0}}
+/* ---- navegación por secciones */
+.snav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line);background:#0b0e12;padding:0 8px}
+.snav a{flex:0 0 auto;font:600 11px "IBM Plex Mono";letter-spacing:.08em;color:var(--mut);text-decoration:none;padding:7px 11px;border-bottom:2px solid transparent;text-transform:uppercase}
+.snav a:hover{color:var(--tx)}.snav a.on{color:var(--acc);border-bottom-color:var(--acc)}
+[id]{scroll-margin-top:calc(var(--hh,150px) + 8px)}
+/* ---- diseño terminal (pantallas anchas) */
+@media(min-width:1560px){
+  main{max-width:1940px}
+  .lay{display:grid;grid-template-columns:minmax(0,1fr) 430px;grid-template-areas:"top side" "rest side";column-gap:16px}
+  .l-top{grid-area:top;min-width:0}.l-rest{grid-area:rest;min-width:0}
+  .l-side{grid-area:side;position:sticky;top:calc(var(--hh,150px) + 8px);align-self:start;max-height:calc(100vh - var(--hh,150px) - 16px);overflow:auto;scrollbar-width:thin}
+  .l-side h2:first-child{margin-top:14px}
+  .l-side .cab{max-height:56vh}
+  .l-side h2 small{display:none}
+}
+/* ---- pulso de riesgo */
+.pr-g{position:relative;height:12px;background:linear-gradient(90deg,#ff4d4f 0%,#ff9f1a 35%,#8592a3 50%,#9be15d 65%,#2ecc71 100%);margin:10px 0 4px}
+.pr-g i{position:absolute;top:-5px;width:4px;height:22px;background:#fff;box-shadow:0 0 0 2px #000;transition:left .6s}
+.pr-e{display:flex;justify-content:space-between;font:10px "IBM Plex Mono";color:var(--mut)}
+.pr-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.pr-n{font:600 34px "IBM Plex Mono"}.pr-l{font:600 14px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.08em}
+.pr-t{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}.pr-t td{padding:4px 4px;border-bottom:1px solid var(--line)}.pr-t td.n{text-align:right;font-family:"IBM Plex Mono"}
+.pr-b{position:relative;width:110px;height:8px;background:var(--panel2)}.pr-b i{position:absolute;top:0;height:100%}.pr-b:after{content:"";position:absolute;left:50%;top:-2px;width:1px;height:12px;background:var(--mut)}
+/* ---- rendimiento relativo */
+#rel-chart{height:300px}.rl-k{display:flex;gap:12px;flex-wrap:wrap;font:11px "IBM Plex Mono";margin-bottom:6px;align-items:center}
+.rl-k b{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle}.rl-k .sp{flex:1}
+.rl-k button,.mp-t button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 9px;cursor:pointer}
+.rl-k button.on,.mp-t button.on{background:var(--acc);color:#000;border-color:var(--acc)}
+/* ---- mapa de calor */
+.mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+#mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
+@media(max-width:600px){#mapaW{height:440px}}
 </style>
 </head>
 <body>
@@ -277,6 +308,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#mapaSec">Mapa de calor</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -291,28 +323,41 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <div class="status" id="status"></div>
   <div class="zn" id="zn"><span class="zl" id="znL"></span><span class="zt" id="znT"></span><span class="zc" id="znC"></span></div>
   <a class="uh" id="uh" target="_blank" rel="noopener noreferrer"><span class="lb" id="uhLb">ÚLTIMA HORA</span><span class="tx" id="uhTx"></span><span class="hc" id="uhHc"></span></a>
+  <div class="lay">
+  <div class="l-top">
   <section class="cm" id="comite" hidden></section>
-  <div class="grid">
+  <div class="grid" id="graficos">
     <section class="card" id="card-ES"></section>
     <section class="card" id="card-NQ"></section>
     <section class="card" id="card-BTC"></section>
   </div>
 
-  <h2>Cable de noticias · en vivo <small>en amarillo lo que puede mover el mercado · cómo puede pegar en cada activo</small></h2>
+  <div class="two" id="pulsoSec">
+    <div><h2>Pulso de riesgo · en vivo <small>10 señales entre activos · 0 = pánico, 100 = euforia</small></h2><div class="panel" id="pulso"><p class="mut">Calculando…</p></div></div>
+    <div><h2>Rendimiento relativo <small>ES · NQ · BTC · % desde el inicio de la ventana</small></h2><div class="panel"><div class="rl-k" id="relK"></div><div id="rel-chart"></div></div></div>
+  </div>
+
+  <h2 id="mapaSec">Mapa de calor <small>tamaño = capitalización · color = variación del día · en vivo (TradingView)</small></h2>
+  <div class="panel"><div class="mp-t" id="mapaT"><button data-m="SPX500" class="on">S&amp;P 500</button><button data-m="NASDAQ100">Nasdaq 100</button><button data-m="cripto">Cripto</button></div><div id="mapaW"><p class="mut" style="padding:14px">El mapa se carga al llegar a esta sección…</p></div></div>
+  </div>
+
+  <aside class="l-side">
+  <h2 id="cableSec">Cable de noticias · en vivo <small>en amarillo lo que puede mover el mercado · cómo puede pegar en cada activo</small></h2>
   <div class="panel"><div class="cabf" id="cabF"><button data-f="todo" class="on">Todo</button><button data-f="rel">Relevantes</button><button data-f="eeuu">EE.UU.</button><button data-f="int">Internacional</button><button data-f="cripto">Cripto</button></div><div class="cab" id="cab"><p class="mut">Conectando…</p></div></div>
 
-  <h2>Lo que hay que saber <small id="genTxt"></small></h2>
-  <div class="panel"><ul class="keys" id="puntos"></ul></div>
+    <div id="agendaSec"><h2>Agenda de hoy <small>hora Chile · dato real al salir</small></h2><div class="panel" id="agenda"></div></div>
+  </aside>
 
+  <div class="l-rest">
   <div class="two">
-    <div id="agendaSec"><h2>Agenda de hoy <small>hora Chile · el dato real aparece apenas sale</small></h2><div class="panel" id="agenda"></div></div>
+    <div id="saberSec"><h2>Lo que hay que saber <small id="genTxt"></small></h2><div class="panel"><ul class="keys" id="puntos"></ul></div></div>
     <div><h2>Megacaps en vivo <small>vs cierre de ayer</small></h2><div class="panel"><div class="mc" id="megacaps"></div></div></div>
   </div>
 
   <div class="two">
     <div><h2>Resultados corporativos <small>cap. &gt; 40 B USD</small></h2><div class="panel" style="overflow-x:auto"><table id="earn"></table>
       <p class="mut" style="font-size:11px;margin:6px 0 0">EPS según Nasdaq: a veces compara cifra contable (GAAP) con consenso ajustado.</p></div></div>
-    <div><h2>Bitcoin: derivados y flujos</h2><div class="panel" id="btcder"></div></div>
+    <div id="criptoSec"><h2>Bitcoin: derivados y flujos</h2><div class="panel" id="btcder"></div></div>
   </div>
 
   <div class="two">
@@ -320,10 +365,10 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div><h2>Lo que viene <small>alto impacto EE.UU.</small></h2><div class="panel" id="semana"></div></div>
   </div>
 
-  <h2>Mercados globales <small>con retraso (Yahoo) · hora del último dato · toca uno para ver su gráfico</small></h2>
+  <h2 id="globalSec">Mercados globales <small>con retraso (Yahoo) · hora del último dato · toca uno para ver su gráfico</small></h2>
   <div class="three" id="global"></div>
 
-  <h2>Titulares <small>los marcados en rojo llegaron en vivo</small></h2>
+  <h2 id="newsSec">Titulares <small>los marcados en rojo llegaron en vivo</small></h2>
   <div class="panel" id="news"></div>
 
   <h2>Alertas y verificación</h2>
@@ -333,6 +378,9 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
       <div class="opts"><button id="bAl" class="on">Avisos en pantalla: sí</button><button id="bSnd">Sonido: no</button><button id="bNot">Notificaciones: no</button><button id="bNws" class="on">Avisos de noticias: sí</button></div>
     </div>
     <div class="panel"><ul class="verif" id="verif"></ul></div>
+  </div>
+
+  </div>
   </div>
 
   <footer>
@@ -1236,7 +1284,7 @@ function pintarInforme() {
   ["ES", "NQ", "BTC"].forEach(pintarZonasGrafico);
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
-  $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit"}) + " Chile";
+  $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
   pintarAgenda(); pintarSemana(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
@@ -1292,6 +1340,104 @@ function pintarComite() {
   $("cmTg").onclick = () => { const m = !el.classList.contains("min"); try { localStorage.setItem("cmMin", m ? "1" : "0"); } catch (e) {} pintarComite(); };
 }
 
+/* ============================================================ navegación + alto del encabezado */
+function navUI() {
+  const hdr = document.querySelector("header");
+  const fija = () => document.documentElement.style.setProperty("--hh", hdr.offsetHeight + "px");
+  fija(); addEventListener("resize", fija); setTimeout(fija, 1500);
+  const links = [...document.querySelectorAll("#snav a")];
+  const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) {
+    links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id)); } }), {rootMargin: "-35% 0px -60% 0px"});
+  links.forEach(a => { const t = document.querySelector(a.getAttribute("href")); if (t) obs.observe(t); });
+}
+
+/* ============================================================ pulso de riesgo */
+const gq = s => DATA?.global?.flatMap(g => g.items).find(i => i.s === s);
+function pulsoComp() {
+  const c = [], clip = v => Math.max(-1, Math.min(1, v));
+  const add = (n, txt, sc, w, cls) => { if (sc === null || isNaN(sc)) return; c.push({n, txt, sc: clip(sc), w, cls}); };
+  for (const [k, esc_] of [["ES", 1.0], ["NQ", 1.3]]) {
+    const p = precioFut(k), f = DATA?.fut?.[k];
+    if (p !== null && f) { const v = (p / f.pdc - 1) * 100; add(k + " vs cierre", pc(v), v / esc_, 1.5, cl(v)); }
+  }
+  if (LIVE.BTC && LIVE.btc24o) { const v = (LIVE.BTC / LIVE.btc24o - 1) * 100; add("Bitcoin 24 h", pc(v), v / 3, 1, cl(v)); }
+  const vix = gq("^VIX");
+  if (vix) add("VIX (miedo)", fmt(vix.precio, 2) + " · " + pc(vix.pct, 1), 0.5 * (20 - vix.precio) / 8 + 0.5 * (-vix.pct / 8), 2, vix.pct > 0 ? "dn" : "up");
+  const sox = gq("SOXX"); if (sox) add("Semis (SOXX)", pc(sox.pct), sox.pct / 2.5, 1, cl(sox.pct));
+  const tnx = gq("^TNX"); if (tnx) add("Bono 10 años", sg(tnx.chg * 100, 1) + " pb", -tnx.chg * 100 / 8, 1, tnx.chg > 0 ? "dn" : "up");
+  const dxy = gq("DX-Y.NYB"); if (dxy) add("Dólar (DXY)", pc(dxy.pct), -dxy.pct / 0.5, 0.75, dxy.pct > 0 ? "dn" : "up");
+  const jpy = gq("JPY=X"); if (jpy) add("USD/JPY (yen refugio)", pc(jpy.pct), jpy.pct / 0.6, 0.5, cl(jpy.pct));
+  const oro = gq("GC=F"); if (oro) add("Oro (refugio)", pc(oro.pct), -oro.pct / 1.5, 0.75, oro.pct > 0 ? "dn" : "up");
+  const cu = gq("HG=F"); if (cu) add("Cobre (crecimiento)", pc(cu.pct), cu.pct / 2, 0.5, cl(cu.pct));
+  return c;
+}
+function pintarPulso() {
+  if (!DATA) return;
+  const c = pulsoComp(); if (c.length < 4) return;
+  const W = c.reduce((a, x) => a + x.w, 0), sc = 50 + 50 * c.reduce((a, x) => a + x.w * x.sc, 0) / W;
+  const [lab, col] = sc < 30 ? ["Risk-off fuerte", "var(--dn)"] : sc < 42 ? ["Risk-off", "#ff7a45"] : sc < 58 ? ["Neutral", "var(--acc)"] : sc < 70 ? ["Risk-on", "#9be15d"] : ["Risk-on fuerte", "var(--up)"];
+  c.sort((a, b) => Math.abs(b.w * b.sc) - Math.abs(a.w * a.sc));
+  $("pulso").innerHTML = `<div class="pr-h"><span class="pr-n" style="color:${col}">${Math.round(sc)}</span><span class="pr-l" style="color:${col}">${lab}</span>` +
+    `<span class="mut" style="font-size:12px">${c.filter(x => x.sc > 0.15).length} señales a favor del riesgo · ${c.filter(x => x.sc < -0.15).length} en contra</span></div>` +
+    `<div class="pr-g"><i style="left:calc(${sc.toFixed(1)}% - 2px)"></i></div><div class="pr-e"><span>PÁNICO</span><span>NEUTRAL</span><span>EUFORIA</span></div>` +
+    `<table class="pr-t">${c.map(x => `<tr><td>${esc(x.n)}</td><td class="n ${x.cls}">${esc(x.txt)}</td><td style="width:120px"><div class="pr-b"><i style="${x.sc >= 0 ? `left:50%;width:${x.sc * 50}%;background:var(--up)` : `left:${50 + x.sc * 50}%;width:${-x.sc * 50}%;background:var(--dn)`}"></i></div></td></tr>`).join("")}</table>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">Indicador propio: ES, NQ y BTC en vivo; el resto con ~10 min de retraso. Barra verde = empuja hacia apetito por riesgo, roja = hacia aversión. Lectura de contexto, no es una señal de entrada.</p>`;
+}
+
+/* ============================================================ rendimiento relativo */
+let REL = null, relHoras = store.get("relH", 8);
+const RELC = {ES: "#ff9f1a", NQ: "#4fc3f7", BTC: "#ce93d8"};
+function relUI() {
+  $("relK").innerHTML = Object.entries(RELC).map(([k, c]) => `<span><b style="background:${c}"></b>${k} <span id="relV${k}" class="m"></span></span>`).join("") +
+    `<span class="sp"></span>` + [2, 4, 8, 13].map(h => `<button data-h="${h}" class="${h === relHoras ? "on" : ""}">${h} h</button>`).join("");
+  $("relK").querySelectorAll("button").forEach(b => b.onclick = () => { relHoras = +b.dataset.h; store.set("relH", relHoras);
+    $("relK").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); pintarRel(true); });
+  if (!window.LightweightCharts) return;
+  const chart = LightweightCharts.createChart($("rel-chart"), {autoSize: true, layout: {background: {color: "#12161b"}, textColor: "#8592a3", fontFamily: "IBM Plex Mono", fontSize: 11},
+    grid: {vertLines: {color: "#1a2028"}, horzLines: {color: "#1a2028"}}, rightPriceScale: {borderColor: "#222a33"},
+    timeScale: {borderColor: "#222a33", timeVisible: true, secondsVisible: false}, localization: {priceFormatter: v => sg(v, 2) + "%"}});
+  const ser = {};
+  for (const [k, c] of Object.entries(RELC)) ser[k] = chart.addLineSeries({color: c, lineWidth: 2, priceLineVisible: false, lastValueVisible: true});
+  ser.ES.createPriceLine({price: 0, color: "#3a4552", lineWidth: 1, lineStyle: 2, axisLabelVisible: false});
+  REL = {chart, ser};
+}
+function pintarRel(ajustar) {
+  if (!REL) return;
+  const desde = Date.now() / 1000 - relHoras * 3600;
+  for (const k of ["ES", "NQ", "BTC"]) {
+    const pts = [...M1[k].entries()].filter(([t]) => t >= desde).sort((a, b) => a[0] - b[0]);
+    if (!pts.length) continue;
+    const b = pts[0][1];
+    const data = pts.map(([t, v]) => ({time: t + tzOffsetSec("America/Santiago", t), value: (v / b - 1) * 100}));
+    REL.ser[k].setData(data);
+    const u = data[data.length - 1].value, el = $("relV" + k); if (el) { el.textContent = sg(u, 2) + "%"; el.className = "m " + cl(u); }
+  }
+  if (ajustar) REL.chart.timeScale().fitContent();
+}
+
+/* ============================================================ mapa de calor (TradingView) */
+let mapaSel = store.get("mapa", "SPX500"), mapaCargado = false;
+function mapaDibujar() {
+  const w = $("mapaW"); w.innerHTML = "";
+  const cont = document.createElement("div"); cont.className = "tradingview-widget-container";
+  const inner = document.createElement("div"); inner.className = "tradingview-widget-container__widget"; inner.style.height = "100%";
+  cont.appendChild(inner);
+  const sc = document.createElement("script"); sc.async = true;
+  const cripto = mapaSel === "cripto";
+  sc.src = "https://s3.tradingview.com/external-embedding/" + (cripto ? "embed-widget-crypto-coins-heatmap.js" : "embed-widget-stock-heatmap.js");
+  sc.innerHTML = JSON.stringify(cripto
+    ? {dataSource: "Crypto", blockSize: "market_cap_calc", blockColor: "24h_close_change|5", locale: "es", symbolUrl: "", colorTheme: "dark",
+       hasTopBar: false, isDataSetEnabled: false, isZoomEnabled: true, hasSymbolTooltip: true, isMonoSize: false, width: "100%", height: "100%"}
+    : {exchanges: [], dataSource: mapaSel, grouping: "sector", blockSize: "market_cap_basic", blockColor: "change", locale: "es", symbolUrl: "",
+       colorTheme: "dark", hasTopBar: false, isDataSetEnabled: false, isZoomEnabled: true, hasSymbolTooltip: true, isMonoSize: false, width: "100%", height: "100%"});
+  cont.appendChild(sc); w.appendChild(cont);
+}
+function mapaUI() {
+  document.querySelectorAll("#mapaT button").forEach(b => { b.classList.toggle("on", b.dataset.m === mapaSel);
+    b.onclick = () => { mapaSel = b.dataset.m; store.set("mapa", mapaSel); document.querySelectorAll("#mapaT button").forEach(x => x.classList.toggle("on", x === b)); mapaCargado = true; mapaDibujar(); }; });
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting && !mapaCargado) { mapaCargado = true; mapaDibujar(); o.disconnect(); } }, {rootMargin: "300px"}).observe($("mapaW"));
+}
+
 /* ============================================================ carga de datos */
 async function cargarDatos(primera) {
   try {
@@ -1326,7 +1472,8 @@ function reloj() {
 }
 
 (async function inicio() {
-  opciones(); notisUI(); cableUI(); gmUI(); ntfyConectar();
+  opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); ntfyConectar();
+  setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
   setInterval(() => refrescarRx(false), 2000);
