@@ -254,6 +254,17 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .cm-sep{font:600 11px "IBM Plex Mono";letter-spacing:.14em;color:var(--acc);margin:4px 0 0}
 .cm-ver{display:block;width:100%;margin-top:12px;background:var(--panel2);border:1px solid var(--acc);color:var(--acc);font:600 12px "IBM Plex Mono";padding:9px;cursor:pointer}.cm-ver:hover{background:var(--acc);color:#000}
 @media(max-width:900px){.cm-s,.esc,.cm-two{grid-template-columns:1fr}.cmt{grid-template-columns:1fr;gap:2px}.cm-t{font-size:19px}}
+/* ---- gráfico de mercados globales */
+#global tr.gx{cursor:pointer}#global tr.gx:hover td{background:rgba(255,159,26,.07)}#global tr.gx:hover td:first-child{color:var(--acc)}
+#gmod{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
+#gmod.on{display:flex}
+.gm{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--acc);width:min(1100px,100%);height:min(720px,100%);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.gm-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.gm-n{font:600 16px "IBM Plex Sans"}.gm-p{font:600 15px "IBM Plex Mono"}.gm-s{font:11px "IBM Plex Mono";color:var(--mut)}
+.gm-i{display:flex;gap:3px;margin-left:auto}.gm-i button,.gm-x{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:4px 9px;cursor:pointer}
+.gm-i button.on{background:var(--acc);color:#000;border-color:var(--acc)}.gm-x{color:var(--tx)}.gm-x:hover{border-color:var(--acc)}
+#gchart{flex:1;min-height:0}
+@media(max-width:600px){.gm{height:100%}.gm-i{margin-left:0}}
 </style>
 </head>
 <body>
@@ -270,6 +281,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 </header>
 <div id="alertas"></div>
 <div id="ntoasts"></div>
+<div id="gmod" role="dialog" aria-label="Gráfico"><div class="gm"><div class="gm-h"><span class="gm-n" id="gmN"></span><span class="gm-p" id="gmP"></span><span class="gm-s" id="gmS"></span><span class="gm-i" id="gmI"><button data-i="5">5m</button><button data-i="15">15m</button><button data-i="60" class="on">1h</button><button data-i="240">4h</button><button data-i="D">1D</button><button data-i="W">1S</button></span><button class="gm-x" id="gmX">cerrar ✕</button></div><div id="gchart"></div></div></div>
 <div id="npanel" role="dialog" aria-label="Notificaciones">
   <div class="nph"><span>NOTICIAS Y DATOS · EN VIVO</span><span><button id="nLeer">marcar leído</button> · <button id="nCerrar">cerrar ✕</button></span></div>
   <div class="nfil"><button data-f="todo" class="on">Todo</button><button data-f="alta">Importantes</button><button data-f="dato">Datos</button></div>
@@ -308,7 +320,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div><h2>Lo que viene <small>alto impacto EE.UU.</small></h2><div class="panel" id="semana"></div></div>
   </div>
 
-  <h2>Mercados globales <small>con retraso (Yahoo) · hora del último dato</small></h2>
+  <h2>Mercados globales <small>con retraso (Yahoo) · hora del último dato · toca uno para ver su gráfico</small></h2>
   <div class="three" id="global"></div>
 
   <h2>Titulares <small>los marcados en rojo llegaron en vivo</small></h2>
@@ -1130,9 +1142,54 @@ function spark(vals) {
 function pintarGlobal() {
   $("global").innerHTML = DATA.global.map(g => `<div class="panel"><div class="mut m" style="font-size:11px;text-transform:uppercase;margin-bottom:4px">${esc(g.grupo)}</div><table>` +
     g.items.map(x => { const viejo = (Date.now() / 1000 - x.t) > 20 * 3600;
-      return `<tr><td>${esc(x.nm)}${viejo ? ` <span class="mut">· ${new Date(x.t * 1000).toLocaleDateString("es-CL", {day: "2-digit", month: "2-digit"})}</span>` : ""}</td>` +
+      return `<tr class="${TVSYM[x.s] ? "gx" : ""}" data-s="${esc(x.s)}" title="${TVSYM[x.s] ? "Ver gráfico" : ""}"><td>${esc(x.nm)}${viejo ? ` <span class="mut">· ${new Date(x.t * 1000).toLocaleDateString("es-CL", {day: "2-digit", month: "2-digit"})}</span>` : ""}</td>` +
         `<td class="n">${fmt(x.precio, x.bono ? 3 : 2)}${x.bono ? "%" : ""}</td><td class="n ${cl(x.chg)}">${x.bono ? sg(x.chg * 100, 1) + " pb" : pc(x.pct)}</td><td>${spark(x.serie)}</td></tr>`; }).join("") + "</table></div>").join("");
 }
+/* gráfico al hacer clic en un mercado global (widget de TradingView) */
+const CFD = "CFD de Capital.com (puede diferir un poco del índice contado)";
+const TVSYM = {
+  "^VIX": ["CAPITALCOM:VIX", 0, "CFD del futuro del VIX: el nivel difiere del VIX contado"], "DX-Y.NYB": ["CAPITALCOM:DXY", 0, CFD],
+  "EURUSD=X": ["FX:EURUSD", 0, ""], "JPY=X": ["FX:USDJPY", 0, ""],
+  "^IRX": ["FRED:DGS3MO", 1, "rendimiento diario oficial (FRED), sin intradía"], "^FVX": ["FRED:DGS5", 1, "rendimiento diario oficial (FRED), sin intradía"],
+  "^TNX": ["FRED:DGS10", 1, "rendimiento diario oficial (FRED), sin intradía"], "^TYX": ["FRED:DGS30", 1, "rendimiento diario oficial (FRED), sin intradía"],
+  "CL=F": ["TVC:USOIL", 0, "CFD del WTI"], "GC=F": ["TVC:GOLD", 0, "oro contado"], "HG=F": ["CAPITALCOM:COPPER", 0, CFD], "NG=F": ["CAPITALCOM:NATURALGAS", 0, CFD],
+  "^N225": ["CAPITALCOM:J225", 0, CFD], "^HSI": ["CAPITALCOM:HK50", 0, CFD], "000001.SS": ["SSE:000001", 1, "índice oficial, solo diario"],
+  "^STOXX50E": ["CAPITALCOM:EU50", 0, CFD], "^GDAXI": ["CAPITALCOM:DE40", 0, CFD], "^FTSE": ["CAPITALCOM:UK100", 0, CFD],
+  "YM=F": ["CAPITALCOM:US30", 0, CFD], "RTY=F": ["CAPITALCOM:RTY", 0, CFD], "SOXX": ["NASDAQ:SOXX", 0, "ETF de semiconductores"]};
+let gmSym = null, gmInt = "60", gmDia = false, tvCarga = null;
+function tvScript() {
+  return tvCarga || (tvCarga = new Promise((ok, mal) => { const sc = document.createElement("script");
+    sc.src = "https://s3.tradingview.com/tv.js"; sc.onload = ok; sc.onerror = () => { tvCarga = null; mal(); }; document.head.appendChild(sc); }));
+}
+async function gmDibujar() {
+  $("gchart").innerHTML = '<p class="mut" style="padding:16px">Cargando gráfico…</p>';
+  try { await tvScript(); } catch (e) { $("gchart").innerHTML = '<p class="mut" style="padding:16px">No se pudo cargar TradingView.</p>'; return; }
+  $("gchart").innerHTML = "";
+  new TradingView.widget({container_id: "gchart", symbol: gmSym, interval: gmDia && !"DW".includes(gmInt) ? "D" : gmInt, autosize: true, theme: "dark", style: "1",
+    locale: "es", timezone: "America/Santiago", hide_side_toolbar: false, allow_symbol_change: false, withdateranges: true,
+    backgroundColor: "#12161b", gridColor: "rgba(34,42,51,.6)", save_image: false});
+}
+function gmAbrir(s) {
+  const x = DATA.global.flatMap(g => g.items).find(i => i.s === s); if (!x || !TVSYM[s]) return;
+  [gmSym, gmDia] = [TVSYM[s][0], !!TVSYM[s][1]];
+  document.querySelectorAll("#gmI button").forEach(b => { b.disabled = gmDia && !"DW".includes(b.dataset.i); b.style.opacity = b.disabled ? .35 : 1;
+    b.classList.toggle("on", b.dataset.i === (gmDia && !"DW".includes(gmInt) ? "D" : gmInt)); });
+  $("gmN").textContent = x.nm;
+  $("gmP").innerHTML = `${fmt(x.precio, x.bono ? 3 : 2)}${x.bono ? "%" : ""} <span class="${cl(x.chg)}">${x.bono ? sg(x.chg * 100, 1) + " pb" : pc(x.pct)}</span>`;
+  $("gmS").textContent = gmSym + (TVSYM[s][2] ? " · " + TVSYM[s][2] : "") + " · hora Chile";
+  $("gmod").classList.add("on"); document.body.style.overflow = "hidden";
+  gmDibujar();
+}
+function gmCerrar() { $("gmod").classList.remove("on"); document.body.style.overflow = ""; $("gchart").innerHTML = ""; }
+function gmUI() {
+  $("global").addEventListener("click", e => { const tr = e.target.closest("tr.gx"); if (tr) gmAbrir(tr.dataset.s); });
+  $("gmX").onclick = gmCerrar;
+  $("gmod").addEventListener("click", e => { if (e.target.id === "gmod") gmCerrar(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && $("gmod").classList.contains("on")) gmCerrar(); });
+  document.querySelectorAll("#gmI button").forEach(b => b.onclick = () => { gmInt = b.dataset.i;
+    document.querySelectorAll("#gmI button").forEach(x => x.classList.toggle("on", x === b)); gmDibujar(); });
+}
+
 function pintarNews() {
   const vivas = NOTIS.filter(n => n.tipo === "noticia").slice(0, 8).map(n =>
     `<a class="nw nwlive" href="${esc(n.link)}" target="_blank" rel="noopener noreferrer"><span class="meta">EN VIVO · ${esc(n.src)} · ${horaCL(n.t * 1000)}</span><span class="es">${esc(n.titulo)}</span><span class="en">${esc(n.en)}</span></a>`).join("");
@@ -1269,7 +1326,7 @@ function reloj() {
 }
 
 (async function inicio() {
-  opciones(); notisUI(); cableUI(); ntfyConectar();
+  opciones(); notisUI(); cableUI(); gmUI(); ntfyConectar();
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
   setInterval(() => refrescarRx(false), 2000);
