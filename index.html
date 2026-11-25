@@ -236,6 +236,22 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .pst{background:rgba(255,159,26,.08);border-left:4px solid var(--acc);padding:10px 14px;font-size:14px;line-height:1.6;color:#fff;margin-top:14px}
 .pst b{font:600 11px "IBM Plex Mono";letter-spacing:.1em;color:var(--acc);display:block;margin-bottom:3px}
 .cm.min .cm-mas{display:none}
+.pm{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.pm-t{font:600 24px/1.25 "IBM Plex Sans",system-ui,sans-serif;color:#fff;margin:8px 0 6px;text-wrap:balance}
+.fase{display:inline-block;font:600 11.5px "IBM Plex Mono";color:var(--blue);border:1px solid rgba(79,195,247,.45);padding:3px 9px;margin-bottom:12px}
+.md{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-bottom:14px}
+.mdx{background:var(--panel2);border:1px solid var(--line);border-top:2px solid var(--mut);padding:7px 9px;min-width:0}
+.mdx.b{border-top-color:var(--up)}.mdx.m{border-top-color:var(--dn)}
+.mdx .n{font:10.5px "IBM Plex Mono";color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.mdx .v{font:600 18px "IBM Plex Mono";color:#fff;margin:2px 0}.mdx .d{font-size:11px;color:#aab4c0;line-height:1.35}.mdx .f{font:10px "IBM Plex Mono";color:var(--mut);margin-top:3px}
+.pm-a p{font-size:14.5px;line-height:1.65;color:#d7dde5;max-width:115ch;margin:0 0 10px}
+.ejes{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:8px;margin-top:6px}
+.ej{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--acc);padding:9px 11px}
+.ej.mejorando{border-left-color:var(--up)}.ej.empeorando{border-left-color:var(--dn)}
+.ej .a{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.ej .n{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.05em}
+.ej .t{font:600 11px "IBM Plex Mono"}.ej.mejorando .t{color:var(--up)}.ej.empeorando .t{color:var(--dn)}.ej.estable .t{color:var(--acc)}
+.ej .e{font-size:12.5px;color:var(--blue);margin:4px 0}.ej .x{font-size:12.5px;line-height:1.5;color:#c3cbd5}
+.cm-sep{font:600 11px "IBM Plex Mono";letter-spacing:.14em;color:var(--acc);margin:4px 0 0}
 .cm-ver{display:block;width:100%;margin-top:12px;background:var(--panel2);border:1px solid var(--acc);color:var(--acc);font:600 12px "IBM Plex Mono";padding:9px;cursor:pointer}.cm-ver:hover{background:var(--acc);color:#000}
 @media(max-width:900px){.cm-s,.esc,.cm-two{grid-template-columns:1fr}.cmt{grid-template-columns:1fr;gap:2px}.cm-t{font-size:19px}}
 </style>
@@ -1180,6 +1196,14 @@ async function cargarComite() {
     COMITE = c; pintarComite();
   } catch (e) { console.warn("comité", e); }
 }
+function pmHTML(c) {
+  const p = c.panorama_macro; if (!p) return "";
+  const fl = {mejorando: "▲ mejorando", empeorando: "▼ empeorando", estable: "■ estable"};
+  return `<div class="pm"><div class="pm-t">${esc(p.titular)}</div><span class="fase">FASE DEL CICLO · ${esc(p.fase_del_ciclo)}</span>` +
+    ((c.macro_datos || []).length ? `<div class="md">${c.macro_datos.map(m => `<div class="mdx ${m.tono > 0 ? "b" : m.tono < 0 ? "m" : ""}"><div class="n">${esc(m.nombre)}</div><div class="v">${esc(m.valor)}</div><div class="d">${esc(m.detalle)}</div><div class="f">${esc(m.fecha)} · FRED</div></div>`).join("")}</div>` : "") +
+    `<div class="pm-a">${p.apertura.split(/\n\s*\n/).map(x => `<p>${esc(x.trim())}</p>`).join("")}</div>` +
+    `<h3>Las fuerzas macro, eje por eje</h3><div class="ejes">${p.ejes.map(e => `<div class="ej ${esc(e.tendencia)}"><div class="a"><span class="n">${esc(e.eje)}</span><span class="t">${fl[e.tendencia] || esc(e.tendencia)}</span></div><div class="e">${esc(e.estado)}</div><div class="x">${esc(e.efecto_en_mercados)}</div></div>`).join("")}</div></div>`;
+}
 function pintarComite() {
   const c = COMITE, el = $("comite"); if (!c) return;
   const g = new Date(c.generado);
@@ -1191,7 +1215,8 @@ function pintarComite() {
   let min = true; try { min = localStorage.getItem("cmMin") !== "0"; } catch (e) {}
   el.className = "cm" + (min ? " min" : "");
   el.innerHTML =
-    `<div class="cm-h"><span class="cm-k">◆ COMITÉ MACRO DE LA MAÑANA</span><span class="cm-meta"><span class="tono ${tono[0]}">${esc(tono[1])}</span><span>${esc(fecha)} Chile${horas > 20 ? " · ⚠ no es de hoy" : ""}</span><button id="cmTg">${min ? "ver informe completo ▾" : "resumir ▴"}</button></span></div>` +
+    `<div class="cm-h"><span class="cm-k">◆ COMITÉ MACRO DE LA MAÑANA · PANORAMA MACRO</span><span class="cm-meta"><span class="tono ${tono[0]}">${esc(tono[1])}</span><span>${esc(fecha)} Chile${horas > 20 ? " · ⚠ no es de hoy" : ""}</span><button id="cmTg">${min ? "ver informe completo ▾" : "resumir ▴"}</button></span></div>` +
+    pmHTML(c) + `<div class="cm-sep">◆ LA SESIÓN DE HOY</div>` +
     `<div class="cm-t">${esc(c.titular)}</div><p class="cm-r">${esc(c.resumen)}</p>` +
     `<div class="cm-s">${sg("S&amp;P 500", c.sesgos.SP500)}${sg("NASDAQ 100", c.sesgos.Nasdaq)}${sg("BITCOIN", c.sesgos.Bitcoin)}</div>` +
     `<h3>Dónde poner el ojo hoy</h3><div class="cm-ojo">${c.ojo.map(o => `<div class="oj"><div class="q">${esc(o.que)}</div><div class="w">${esc(o.nivel_u_hora)}</div><div class="y">${esc(o.por_que)}</div></div>`).join("")}</div>` +
