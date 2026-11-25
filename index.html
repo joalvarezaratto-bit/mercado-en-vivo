@@ -168,6 +168,35 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .card.zona{border-top-color:var(--acc);box-shadow:inset 0 2px 0 var(--acc)}
 .ch .zb{display:none;font:600 9.5px "IBM Plex Mono";background:var(--acc);color:#000;padding:1px 6px;letter-spacing:.06em}
 .card.zona .ch .zb{display:inline}
+/* ---- cable de noticias */
+:root{--yel:#ffd43b}
+.cable{display:flex;align-items:stretch;border-top:1px solid var(--line);background:#0e1115;height:30px;overflow:hidden}
+.cable .cl{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--acc);color:#000;font:600 11px "IBM Plex Mono";letter-spacing:.1em}
+.cable .cv{flex:1;overflow:hidden;position:relative;mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.cable .ct{display:inline-flex;white-space:nowrap;height:100%;align-items:center;animation:crawl linear infinite;will-change:transform}
+.cable .cv:hover .ct{animation-play-state:paused}
+@keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.cable a{display:inline-flex;align-items:center;gap:7px;padding:0 18px;text-decoration:none;color:#c9d1db;font-size:13px;border-right:1px solid var(--line)}
+.cable a .h{font:11px "IBM Plex Mono";color:var(--mut)}.cable a .rg{font:10px "IBM Plex Mono";color:var(--mut);text-transform:uppercase}
+.cable a.rel{color:var(--yel);font-weight:600}.cable a.rel .rg{color:var(--yel)}
+.cable a:hover{color:#fff;text-decoration:underline}
+.cable .vacio{color:var(--mut);font-size:12px;padding:0 14px}
+.cab{max-height:520px;overflow:auto}
+.cabf{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.cabf button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 9px;cursor:pointer}.cabf button.on{color:#000;background:var(--acc);border-color:var(--acc)}
+.ci{display:grid;grid-template-columns:48px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--tx)}
+.ci .h{font:12px "IBM Plex Mono";color:var(--mut);padding-top:1px}
+.ci .tt{display:block;font-size:14px}.ci.rel .tt{color:var(--yel);font-weight:600}
+.ci .mt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font:10.5px "IBM Plex Mono";color:var(--mut);margin-top:3px}
+.ci .rg{border:1px solid var(--line);padding:0 5px;text-transform:uppercase;letter-spacing:.04em}
+.ci .en{display:block;font-size:11.5px;color:var(--mut);margin-top:2px}
+.ci .xp{display:block;font-size:12.5px;color:#d7dde5;margin-top:4px}.ci .xp b{color:var(--yel);font-weight:600}
+.ci:hover .tt{text-decoration:underline}
+.chip{font:600 10.5px "IBM Plex Mono";padding:1px 5px;border:1px solid var(--line);white-space:nowrap}
+.chip.up{color:var(--up);border-color:rgba(46,204,113,.45)}.chip.dn{color:var(--dn);border-color:rgba(255,77,79,.45)}.chip.nt{color:#b9c3cf}
+.ni .xp,.nt .xp{display:block;font-size:12px;color:#d7dde5;margin-top:4px}
+.ni .chips,.nt .chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+@media(max-width:600px){.cable .cl span{display:none}.cable a{font-size:12px;padding:0 12px}}
 </style>
 </head>
 <body>
@@ -180,6 +209,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
+  <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
 <div id="ntoasts"></div>
@@ -197,6 +227,9 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <section class="card" id="card-NQ"></section>
     <section class="card" id="card-BTC"></section>
   </div>
+
+  <h2>Cable de noticias · en vivo <small>en amarillo lo que puede mover el mercado · cómo puede pegar en cada activo</small></h2>
+  <div class="panel"><div class="cabf" id="cabF"><button data-f="todo" class="on">Todo</button><button data-f="rel">Relevantes</button><button data-f="eeuu">EE.UU.</button><button data-f="int">Internacional</button><button data-f="cripto">Cripto</button></div><div class="cab" id="cab"><p class="mut">Conectando…</p></div></div>
 
   <h2>Lo que hay que saber <small id="genTxt"></small></h2>
   <div class="panel"><ul class="keys" id="puntos"></ul></div>
@@ -529,8 +562,11 @@ function parsear(m) {
   const tipo = tags.includes("previo") ? "previo" : tags.includes("dato") ? "dato" : "noticia", nivel = tags.includes("alta") ? "alta" : "media";
   const lineas = (m.message || "").split("\n");
   const lec = tipo === "dato" ? (lineas.slice(1).find(l => !l.startsWith("—")) || "") : "";
+  const flecha = tipo === "noticia" ? (lineas.find(l => l.startsWith("→ ")) || "") : "";
+  const xp = flecha ? flecha.slice(2).replace(/^[^:]*▲[^:]*:|^[^:]*▼[^:]*:/, "").trim() : "";
   return {id: m.id, t: m.time, tipo, nivel, titulo: (m.title || "").replace(/^🔴\s*/, "").replace(/^📊\s*/, ""),
-    en: tipo === "noticia" ? lineas[0] : "", ms: tipo === "noticia" ? lineas.slice(1).join("\n").replace(/^—\s*/, "") : m.message || "",
+    en: tipo === "noticia" ? lineas[0] : "", ms: tipo === "noticia" ? lineas.filter((l, i) => i > 0 && !l.startsWith("→ ")).join("\n").replace(/^—\s*/, "") : m.message || "",
+    xp, imp: kv.imp || "", reg: kv.reg || "",
     link: linkSeguro(m.click) || "#", src: kv.src || "", kv, lec, silencio: tags.includes("silencio"), t0: +kv.t0 || m.time};
 }
 function aplicarDato(n, animar) {
@@ -561,7 +597,7 @@ function toast(n) {
   const d = document.createElement("div"), dura = n.nivel === "alta" || n.tipo === "dato" ? 30000 : 15000;
   d.className = `nt ${n.tipo === "dato" || n.tipo === "previo" ? n.tipo : n.nivel}`;
   d.innerHTML = `<button class="x" aria-label="Cerrar">×</button><span class="mt m" style="font-size:10.5px;color:var(--mut)">${etiqueta(n)} ${esc(n.src)} · ${horaCL(n.t * 1000)}</span>` +
-    `<span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "noticia" ? n.en : n.ms)}</span>${n.tipo === "previo" ? "" : `<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`}<span class="bar" style="animation-duration:${dura}ms"></span>`;
+    `<span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "noticia" ? n.en : n.ms)}</span>${impHTML(n)}${n.tipo === "previo" ? "" : `<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`}<span class="bar" style="animation-duration:${dura}ms"></span>`;
   d.onclick = ev => { d.remove(); if (!ev.target.classList.contains("x")) abrirNoti(n); };
   $("ntoasts").prepend(d); setTimeout(() => d.remove(), dura);
   while ($("ntoasts").children.length > 3) $("ntoasts").lastChild.remove();
@@ -583,7 +619,7 @@ function pintarNotis() {
   $("nlist").innerHTML = l.length ? "" : `<div class="nvac">${nHistoria ? "Conectando…" : "Sin avisos en las últimas 12 horas. Apenas salga una noticia importante o un dato, aparece aquí."}</div>`;
   l.slice(0, 80).forEach(n => {
     const a = document.createElement("a"); a.className = "ni" + (n.t > nVisto ? " nuevo" : "");
-    a.innerHTML = `<span class="mt">${etiqueta(n)}<span>${horaCL(n.t * 1000)}</span><span>· ${esc(n.src)}</span></span><span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "dato" ? n.ms : n.en)}</span><span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`;
+    a.innerHTML = `<span class="mt">${etiqueta(n)}<span>${horaCL(n.t * 1000)}</span><span>· ${esc(n.src)}</span></span><span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "dato" ? n.ms : n.en)}</span>${impHTML(n)}<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`;
     a.onclick = () => abrirNoti(n); $("nlist").appendChild(a);
   });
   ultimaHora();
@@ -593,11 +629,14 @@ function cerrarPanel() { $("npanel").classList.remove("open"); $("bell").classLi
 function nuevaNoti(m) {
   if (m.event !== "message" || NIDS.has(m.id)) return;
   NIDS.add(m.id);
+  if (m.topic === NTFY_CABLE) { try { JSON.parse(m.message).forEach(x => alCable({t: x.t, src: x.s, es: x.es, en: x.en, link: linkSeguro(x.l) || "#",
+    reg: x.r, rel: x.v === "media" || x.v === "alta", imp: x.i || "", xp: x.x || ""})); } catch (e) {} return; }
   const n = parsear(m);
   if (n.tipo === "previo") return;          // el aviso previo lo hace la propia página (banda + aviso)
   if (n.tipo === "dato") { DPEND.push(n); aplicarDato(n, !nHistoria); }
   if (n.silencio) return;
   NOTIS.push(n); NOTIS.sort((a, b) => b.t - a.t);
+  if (n.tipo === "noticia") alCable({t: n.t, src: n.src, es: n.titulo, en: n.en, link: n.link, reg: n.reg, rel: true, alta: n.nivel === "alta", imp: n.imp, xp: n.xp});
   const reciente = !nHistoria && Date.now() / 1000 - n.t < 600;
   if (reciente) {
     $("bell").classList.remove("ring"); void $("bell").offsetWidth; $("bell").classList.add("ring");
@@ -611,7 +650,7 @@ function nuevaNoti(m) {
 }
 function ntfyConectar() {
   let es;
-  try { es = new EventSource(`https://ntfy.sh/${NTFY_TOPIC}/sse?since=12h`); } catch (e) { $("dNW").className = "dot bad"; return; }
+  try { es = new EventSource(`https://ntfy.sh/${NTFY_TOPIC},${NTFY_CABLE}/sse?since=12h`); } catch (e) { $("dNW").className = "dot bad"; return; }
   es.onopen = () => { $("dNW").className = "dot ok"; setTimeout(() => { nHistoria = false; pintarNotis(); }, 1500); };
   es.onmessage = ev => { try { nuevaNoti(JSON.parse(ev.data)); } catch (e) {} };
   es.onerror = () => { $("dNW").className = "dot wait"; };
@@ -627,6 +666,48 @@ function notisUI() {
   const pinta = () => { $("bNws").textContent = "Avisos de noticias: " + (OPT.nws ? "sí" : "no"); $("bNws").classList.toggle("on", OPT.nws); store.set("opt", OPT); };
   $("bNws").onclick = () => { OPT.nws = !OPT.nws; pinta(); }; pinta();
   setInterval(ultimaHora, 30000);
+}
+
+/* ============================================================ cable de noticias */
+const NTFY_CABLE = NTFY_TOPIC + "-cable";
+const CABLE = [];
+let cabFiltro = "todo";
+const VERDE_ROJO = new Set(["ES", "NQ", "BTC"]);
+function chips(imp) {
+  return (imp || "").split(",").filter(Boolean).map(x => { const a = x.slice(0, -1), d = x.slice(-1);
+    const c = VERDE_ROJO.has(a) ? (d === "+" ? "up" : "dn") : "nt";
+    return `<span class="chip ${c}">${esc(a)} ${d === "+" ? "▲" : "▼"}</span>`; }).join("");
+}
+function impHTML(n) {
+  if (n.tipo !== "noticia" || (!n.imp && !n.xp)) return "";
+  return (n.imp ? `<span class="chips">${chips(n.imp)}</span>` : "") + (n.xp ? `<span class="xp">${esc(n.xp)}</span>` : "");
+}
+function alCable(x) {
+  const ya = CABLE.find(c => c.es === x.es || (x.en && c.en === x.en));
+  if (ya) { ["imp", "xp", "reg"].forEach(k => { if (!ya[k] && x[k]) ya[k] = x[k]; }); ya.rel = ya.rel || x.rel; ya.alta = ya.alta || x.alta;
+    clearTimeout(alCable.tm); alCable.tm = setTimeout(pintarCable, 200); return; }
+  CABLE.push(x); CABLE.sort((a, b) => b.t - a.t); if (CABLE.length > 400) CABLE.length = 400;
+  clearTimeout(alCable.tm); alCable.tm = setTimeout(pintarCable, 200);
+}
+const esInt = r => r && !["EE.UU.", "Global", "Cripto"].includes(r);
+function pintarCable() {
+  // cinta del encabezado: los últimos 30, relevantes en amarillo
+  const ult = CABLE.slice(0, 30);
+  if (ult.length) {
+    const items = ult.map(x => `<a class="${x.rel ? "rel" : ""}" href="${esc(x.link)}" target="_blank" rel="noopener noreferrer"><span class="h">${horaCL(x.t * 1000)}</span>${x.reg && x.reg !== "Global" ? `<span class="rg">${esc(x.reg)}</span>` : ""}${x.rel ? "● " : ""}${esc(x.es)}</a>`).join("");
+    const ct = $("cableT"); ct.innerHTML = items + items;
+    ct.style.animationDuration = Math.max(60, ult.length * 9) + "s";
+  }
+  const l = CABLE.filter(x => cabFiltro === "todo" || (cabFiltro === "rel" ? x.rel : cabFiltro === "eeuu" ? x.reg === "EE.UU." : cabFiltro === "int" ? esInt(x.reg) : x.reg === "Cripto"));
+  $("cab").innerHTML = l.slice(0, 150).map(x => `<a class="ci ${x.rel ? "rel" : ""}" href="${esc(x.link)}" target="_blank" rel="noopener noreferrer"><span class="h">${horaCL(x.t * 1000)}</span><span>` +
+    `<span class="tt">${x.alta ? "🔴 " : ""}${esc(x.es)}</span>` +
+    `<span class="mt">${x.reg ? `<span class="rg">${esc(x.reg)}</span>` : ""}<span>${esc(x.src)}</span>${chips(x.imp)}</span>` +
+    (x.xp ? `<span class="xp"><b>Cómo puede pegar:</b> ${esc(x.xp)}</span>` : "") +
+    `<span class="en">${esc(x.en)}</span></span></a>`).join("") || `<p class="mut">Sin noticias en las últimas 12 horas para este filtro.</p>`;
+}
+function cableUI() {
+  document.querySelectorAll("#cabF button").forEach(b => b.onclick = () => { cabFiltro = b.dataset.f;
+    document.querySelectorAll("#cabF button").forEach(x => x.classList.toggle("on", x === b)); pintarCable(); });
 }
 
 /* ============================================================ reacción del precio a cada noticia/dato */
@@ -1080,7 +1161,7 @@ function reloj() {
 }
 
 (async function inicio() {
-  opciones(); notisUI(); ntfyConectar();
+  opciones(); notisUI(); cableUI(); ntfyConectar();
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
   setInterval(() => refrescarRx(false), 2000);
