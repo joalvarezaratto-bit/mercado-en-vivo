@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mercado en vivo · ES NQ BTC</title>
 <meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icono-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0a0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mercado">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
@@ -313,6 +321,21 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 /* ---- próximo dato */
 #nxEv{font:600 11.5px "IBM Plex Mono";color:var(--acc);text-decoration:none;border:1px solid var(--acc);padding:2px 7px;white-space:nowrap}
 #nxEv.ya{color:#fff;background:var(--dn);border-color:var(--dn);animation:parp 1s steps(2) infinite}@keyframes parp{50%{opacity:.55}}
+header{padding-top:env(safe-area-inset-top,0px)}
+/* ---- gap */
+.gp-h{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.gp-h>div{background:var(--panel2);padding:10px}
+.gp-n{font:600 22px "IBM Plex Mono"}.gp-s{font-size:12px;line-height:1.5;margin-top:4px}
+.gp-t{width:100%;border-collapse:collapse;font:11.5px "IBM Plex Mono"}.gp-t th{color:var(--mut);font-weight:500;font-size:10.5px;text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)}
+.gp-t td{text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)}.gp-t td:first-child,.gp-t th:first-child{text-align:left}.gp-t tr.on td{background:rgba(255,212,59,.16);color:#fff}
+@media(max-width:600px){.gp-h{grid-template-columns:1fr}}
+/* ---- diario */
+.dj-f{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}.dj-f input,.dj-f select{background:var(--panel2);border:1px solid var(--line);color:var(--txt);font:12px "IBM Plex Mono";padding:6px;min-width:0}
+.dj-f .w2{grid-column:span 2}.dj-f .w3{grid-column:span 3}.dj-f button{background:var(--acc);color:#000;border:0;font:600 12px "IBM Plex Mono";cursor:pointer}
+
+.dj-k{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.dj-k div{background:var(--panel2);padding:7px}.dj-k .n{font-size:10.5px;color:var(--mut)}.dj-k .v{font:600 16px "IBM Plex Mono"}
+.dj-l{max-height:230px;overflow:auto;font:11.5px "IBM Plex Mono"}.dj-l table{width:100%;border-collapse:collapse}.dj-l td{padding:3px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
+.dj-l td.nt{white-space:normal;color:var(--mut);font-family:"IBM Plex Sans",sans-serif}.dj-l button{background:none;border:0;color:var(--mut);cursor:pointer}
+.dj-b{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}.dj-b button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 9px;cursor:pointer}
 /* ---- mapa de calor */
 .mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 #mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
@@ -366,7 +389,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#gapSec">Gap</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -403,6 +426,11 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
   <div class="two" id="rangoSec">
     <div><h2>Rango del día <small>cuánto recorrido ya hizo vs. su promedio (ATR 14) y vs. lo que descuentan las opciones</small></h2><div class="panel" id="rango"><p class="mut">Esperando precios…</p></div></div>
     <div><h2>Correlaciones <small>retornos diarios · verde = se mueven juntos · rojo = al revés</small></h2><div class="panel" id="corr"><p class="mut">Cargando…</p></div></div>
+  </div>
+
+  <div class="two" id="gapSec">
+    <div><h2>El gap de hoy y su historia <small>qué pasó en los últimos 5 años con gaps parecidos (índice contado)</small></h2><div class="panel" id="gap"><p class="mut">Esperando precios…</p></div></div>
+    <div id="diarioSec"><h2>Diario de trades <small>se guarda solo en este equipo · exporta a Excel (CSV)</small></h2><div class="panel" id="diario"></div></div>
   </div>
 
   <div class="two" id="moversSec">
@@ -1524,6 +1552,86 @@ function pintarRango() {
   $("rango").innerHTML = filas.length ? filas.join("") + `<p class="mut" style="font-size:11px;margin:4px 0 0">ES/NQ: desde la apertura de Globex (18:00 NY) hasta ahora; BTC: últimas 24 h. La raya blanca marca el 100% del ATR de 14 días. La barra de colores muestra dónde está el precio dentro del movimiento que descuentan las opciones (VIX para ES, VXN para NQ) desde el cierre de ayer: en el borde ya cubrió todo el movimiento esperado. Referencia estadística, no un techo ni un piso.</p>` : `<p class="mut">Esperando precios…</p>`;
 }
 
+/* ============================================================ gap de hoy */
+let gapK = store.get("gapK", "ES");
+function gapHoy(k) {
+  const f = DATA?.fut?.[k]; if (!f?.pdc) return null;
+  const n = ahoraNY(), hm = +n.hour * 60 + +n.minute, dow = new Date().toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"});
+  const habil = !["Sat", "Sun"].includes(dow) && !esFeriado();
+  if (habil && hm >= 570) {
+    const t = epochEn("America/New_York", +n.year, +n.month, +n.day, 9, 29), c = M1[k].get(t) ?? M1[k].get(t + 60);
+    if (c && f.base !== null) { const op = c + f.base; return {g: (op / f.pdc - 1) * 100, op, real: true}; }
+  }
+  const p = precioFut(k); return p ? {g: (p / f.pdc - 1) * 100, op: p, real: false} : null;
+}
+function pintarGap() {
+  const G = DATA?.gapst; if (!G || !G.ES) { $("gap").innerHTML = `<p class="mut">Sin estadística por ahora.</p>`; return; }
+  const caja = k => {
+    const x = gapHoy(k), st = G[k]; if (!x || !st) return `<div><b>${k}</b> <span class="mut">esperando precio…</span></div>`;
+    const t = st.tramos.find(r => x.g >= r.lo && x.g < r.hi), f = DATA.fut[k], dec = INST[k].dec;
+    let estado = "";
+    if (x.real && SES[k].hi !== null) {
+      const lleno = x.g > 0 ? SES[k].lo <= f.pdc : SES[k].hi >= f.pdc;
+      estado = lleno ? `<b class="up">✓ ya llenó el gap</b> (tocó ${fmt(f.pdc, dec)})` : `falta <b>${fmt(Math.abs((x.g > 0 ? SES[k].lo : SES[k].hi) - f.pdc), dec)} pts</b> para llenarlo (cierre de ayer ${fmt(f.pdc, dec)})`;
+    } else estado = `objetivo de llenado: cierre de ayer <b class="m">${fmt(f.pdc, dec)}</b>`;
+    return `<div><div class="mut" style="font-size:11px">${k} · ${x.real ? "gap real en la apertura" : "gap proyectado (si abriera ahora)"}</div>` +
+      `<div class="gp-n ${cl(x.g)}">${pc(x.g, 2)}</div>` +
+      (t ? `<div class="gp-s">En gaps así (${t.n} días): <b>llenó el gap el mismo día ${t.lleno}%</b>${t.n2 ? ` <span class="mut">(últimos 2 años ${t.lleno2}%)</span>` : ""} · cerró sobre la apertura ${t.verde}% · rango medio ${fmt(t.rango, 2)}%</div>` : "") +
+      `<div class="gp-s">${estado}</div></div>`;
+  };
+  const st = G[gapK], x = gapHoy(gapK), et = r => r.lo === -99 ? `< ${fmt(r.hi, 2)}%` : r.hi === 99 ? `> ${fmt(r.lo, 2)}%` : `${fmt(r.lo, 2)} a ${fmt(r.hi, 2)}%`;
+  $("gap").innerHTML = `<div class="gp-h">${caja("ES")}${caja("NQ")}</div>` +
+    `<div class="rl-k"><span class="mut">Tabla completa:</span><button data-k="ES" class="${gapK === "ES" ? "on" : ""}">S&amp;P 500</button><button data-k="NQ" class="${gapK === "NQ" ? "on" : ""}">Nasdaq 100</button><span class="sp"></span><span class="mut">desde ${esc(st.desde)} · ${st.n} días</span></div>` +
+    `<table class="gp-t"><tr><th>Gap de apertura</th><th>Días</th><th>Llenó</th><th>Llenó 2 años</th><th>Cerró ▲ apertura</th><th>Día total</th></tr>` +
+    st.tramos.map(r => `<tr class="${x && x.g >= r.lo && x.g < r.hi ? "on" : ""}"><td>${et(r)}</td><td>${r.n}</td><td>${r.lleno}%</td><td>${r.n2 ? r.lleno2 + "%" : "—"}</td><td>${r.verde}%</td><td class="${cl(r.dia)}">${pc(r.dia, 2)}</td></tr>`).join("") + `</table>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">"Llenó" = el precio volvió al cierre del día anterior durante la sesión. "Día total" = variación media cierre contra cierre. Gaps chicos casi siempre se llenan; los grandes suelen seguir su dirección. Estadística del índice contado (S&amp;P 500 / Nasdaq 100), no una señal.</p>`;
+  $("gap").querySelectorAll("button[data-k]").forEach(b => b.onclick = () => { gapK = b.dataset.k; store.set("gapK", gapK); pintarGap(); });
+}
+
+/* ============================================================ diario de trades */
+let DIARIO = store.get("diario", []);
+const DJ_SET = ["TJR", "ICT", "Fede", "RIPS", "Jdun", "Propio"];
+function diarioUI() {
+  const hoy = new Date().toLocaleDateString("en-CA", {timeZone: "America/Santiago"});
+  $("diario").innerHTML = `<div class="dj-f"><input id="djD" type="date" value="${hoy}" class="w2"><select id="djI"><option>ES</option><option>NQ</option><option>BTC</option><option>Otro</option></select>` +
+    `<select id="djL"><option value="L">Largo</option><option value="C">Corto</option></select><select id="djS">${DJ_SET.map(x => `<option>${x}</option>`).join("")}</select>` +
+    `<input id="djR" type="number" step="any" placeholder="R (ej. 2 / -1)"><input id="djU" type="number" step="any" placeholder="USD (opcional)" class="w2"><input id="djN" placeholder="nota: por qué entré, qué aprendí" class="w3"><button id="djA">+ registrar</button></div>` +
+    `<div id="djK"></div><div class="dj-l" id="djLista"></div>` +
+    `<div class="dj-b"><button id="djCSV">Exportar CSV</button><button id="djBorrar">Borrar todo</button></div>`;
+  $("djS").value = store.get("djS", "TJR");
+  $("djA").onclick = () => {
+    const r = parseFloat($("djR").value), u = parseFloat($("djU").value);
+    if (isNaN(r) && isNaN(u)) { $("djR").focus(); return; }
+    DIARIO.push({d: $("djD").value, i: $("djI").value, l: $("djL").value, s: $("djS").value, r: isNaN(r) ? null : r, u: isNaN(u) ? null : u, n: $("djN").value.trim(), t: Date.now()});
+    store.set("djS", $("djS").value); store.set("diario", DIARIO); $("djR").value = $("djU").value = $("djN").value = ""; pintarDiario();
+  };
+  $("djCSV").onclick = () => {
+    const filas = [["fecha", "instrumento", "lado", "setup", "R", "USD", "nota"], ...DIARIO.map(x => [x.d, x.i, x.l === "L" ? "largo" : "corto", x.s, x.r ?? "", x.u ?? "", (x.n || "").replace(/"/g, "'")])];
+    const csv = "\ufeff" + filas.map(f => f.map(v => `"${typeof v === "number" ? String(v).replace(".", ",") : v}"`).join(";")).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"})); a.download = "diario-trades.csv"; a.click();
+  };
+  $("djBorrar").onclick = () => { if (DIARIO.length && confirm(`¿Borrar los ${DIARIO.length} trades del diario? No se puede deshacer (exporta antes si los quieres guardar).`)) { DIARIO = []; store.set("diario", DIARIO); pintarDiario(); } };
+  pintarDiario();
+}
+function pintarDiario() {
+  const L = DIARIO.slice().sort((a, b) => a.d.localeCompare(b.d) || a.t - b.t);
+  if (!L.length) { $("djK").innerHTML = ""; $("djLista").innerHTML = `<p class="mut" style="font-size:12px">Todavía no hay trades. Registra cada trade en R (ganancia o pérdida dividida por lo que arriesgaste: +2 = ganaste 2 veces el riesgo, −1 = tocó el stop) y aquí verás tu tasa de acierto, tu esperanza y la curva.</p>`; return; }
+  const R = L.filter(x => x.r !== null).map(x => x.r), gan = R.filter(x => x > 0), per = R.filter(x => x < 0);
+  const tot = R.reduce((a, b) => a + b, 0), usd = L.reduce((a, x) => a + (x.u || 0), 0);
+  let eq = 0, pico = 0, dd = 0; const curva = [0]; for (const r of R) { eq += r; pico = Math.max(pico, eq); dd = Math.min(dd, eq - pico); curva.push(eq); }
+  const pf = per.length ? gan.reduce((a, b) => a + b, 0) / -per.reduce((a, b) => a + b, 0) : null;
+  let racha = 0; for (let i = R.length - 1; i >= 0 && Math.sign(R[i]) === Math.sign(R[R.length - 1]); i--) racha++;
+  const k = (n, v, c = "") => `<div><div class="n">${n}</div><div class="v ${c}">${v}</div></div>`;
+  const mn = Math.min(...curva), mx = Math.max(...curva, mn + 1), X = i => i / Math.max(1, curva.length - 1) * 300, Y = v => 56 - (v - mn) / (mx - mn) * 52;
+  const porSet = DJ_SET.map(s => { const x = L.filter(t => t.s === s && t.r !== null); return x.length ? `${s} ${x.length} · ${sg(x.reduce((a, t) => a + t.r, 0), 1)}R` : null; }).filter(Boolean);
+  $("djK").innerHTML = `<div class="dj-k">${k("Trades", L.length)}${k("Acierto", R.length ? fmt(gan.length / R.length * 100, 0) + "%" : "—")}${k("Total", sg(tot, 1) + "R", cl(tot))}${k("Esperanza", R.length ? sg(tot / R.length, 2) + "R" : "—", cl(tot))}` +
+    `${k("Profit factor", pf === null ? "—" : fmt(pf, 2))}${k("Máx. caída", fmt(dd, 1) + "R", dd < 0 ? "dn" : "")}${k("Racha actual", R.length ? racha + (R[R.length - 1] > 0 ? " ganadas" : " perdidas") : "—")}${k("USD", usd ? sg(usd, 0) : "—", cl(usd))}</div>` +
+    `<svg viewBox="0 0 300 60" preserveAspectRatio="none" style="width:100%;height:60px;background:var(--panel2)"><line x1="0" x2="300" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--mut)" stroke-dasharray="3 3" stroke-width="1"/><polyline fill="none" stroke="${tot >= 0 ? "var(--up)" : "var(--dn)"}" stroke-width="2" points="${curva.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/></svg>` +
+    `<div class="mut" style="font-size:11px;margin:4px 0 6px">Curva en R · ${porSet.join(" · ")}</div>`;
+  $("djLista").innerHTML = `<table>${L.slice().reverse().map(x => `<tr><td>${x.d.slice(5)}</td><td>${x.i}</td><td class="${x.l === "L" ? "up" : "dn"}">${x.l === "L" ? "▲" : "▼"}</td><td>${esc(x.s)}</td><td class="${cl(x.r ?? x.u ?? 0)}">${x.r !== null ? sg(x.r, 1) + "R" : ""}</td><td>${x.u !== null ? sg(x.u, 0) + "$" : ""}</td><td class="nt">${esc(x.n || "")}</td><td><button data-t="${x.t}" title="borrar">✕</button></td></tr>`).join("")}</table>`;
+  $("djLista").querySelectorAll("button").forEach(b => b.onclick = () => { DIARIO = DIARIO.filter(x => x.t !== +b.dataset.t); store.set("diario", DIARIO); pintarDiario(); });
+}
+
 /* ============================================================ correlaciones */
 let corrN = store.get("corrN", "c20");
 function pintarCorr() {
@@ -1855,7 +1963,7 @@ function reloj() {
 
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
-  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
+  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
