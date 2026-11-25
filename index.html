@@ -327,6 +327,21 @@ header{padding-top:env(safe-area-inset-top,0px)}
 .op-r{padding:10px;background:var(--panel2);margin:8px 0}.op-r b.t{font:600 14px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.05em}
 .op-t{width:100%;border-collapse:collapse;font-size:12.5px}.op-t td{padding:5px 4px;border-bottom:1px solid var(--line)}.op-t td.n{text-align:right;font-family:"IBM Plex Mono";white-space:nowrap}
 .op-t i{display:inline-block;width:10px;height:3px;margin-right:6px;vertical-align:middle}
+/* ---- modo apertura */
+.fbtn{background:none;border:1px solid var(--acc);color:var(--acc);font:600 12px "IBM Plex Mono";padding:5px 10px;cursor:pointer;white-space:nowrap}
+body.foco .fbtn{background:var(--acc);color:#000}
+body.foco #comite,body.foco .snav,body.foco .cable,body.foco .l-rest,body.foco #zn,body.foco #status,
+body.foco .l-top>*:not(#foco):not(#graficos),body.foco .l-side>*:not(#misAlSec):not(#agendaSec){display:none!important}
+body.foco #foco{display:block!important}
+#foco{margin-bottom:12px}
+.fo-h{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--acc);padding:10px 14px;margin-bottom:10px}
+.fo-cd{font:600 30px "IBM Plex Mono"}.fo-l{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.fo-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:1100px){.fo-g{grid-template-columns:1fr}}
+.fo-c{background:var(--panel);border:1px solid var(--line);padding:10px 12px}
+.fo-c h3{margin:0 0 6px;font:600 15px "IBM Plex Mono";display:flex;justify-content:space-between;align-items:baseline}
+.fo-k{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.fo-k div{background:var(--panel2);padding:6px}.fo-k .n{font-size:10px;color:var(--mut);text-transform:uppercase}.fo-k .v{font:600 14px "IBM Plex Mono"}.fo-k .s{font-size:10.5px;color:var(--mut)}
+.fo-n{width:100%;border-collapse:collapse;font-size:12px}.fo-n td{padding:3px 4px;border-bottom:1px solid var(--line)}.fo-n td.n{text-align:right;font-family:"IBM Plex Mono";white-space:nowrap}
+.fo-n tr.fpx td{background:rgba(255,159,26,.14);font-weight:600;color:#fff}.fo-n i{display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:middle}
 /* ---- gap */
 .gp-h{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.gp-h>div{background:var(--panel2);padding:10px}
 .gp-n{font:600 22px "IBM Plex Mono"}.gp-s{font-size:12px;line-height:1.5;margin-top:4px}
@@ -390,6 +405,7 @@ header{padding-top:env(safe-area-inset-top,0px)}
     <span class="brand">MERCADO EN VIVO · ES · NQ · BTC</span>
     <span class="live"><i></i>EN VIVO</span>
     <div class="clocks"><span>Santiago <b id="clkCL" class="m">--:--:--</b></span><span>Nueva York <b id="clkNY" class="m">--:--:--</b></span><span id="rthCd"></span><a id="nxEv" href="#agendaSec" hidden></a></div>
+    <button class="fbtn" id="fbtn" title="Ver solo lo necesario para la apertura">🎯 Modo apertura</button>
     <button class="bell" id="bell" title="Noticias y datos en tiempo real" aria-label="Notificaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="bdg" id="bdg" hidden>0</span></button>
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
@@ -412,6 +428,7 @@ header{padding-top:env(safe-area-inset-top,0px)}
   <div class="lay">
   <div class="l-top">
   <section class="cm" id="comite" hidden></section>
+  <section id="foco" hidden></section>
   <div class="grid" id="graficos">
     <section class="card" id="card-ES"></section>
     <section class="card" id="card-NQ"></section>
@@ -1564,6 +1581,71 @@ function pintarRango() {
   $("rango").innerHTML = filas.length ? filas.join("") + `<p class="mut" style="font-size:11px;margin:4px 0 0">ES/NQ: desde la apertura de Globex (18:00 NY) hasta ahora; BTC: últimas 24 h. La raya blanca marca el 100% del ATR de 14 días. La barra de colores muestra dónde está el precio dentro del movimiento que descuentan las opciones (VIX para ES, VXN para NQ) desde el cierre de ayer: en el borde ya cubrió todo el movimiento esperado. Referencia estadística, no un techo ni un piso.</p>` : `<p class="mut">Esperando precios…</p>`;
 }
 
+/* ============================================================ modo apertura */
+let FOCO = store.get("foco", false) || /[?&]apertura/.test(location.search);
+function focoUI() {
+  const aplicar = () => { document.body.classList.toggle("foco", FOCO); $("fbtn").textContent = FOCO ? "✕ Salir de modo apertura" : "🎯 Modo apertura";
+    store.set("foco", FOCO); if (FOCO) { pintarFoco(); window.scrollTo(0, 0); } setTimeout(() => window.dispatchEvent(new Event("resize")), 50); };
+  $("fbtn").onclick = () => { FOCO = !FOCO; aplicar(); };
+  document.addEventListener("keydown", e => { if (e.key === "a" && !e.ctrlKey && !e.metaKey && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) { FOCO = !FOCO; aplicar(); } });
+  aplicar(); setInterval(() => { if (FOCO) pintarFoco(); }, 1000);
+}
+function relojApertura() {
+  const n = ahoraNY(), hm = +n.hour * 60 + +n.minute, sec = hm * 60 + +n.second;
+  const dow = new Date().toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"}), habil = !["Sat", "Sun"].includes(dow) && !esFeriado();
+  const mmss = x => { x = Math.max(0, x); const h = Math.floor(x / 3600), m = Math.floor(x % 3600 / 60), s2 = x % 60; return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s2).padStart(2, "0"); };
+  const proxApertura = () => {   // epoch (s) de la próxima apertura 9:30 NY en día hábil
+    for (let i = 1; i <= 7; i++) { const t = new Date(Date.now() + i * 86400000), q = partes("America/New_York", t);
+      const f = `${q.year}-${q.month}-${q.day}`, w = t.toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"});
+      if (!["Sat", "Sun"].includes(w) && !DATA?.feriados?.[f]) return [epochEn("America/New_York", +q.year, +q.month, +q.day, 9, 30), t]; }
+    return [null, null]; };
+  const cerrado = (tt) => { const [ep, t] = proxApertura(); if (!ep) return [tt, "", "—", "var(--mut)"];
+    const dia = t.toLocaleDateString("es-CL", {timeZone: "America/New_York", weekday: "long", day: "numeric"});
+    return [tt + " · próxima apertura en", `${dia} 9:30 NY (${horaCL(new Date(ep * 1000))} Chile)`, mmss(Math.round(ep - Date.now() / 1000)), "var(--mut)"]; };
+  if (!habil) return cerrado(esFeriado() ? "Feriado en EE.UU." : "Fin de semana");
+  if (sec < 570 * 60) return ["Apertura en", "9:30 Nueva York · " + horaCL(new Date(epochEn("America/New_York", +n.year, +n.month, +n.day, 9, 30) * 1000)) + " Chile", mmss(570 * 60 - sec), sec > 555 * 60 ? "var(--dn)" : "var(--acc)"];
+  if (sec < 585 * 60) return ["Rango de 15 min formándose", "cierra 9:45 NY · zona de peligro: no perseguir", mmss(585 * 60 - sec), "var(--dn)"];
+  if (sec < 615 * 60) return ["Ventana de apertura", "9:30–10:15 NY · primeros setups del día", mmss(615 * 60 - sec), "var(--up)"];
+  if (sec < 630 * 60) return ["1ª hora (IB) formándose", "cierra 10:30 NY", mmss(630 * 60 - sec), "var(--acc)"];
+  if (sec < 960 * 60) return ["Sesión regular", "cierra 16:00 NY", mmss(960 * 60 - sec), "var(--mut)"];
+  return cerrado("Sesión regular cerrada");
+}
+function pintarFoco() {
+  if (!DATA) return;
+  const [tit, sub, cd, col] = relojApertura();
+  const prox = $("nxEv") && !$("nxEv").hidden ? $("nxEv").textContent : "Sin datos de alto impacto pendientes";
+  const col3 = ["ES", "NQ", "BTC"].map(k => {
+    const p = precioK(k); if (!p) return `<div class="fo-c"><h3>${k}</h3><p class="mut">Esperando precio…</p></div>`;
+    const d = k === "BTC" ? 0 : 2, f = DATA.fut?.[k], o = DATA.opc?.[k];
+    const ref = k === "BTC" ? LIVE.btc24o : f?.pdc, ch = ref ? (p / ref - 1) * 100 : null;
+    const kp = [];
+    if (k !== "BTC") { const g = gapHoy(k), st = DATA.gapst?.[k]?.tramos?.find(r => g && g.g >= r.lo && g.g < r.hi);
+      kp.push(["Gap " + (g?.real ? "real" : "proy."), g ? pc(g.g, 2) : "—", st ? `llena ${st.lleno2 ?? st.lleno}% (2 años)` : "", g ? cl(g.g) : ""]); }
+    else kp.push(["24 h", ch !== null ? pc(ch, 2) : "—", "", cl(ch)]);
+    { let hi, lo, atr;
+      if (k === "BTC") { hi = LIVE.btc24h; lo = LIVE.btc24l; atr = DATA.btc?.atr; }
+      else { hi = Math.max(f.onh ?? -Infinity, SES[k].onhi ?? -Infinity, SES[k].hi ?? -Infinity, p); lo = Math.min(f.onl ?? Infinity, SES[k].onlo ?? Infinity, SES[k].lo ?? Infinity, p); atr = f.atr; }
+      const u = hi && lo && atr && isFinite(hi - lo) ? (hi - lo) / atr * 100 : null;
+      kp.push(["Rango usado", u !== null ? fmt(u, 0) + "%" : "—", "del ATR 14", u === null ? "" : u < 60 ? "up" : u < 100 ? "" : "dn"]); }
+    if (o) { const neg = o.flip ? p < o.flip : o.total_bn < 0; kp.push(["Gamma", neg ? "Negativa" : "Positiva", neg ? "acelera movimientos" : "frena movimientos", neg ? "dn" : "up"]); }
+    else kp.push(["Gamma", "—", "", ""]);
+    const L = niveles(k).filter(x => isFinite(x.v) && Math.abs(x.v - p) > 1e-9);
+    const vistos = new Set(), uniq = L.sort((a, b) => a.v - b.v).filter(x => { const key = x.n + "|" + x.v.toFixed(d); if (vistos.has(key)) return false; vistos.add(key); return true; });
+    const arr = uniq.filter(x => x.v > p).slice(0, 4).reverse(), abj = uniq.filter(x => x.v < p).slice(-4).reverse();
+    const fila = x => `<tr><td><i style="background:${x.c}"></i>${esc(x.n)}</td><td class="n">${fmt(x.v, d)}</td><td class="n ${cl(x.v - p)}">${sg(x.v - p, d)}</td></tr>`;
+    let orib = "";
+    if (k !== "BTC") { const n = ahoraNY(), hm = +n.hour * 60 + +n.minute;
+      const t = (a, b, h, nom) => a !== null && isFinite(a) ? `${nom}: <b class="m">${fmt(b, d)} – ${fmt(a, d)}</b>${hm < h ? " <span class='mut'>(formándose)</span>" : ""} ${p > a ? "<b class='up'>▲ sobre</b>" : p < b ? "<b class='dn'>▼ bajo</b>" : "<span class='mut'>dentro</span>"}` : "";
+      orib = [t(SES[k].orh, SES[k].orl, 585, "Rango 15m"), t(SES[k].ibh, SES[k].ibl, 630, "IB")].filter(Boolean).join(" · ");
+      orib = `<div style="font-size:12px;margin-top:6px">${orib || "<span class='mut'>Rango de 15 min e IB se arman desde las 9:30 NY.</span>"}</div>`; }
+    return `<div class="fo-c"><h3><span>${k}</span><span class="${cl(ch)}">${fmt(p, d)} <small style="font-size:11px">${ch !== null ? pc(ch, 2) : ""}</small></span></h3>` +
+      `<div class="fo-k">${kp.map(([n, v, s2, c]) => `<div><div class="n">${n}</div><div class="v ${c}">${v}</div><div class="s">${s2}</div></div>`).join("")}</div>` +
+      `<table class="fo-n">${arr.map(fila).join("")}<tr class="fpx"><td>▶ Precio ahora</td><td class="n">${fmt(p, d)}</td><td class="n"></td></tr>${abj.map(fila).join("")}</table>${orib}</div>`;
+  }).join("");
+  $("foco").innerHTML = `<div class="fo-h"><div><div class="fo-l">${tit}</div><div class="fo-cd" style="color:${col}">${cd}</div></div><div style="font-size:12.5px">${sub}</div>` +
+    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div><div class="fo-g">${col3}</div>`;
+}
+
 /* ============================================================ opciones / gamma */
 let opcK = store.get("opcK", "ES");
 const OPC_COL = {call_wall: "#2ecc71", put_wall: "#ff4d4f", flip: "#ffd43b", max_pain: "#b0bec5"};
@@ -2011,7 +2093,7 @@ function reloj() {
 
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
-  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
+  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
