@@ -1,0 +1,55 @@
+# Vigía externo: corre en GitHub (no en el Mac). Si la página deja de actualizarse en horario de mercado
+# — Mac dormido, apagado o sin internet — avisa por Telegram, porque en ese caso el Mac no puede avisar solo.
+name: vigia
+on:
+  schedule:
+    - cron: "7,37 12-21 * * 1-5"   # cada 30 min, lun–vie, ~7:00–17:00 Nueva York (hora UTC)
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: data.json
+          sparse-checkout-cone-mode: false
+      - name: Revisar antigüedad de los datos
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          PRUEBA: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request, urllib.parse, datetime as dt
+          from zoneinfo import ZoneInfo
+          d = json.load(open("data.json"))
+          edad = (time.time() - d["ts"]) / 60
+          ny = dt.datetime.now(ZoneInfo("America/New_York"))
+          hm = ny.hour * 60 + ny.minute
+          feriado = ny.date().isoformat() in (d.get("feriados") or {})
+          prueba = os.environ.get("PRUEBA") == "true"
+          print(f"edad {edad:.0f} min · NY {ny:%H:%M} · feriado {feriado}")
+          if feriado and not prueba:
+              raise SystemExit(0)
+          aviso = None
+          if 40 <= edad < 70:
+              aviso = "⚠️ <b>Vigía externo: la página dejó de actualizarse</b> hace {:.0f} min."
+          elif edad >= 40 and 510 <= hm < 570:
+              aviso = "⚠️ <b>Vigía externo: a menos de 1 hora de la apertura la página sigue sin actualizarse</b> (hace {:.0f} min)."
+          elif 180 <= edad < 210:
+              aviso = "⚠️ <b>Vigía externo: la página sigue sin actualizarse</b> (hace {:.0f} min)."
+          if prueba:
+              aviso = "🧪 <i>Prueba del vigía externo (todo bien si ves esto).</i> Datos de hace {:.0f} min."
+          if not aviso:
+              raise SystemExit(0)
+          txt = aviso.format(edad)
+          if not prueba:
+              txt += ("\n\nLo más probable: el Mac está dormido, apagado o sin internet. Mientras tanto "
+                      "<b>no llegan tus alertas de precio ni las noticias</b>, y los niveles de la página están viejos.")
+          data = urllib.parse.urlencode({"chat_id": os.environ["CHAT_ID"], "text": txt, "parse_mode": "HTML"}).encode()
+          urllib.request.urlopen(f"https://api.telegram.org/bot{os.environ['TELEGRAM_TOKEN']}/sendMessage", data, timeout=20)
+          print("aviso enviado")
+          PY
