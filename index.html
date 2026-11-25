@@ -322,6 +322,11 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 #nxEv{font:600 11.5px "IBM Plex Mono";color:var(--acc);text-decoration:none;border:1px solid var(--acc);padding:2px 7px;white-space:nowrap}
 #nxEv.ya{color:#fff;background:var(--dn);border-color:var(--dn);animation:parp 1s steps(2) infinite}@keyframes parp{50%{opacity:.55}}
 header{padding-top:env(safe-area-inset-top,0px)}
+/* ---- opciones */
+.op-g{display:grid;grid-template-columns:1fr 1.35fr;gap:14px}@media(max-width:900px){.op-g{grid-template-columns:1fr}}
+.op-r{padding:10px;background:var(--panel2);margin:8px 0}.op-r b.t{font:600 14px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.05em}
+.op-t{width:100%;border-collapse:collapse;font-size:12.5px}.op-t td{padding:5px 4px;border-bottom:1px solid var(--line)}.op-t td.n{text-align:right;font-family:"IBM Plex Mono";white-space:nowrap}
+.op-t i{display:inline-block;width:10px;height:3px;margin-right:6px;vertical-align:middle}
 /* ---- gap */
 .gp-h{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.gp-h>div{background:var(--panel2);padding:10px}
 .gp-n{font:600 22px "IBM Plex Mono"}.gp-s{font-size:12px;line-height:1.5;margin-top:4px}
@@ -389,7 +394,7 @@ header{padding-top:env(safe-area-inset-top,0px)}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#gapSec">Gap</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#gapSec">Gap</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -427,6 +432,9 @@ header{padding-top:env(safe-area-inset-top,0px)}
     <div><h2>Rango del día <small>cuánto recorrido ya hizo vs. su promedio (ATR 14) y vs. lo que descuentan las opciones</small></h2><div class="panel" id="rango"><p class="mut">Esperando precios…</p></div></div>
     <div><h2>Correlaciones <small>retornos diarios · verde = se mueven juntos · rojo = al revés</small></h2><div class="panel" id="corr"><p class="mut">Cargando…</p></div></div>
   </div>
+
+  <h2 id="opcSec">Opciones · niveles de gamma <small>dónde están las apuestas grandes y cómo pueden frenar o acelerar el precio · SPY→ES · QQQ→NQ · Deribit→BTC</small></h2>
+  <div class="panel" id="opc"><p class="mut">Cargando…</p></div>
 
   <div class="two" id="gapSec">
     <div><h2>El gap de hoy y su historia <small>qué pasó en los últimos 5 años con gaps parecidos (índice contado)</small></h2><div class="panel" id="gap"><p class="mut">Esperando precios…</p></div></div>
@@ -571,6 +579,8 @@ function niveles(k) {
     add("Máx. Asia", b.asia_h, "#80cbc4"); add("Mín. Asia", b.asia_l, "#80cbc4");
     add("Máx. Londres", b.lon_h, "#fff59d", false); add("Mín. Londres", b.lon_l, "#fff59d", false);
     add("Máx. sem. anterior", b.pwh, "#9575cd", false); add("Mín. sem. anterior", b.pwl, "#9575cd", false);
+    const ob = DATA.opc?.BTC; if (ob) { add("Muro calls (opc.)", ob.call_wall, OPC_COL.call_wall); add("Muro puts (opc.)", ob.put_wall, OPC_COL.put_wall);
+      add("Giro gamma", ob.flip, OPC_COL.flip); add("Max pain", ob.max_pain, OPC_COL.max_pain, false); }
     add("Máx. 30 días", b.max30, "#8592a3", false); add("Mín. 30 días", b.min30, "#8592a3", false);
     add("Media 50d", b.sma50, "#8592a3", false); add("Media 200d", b.sma200, "#8592a3", false);
     return L;
@@ -592,6 +602,8 @@ function niveles(k) {
       add("Máx. 1ª hora (IB)" + t, SES[k].ibh, "#80deea"); add("Mín. 1ª hora (IB)" + t, SES[k].ibl, "#80deea"); } }
   for (const a of MISAL.filter(a => a.k === k)) add("🔔 Mi alerta", a.v, "#ffffff");
   if (f.mov) { add("Mov. implícito ↑", f.mov.sup, "#ff8a65"); add("Mov. implícito ↓", f.mov.inf, "#ff8a65"); }
+  { const o = DATA.opc?.[k]; if (o) { add("Muro calls (opc.)", o.call_wall, OPC_COL.call_wall); add("Muro puts (opc.)", o.put_wall, OPC_COL.put_wall);
+      add("Giro gamma", o.flip, OPC_COL.flip); add("Max pain", o.max_pain, OPC_COL.max_pain, false); } }
   add("Apertura semanal", f.wo, "#9575cd", false);
   add("Máx. sem. anterior", f.pwh, "#9575cd", false); add("Mín. sem. anterior", f.pwl, "#9575cd", false);
   add("Máx. 20 días", f.max20, "#8592a3", false); add("Mín. 20 días", f.min20, "#8592a3", false);
@@ -1410,7 +1422,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1551,6 +1563,42 @@ function pintarRango() {
   }
   $("rango").innerHTML = filas.length ? filas.join("") + `<p class="mut" style="font-size:11px;margin:4px 0 0">ES/NQ: desde la apertura de Globex (18:00 NY) hasta ahora; BTC: últimas 24 h. La raya blanca marca el 100% del ATR de 14 días. La barra de colores muestra dónde está el precio dentro del movimiento que descuentan las opciones (VIX para ES, VXN para NQ) desde el cierre de ayer: en el borde ya cubrió todo el movimiento esperado. Referencia estadística, no un techo ni un piso.</p>` : `<p class="mut">Esperando precios…</p>`;
 }
+
+/* ============================================================ opciones / gamma */
+let opcK = store.get("opcK", "ES");
+const OPC_COL = {call_wall: "#2ecc71", put_wall: "#ff4d4f", flip: "#ffd43b", max_pain: "#b0bec5"};
+function precioK(k) { return k === "BTC" ? LIVE.BTC : precioFut(k); }
+function pintarOpc() {
+  const O = DATA?.opc; if (!O || !Object.keys(O).length) { $("opc").innerHTML = `<p class="mut">Sin datos de opciones por ahora.</p>`; return; }
+  if (!O[opcK]) opcK = Object.keys(O)[0];
+  const o = O[opcK], p = precioK(opcK) || o.spot, d = opcK === "BTC" ? 0 : 2;
+  const neg = o.flip ? p < o.flip : o.total_bn < 0;
+  const reg = neg ? ["Gamma negativa", "var(--dn)", `Bajo el punto de giro los dealers cubren <b>a favor</b> del movimiento: venden cuando cae y compran cuando sube. Eso <b>amplifica</b> las velas, los rangos se abren y las rupturas tienden a seguir. Respetar stops; los rebotes duran menos.`]
+    : ["Gamma positiva", "var(--up)", `Sobre el punto de giro los dealers cubren <b>en contra</b> del movimiento: compran las caídas y venden las subidas. Eso <b>frena</b> el precio: rangos más chicos, reversión hacia los strikes grandes y rupturas que fallan más seguido.`];
+  const fil = [["call_wall", "Muro de calls", "techo probable: mucho interés abierto en calls; cuesta superarlo"],
+               ["flip", "Punto de giro gamma", "sobre él el mercado se calma, bajo él se acelera"],
+               ["max_pain", "Max pain " + (o.max_pain_venc || "").slice(5), "strike que más opciones deja sin valor al vencer; imán cerca del vencimiento"],
+               ["put_wall", "Muro de puts", "piso probable: mucha cobertura comprada ahí"]]
+    .filter(([k]) => o[k]).sort((a, b) => o[b[0]] - o[a[0]]);
+  const B = o.barras || [], mx = Math.max(1, ...B.map(x => Math.abs(x[1]))), W = 560, rowH = Math.max(5, Math.min(12, 330 / Math.max(1, B.length)));
+  const H = B.length * rowH + 8, Kmin = B.length ? B[0][0] : 0, Kmax = B.length ? B[B.length - 1][0] : 1;
+  const Y = K => 4 + (1 - (K - Kmin) / Math.max(1e-9, Kmax - Kmin)) * (H - 8 - rowH) + rowH / 2;
+  const linea = (K, c, t) => K >= Kmin && K <= Kmax ? `<line x1="70" x2="${W}" y1="${Y(K)}" y2="${Y(K)}" stroke="${c}" stroke-width="1.2" stroke-dasharray="4 3"/><text x="${W - 4}" y="${Y(K) - 3}" fill="${c}" font-size="10" text-anchor="end" font-family="IBM Plex Mono">${t}</text>` : "";
+  const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${Math.min(H, 380)}px" preserveAspectRatio="none">` +
+    `<line x1="${70 + (W - 70) / 2}" x2="${70 + (W - 70) / 2}" y1="0" y2="${H}" stroke="var(--line)"/>` +
+    B.map(([K, g], i) => { const w = Math.abs(g) / mx * (W - 70) / 2, x0 = 70 + (W - 70) / 2;
+      const lbl = (B.length <= 30 || i % Math.ceil(B.length / 30) === 0) ? `<text x="64" y="${Y(K) + 3}" fill="var(--mut)" font-size="9.5" text-anchor="end" font-family="IBM Plex Mono">${fmt(K, opcK === "BTC" ? 0 : 0)}</text>` : "";
+      return `<rect x="${g >= 0 ? x0 : x0 - w}" y="${Y(K) - rowH * 0.4}" width="${w}" height="${rowH * 0.8}" fill="${g >= 0 ? "#2ecc71" : "#ff4d4f"}" opacity=".8"/>${lbl}`; }).join("") +
+    linea(p, "#fff", "precio " + fmt(p, d)) + (o.flip ? linea(o.flip, OPC_COL.flip, "giro") : "") + `</svg>`;
+  $("opc").innerHTML = `<div class="rl-k" style="margin-bottom:6px">${["ES", "NQ", "BTC"].filter(k => O[k]).map(k => `<button data-k="${k}" class="${k === opcK ? "on" : ""}">${k}</button>`).join("")}<span class="sp"></span><span class="mut">fuente ${esc(o.fuente)} · ${new Date(o.ts * 1000).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"})} · GEX total ${sg(o.total_bn, 2)} B USD por 1%</span></div>` +
+    `<div class="op-g"><div><div class="op-r"><b class="t" style="color:${reg[1]}">${reg[0]}</b><div style="font-size:12.5px;line-height:1.5;margin-top:4px">${reg[2]}</div></div>` +
+    `<table class="op-t">${fil.map(([k, n, t]) => `<tr><td><i style="background:${OPC_COL[k]}"></i><b>${n}</b><div class="mut" style="font-size:11px">${t}</div></td><td class="n">${fmt(o[k], d)}</td><td class="n ${cl(o[k] - p)}">${sg(o[k] - p, d)}<div class="mut" style="font-size:10.5px">${pc((o[k] / p - 1) * 100, 2)}</div></td></tr>`).join("")}</table>` +
+    `<div class="mut" style="font-size:11px;margin-top:8px">Strikes con más interés abierto (calls / puts): ${(o.top_oi || []).map(x => `<b class="m">${fmt(x[0], opcK === "BTC" ? 0 : 0)}</b> ${fmtK(x[1])}/${fmtK(x[2])}`).join(" · ")}</div></div>` +
+    `<div><div class="mut" style="font-size:11px;margin-bottom:4px">Gamma por strike (millones USD por 1% de movimiento) · verde frena · rojo acelera</div>${svg}</div></div>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">Calculado con el interés abierto de vencimientos hasta 45 días (se actualiza cada ~15 min; el interés abierto cambia una vez al día). Supone que los dealers están largos en calls y cortos en puts, la convención habitual: es una estimación, no el libro real. Los niveles de ES/NQ salen de SPY/QQQ multiplicados por la relación futuro÷ETF. En los gráficos: líneas verde (muro de calls), roja (muro de puts) y amarilla (giro).</p>`;
+  $("opc").querySelectorAll("button[data-k]").forEach(b => b.onclick = () => { opcK = b.dataset.k; store.set("opcK", opcK); pintarOpc(); });
+}
+const fmtK = x => x >= 1e6 ? fmt(x / 1e6, 1) + "M" : x >= 1e3 ? fmt(x / 1e3, 0) + "k" : fmt(x, 0);
 
 /* ============================================================ gap de hoy */
 let gapK = store.get("gapK", "ES");
