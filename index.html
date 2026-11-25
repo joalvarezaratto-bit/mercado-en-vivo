@@ -674,7 +674,7 @@ const CABLE = [];
 let cabFiltro = "todo";
 const VERDE_ROJO = new Set(["ES", "NQ", "BTC"]);
 function chips(imp) {
-  return (imp || "").split(",").filter(Boolean).map(x => { const a = x.slice(0, -1), d = x.slice(-1);
+  return (imp || "").split(/[,\/]/).filter(Boolean).map(x => { const a = x.slice(0, -1), d = x.slice(-1);
     const c = VERDE_ROJO.has(a) ? (d === "+" ? "up" : "dn") : "nt";
     return `<span class="chip ${c}">${esc(a)} ${d === "+" ? "▲" : "▼"}</span>`; }).join("");
 }
