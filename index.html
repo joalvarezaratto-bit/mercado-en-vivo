@@ -344,6 +344,10 @@ body.foco #foco{display:block!important}
 .fo-n tr.fpx td{background:rgba(255,159,26,.14);font-weight:600;color:#fff}.fo-n i{display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:middle}
 #viejo{background:#3a0d0f;border:1px solid var(--dn);border-left:4px solid var(--dn);color:#fff;padding:10px 14px;margin-bottom:10px;font-size:13px;line-height:1.5}
 #viejo b{color:#ff8a8c}
+.es-g{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}@media(max-width:900px){.es-g{grid-template-columns:1fr}}
+.es-t{width:100%;border-collapse:collapse;font:11.5px "IBM Plex Mono"}.es-t th{color:var(--mut);font-weight:500;font-size:10.5px;text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)}
+.es-t td{text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)}.es-t td:first-child,.es-t th:first-child{text-align:left}.es-t tr.on td{background:rgba(255,212,59,.16);color:#fff}
+.es-t .bar{display:inline-block;height:8px;background:var(--acc);vertical-align:middle;margin-right:5px}
 /* ---- gap */
 .gp-h{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.gp-h>div{background:var(--panel2);padding:10px}
 .gp-n{font:600 22px "IBM Plex Mono"}.gp-s{font-size:12px;line-height:1.5;margin-top:4px}
@@ -412,7 +416,7 @@ body.foco #foco{display:block!important}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#gapSec">Gap</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -460,6 +464,9 @@ body.foco #foco{display:block!important}
     <div><h2>El gap de hoy y su historia <small>qué pasó en los últimos 5 años con gaps parecidos (índice contado)</small></h2><div class="panel" id="gap"><p class="mut">Esperando precios…</p></div></div>
     <div id="diarioSec"><h2>Diario de trades <small>se guarda solo en este equipo · exporta a Excel (CSV)</small></h2><div class="panel" id="diario"></div></div>
   </div>
+
+  <h2 id="estacSec">Estacionalidad <small>cómo se comporta cada hora y cada día de la semana desde 2024 · resaltada la hora y el día actual</small></h2>
+  <div class="panel" id="estac"><p class="mut">Cargando…</p></div>
 
   <div class="two" id="moversSec">
     <div><h2>Quién mueve el Nasdaq 100 <small>puntos que aporta cada empresa · en vivo</small></h2><div class="panel" id="qmNDX"><p class="mut">Esperando precios…</p></div></div>
@@ -1442,7 +1449,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarEstac(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1681,9 +1688,55 @@ function pintarOpc() {
     `<div class="mut" style="font-size:11px;margin-top:8px">Strikes con más interés abierto (calls / puts): ${(o.top_oi || []).map(x => `<b class="m">${fmt(x[0], opcK === "BTC" ? 0 : 0)}</b> ${fmtK(x[1])}/${fmtK(x[2])}`).join(" · ")}</div></div>` +
     `<div><div class="mut" style="font-size:11px;margin-bottom:4px">Gamma por strike (millones USD por 1% de movimiento) · verde frena · rojo acelera</div>${svg}</div></div>` +
     `<p class="mut" style="font-size:11px;margin:8px 0 0">Calculado con el interés abierto de vencimientos hasta 45 días (se actualiza cada ~15 min; el interés abierto cambia una vez al día). Supone que los dealers están largos en calls y cortos en puts, la convención habitual: es una estimación, no el libro real. Los niveles de ES/NQ salen de SPY/QQQ multiplicados por la relación futuro÷ETF. En los gráficos: líneas verde (muro de calls), roja (muro de puts) y amarilla (giro).</p>`;
+  $("opc").insertAdjacentHTML("beforeend", evalOpc());
   $("opc").querySelectorAll("button[data-k]").forEach(b => b.onclick = () => { opcK = b.dataset.k; store.set("opcK", opcK); pintarOpc(); });
 }
+function evalOpc() {
+  const H = (DATA?.opc_hist || []).filter(h => h.res && Object.keys(h.res).length);
+  const cab = `<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><b style="font-size:13px">¿Sirven estos niveles? · registro propio</b> `;
+  const pend = (DATA?.opc_hist || []).filter(h => !h.res).length;
+  if (!H.length) return cab + `<div class="mut" style="font-size:12px;margin-top:4px">Recolectando. Cada día hábil a las 9:00 NY se guarda la foto de los niveles y, después del cierre, qué hizo el precio. ${pend ? `Hay ${pend} día(s) esperando el cierre. ` : "El primer registro se toma el próximo día hábil. "}Con ~20 días se puede ver si los muros frenan y si la gamma negativa realmente da rangos más grandes.</div></div>`;
+  const reg = {neg: [], pos: []}, muro = {c: [0, 0], p: [0, 0]}, tol = 0.0015;
+  for (const h of H) for (const k of ["ES", "NQ"]) {
+    const n = h[k], r = h.res[k]; if (!n || !r) continue;
+    if (n.atr) reg[n.neg ? "neg" : "pos"].push((r.hi - r.lo) / n.atr * 100);
+    if (n.call_wall && r.hi >= n.call_wall * (1 - tol)) { muro.c[0]++; if (r.cl < n.call_wall) muro.c[1]++; }
+    if (n.put_wall && r.lo <= n.put_wall * (1 + tol)) { muro.p[0]++; if (r.cl > n.put_wall) muro.p[1]++; }
+  }
+  const prom = a => a.length ? fmt(a.reduce((x, y) => x + y, 0) / a.length, 0) + "%" : "—";
+  const pm = ([n, ok]) => n ? `${ok} de ${n} (${fmt(ok / n * 100, 0)}%)` : "aún no se acerca";
+  return cab + `<span class="mut" style="font-size:11px">${H.length} días evaluados (ES+NQ)${H.length < 20 ? " · todavía poca muestra" : ""}</span>` +
+    `<table class="op-t" style="margin-top:6px"><tr><td>Rango del día con <b>gamma negativa</b> <span class="mut">(% del ATR)</span></td><td class="n">${prom(reg.neg)} <span class="mut">(${reg.neg.length})</span></td></tr>` +
+    `<tr><td>Rango del día con <b>gamma positiva</b></td><td class="n">${prom(reg.pos)} <span class="mut">(${reg.pos.length})</span></td></tr>` +
+    `<tr><td>Muro de calls: cuando el precio llegó, <b>cerró bajo el muro</b></td><td class="n">${pm(muro.c)}</td></tr>` +
+    `<tr><td>Muro de puts: cuando el precio llegó, <b>cerró sobre el muro</b></td><td class="n">${pm(muro.p)}</td></tr></table>` +
+    `<div class="mut" style="font-size:11px;margin-top:4px">Si la gamma negativa no da rangos claramente mayores, o los muros se respetan cerca del 50%, estos niveles no están aportando y conviene ignorarlos.</div></div>`;
+}
 const fmtK = x => x >= 1e6 ? fmt(x / 1e6, 1) + "M" : x >= 1e3 ? fmt(x / 1e3, 0) + "k" : fmt(x, 0);
+
+/* ============================================================ estacionalidad */
+let estK = store.get("estK", "ES");
+function pintarEstac() {
+  const E = DATA?.estac; if (!E || !E[estK]) { $("estac").innerHTML = `<p class="mut">Sin datos por ahora.</p>`; return; }
+  const e = E[estK], n = ahoraNY(), hNY = +n.hour * 60 + +n.minute, dowNY = new Date().toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"});
+  const wdIdx = {Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6}[dowNY], DN = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  const off = (tzOffsetSec("America/Santiago", Date.now() / 1000) - tzOffsetSec("America/New_York", Date.now() / 1000)) / 60;
+  const cl_ = h => { const [H, M] = h.split(":").map(Number); const m = ((H * 60 + M + off) % 1440 + 1440) % 1440; return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; };
+  const mx = Math.max(...e.horas.map(x => x.mov)), len = estK === "BTC" ? 60 : 60;
+  const enHora = h => { const [H, M] = h.split(":").map(Number), a = H * 60 + M; return hNY >= a && hNY < a + len; };
+  const h1 = e.horas[0], ult = e.horas[e.horas.length - 1];
+  const lect = estK === "BTC"
+    ? (() => { const top = e.horas.slice().sort((a, b) => b.mov - a.mov).slice(0, 3).map(x => cl_(x.h)).join(", "); return `Las horas más movidas de BTC (hora Chile) son ${top}. Fines de semana el rango cae a la mitad.`; })()
+    : `En la <b>primera hora</b> (9:30 NY) se hace el <b>máximo del día ${h1.hi}%</b> de las veces y el <b>mínimo ${h1.lo}%</b>: junto con la última hora concentran los extremos. Mediodía casi nunca los marca (${e.horas[2]?.hi ?? "—"}% / ${e.horas[2]?.lo ?? "—"}%). La última hora hace el máximo ${ult.hi}% de los días.`;
+  $("estac").innerHTML = `<div class="rl-k" style="margin-bottom:6px">${["ES", "NQ", "BTC"].filter(k => E[k]).map(k => `<button data-k="${k}" class="${k === estK ? "on" : ""}">${k}</button>`).join("")}<span class="sp"></span><span class="mut">desde ${esc(e.desde)} · ${e.dias} días${estK === "BTC" ? "" : " · sesión regular del índice contado"}</span></div>` +
+    `<p style="font-size:12.5px;line-height:1.5;margin:4px 0 10px">${lect}</p><div class="es-g"><div>` +
+    `<table class="es-t"><tr><th>Hora NY · Chile</th><th>Movimiento medio</th><th>Velas ▲</th><th>Hace el máx.</th><th>Hace el mín.</th></tr>` +
+    e.horas.map(x => `<tr class="${enHora(x.h) ? "on" : ""}"><td>${x.h} · ${cl_(x.h)}</td><td><span class="bar" style="width:${(x.mov / mx * 60).toFixed(0)}px"></span>${fmt(x.mov, 2)}%</td><td>${x.up}%</td><td>${x.hi}%</td><td>${x.lo}%</td></tr>`).join("") + `</table></div><div>` +
+    `<table class="es-t"><tr><th>Día</th><th>Retorno medio</th><th>Días ▲</th><th>Rango medio</th></tr>` +
+    e.semana.map(w => `<tr class="${w.d === wdIdx ? "on" : ""}"><td>${DN[w.d]}</td><td class="${cl(w.ret)}">${pc(w.ret, 2)}</td><td>${w.up}%</td><td>${fmt(w.rango, 2)}%</td></tr>`).join("") + `</table>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">"Hace el máx./mín." = % de días en que el extremo de la sesión ocurrió en esa hora. Retorno y rango del día: apertura a cierre${estK === "BTC" ? " (día de Nueva York)" : " de la sesión regular"}. Tendencias de fondo, no una señal: con ~140 días por fila, diferencias de pocos décimos son ruido.</p></div></div>`;
+  $("estac").querySelectorAll("button[data-k]").forEach(b => b.onclick = () => { estK = b.dataset.k; store.set("estK", estK); pintarEstac(); });
+}
 
 /* ============================================================ gap de hoy */
 let gapK = store.get("gapK", "ES");
@@ -1728,23 +1781,59 @@ function diarioUI() {
   const hoy = new Date().toLocaleDateString("en-CA", {timeZone: "America/Santiago"});
   $("diario").innerHTML = `<div class="dj-f"><input id="djD" type="date" value="${hoy}" class="w2"><select id="djI"><option>ES</option><option>NQ</option><option>BTC</option><option>Otro</option></select>` +
     `<select id="djL"><option value="L">Largo</option><option value="C">Corto</option></select><select id="djS">${DJ_SET.map(x => `<option>${x}</option>`).join("")}</select>` +
-    `<input id="djR" type="number" step="any" placeholder="R (ej. 2 / -1)"><input id="djU" type="number" step="any" placeholder="USD (opcional)" class="w2"><input id="djN" placeholder="nota: por qué entré, qué aprendí" class="w3"><button id="djA">+ registrar</button></div>` +
+    `<input id="djH" type="time" title="hora de entrada (Chile)"><input id="djR" type="number" step="any" placeholder="R (ej. 2 / -1)"><input id="djU" type="number" step="any" placeholder="USD (opcional)"><input id="djN" placeholder="nota: por qué entré, qué aprendí" class="w3"><button id="djA">+ registrar</button></div>` +
     `<div id="djK"></div><div class="dj-l" id="djLista"></div>` +
     `<div class="dj-b"><button id="djCSV">Exportar CSV</button><button id="djBorrar">Borrar todo</button></div>`;
   $("djS").value = store.get("djS", "TJR");
   $("djA").onclick = () => {
     const r = parseFloat($("djR").value), u = parseFloat($("djU").value);
     if (isNaN(r) && isNaN(u)) { $("djR").focus(); return; }
-    DIARIO.push({d: $("djD").value, i: $("djI").value, l: $("djL").value, s: $("djS").value, r: isNaN(r) ? null : r, u: isNaN(u) ? null : u, n: $("djN").value.trim(), t: Date.now()});
+    DIARIO.push({d: $("djD").value, i: $("djI").value, l: $("djL").value, s: $("djS").value, r: isNaN(r) ? null : r, u: isNaN(u) ? null : u, n: $("djN").value.trim(), t: Date.now(),
+      h: $("djH").value || null, cx: contextoTrade($("djI").value, $("djD").value)});
+    $("djH").value = "";
     store.set("djS", $("djS").value); store.set("diario", DIARIO); $("djR").value = $("djU").value = $("djN").value = ""; pintarDiario();
   };
   $("djCSV").onclick = () => {
-    const filas = [["fecha", "instrumento", "lado", "setup", "R", "USD", "nota"], ...DIARIO.map(x => [x.d, x.i, x.l === "L" ? "largo" : "corto", x.s, x.r ?? "", x.u ?? "", (x.n || "").replace(/"/g, "'")])];
+    const filas = [["fecha", "hora (Chile)", "instrumento", "lado", "setup", "R", "USD", "gamma", "gap", "VIX", "nota"], ...DIARIO.map(x => [x.d, x.h || "", x.i, x.l === "L" ? "largo" : "corto", x.s, x.r ?? "", x.u ?? "", x.cx?.gm || "", x.cx?.gap || "", x.cx?.vx || "", (x.n || "").replace(/"/g, "'")])];
     const csv = "\ufeff" + filas.map(f => f.map(v => `"${typeof v === "number" ? String(v).replace(".", ",") : v}"`).join(";")).join("\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"})); a.download = "diario-trades.csv"; a.click();
   };
   $("djBorrar").onclick = () => { if (DIARIO.length && confirm(`¿Borrar los ${DIARIO.length} trades del diario? No se puede deshacer (exporta antes si los quieres guardar).`)) { DIARIO = []; store.set("diario", DIARIO); pintarDiario(); } };
   pintarDiario();
+}
+/* contexto del mercado que se guarda con cada trade (solo si es de hoy: es la foto del día) */
+function contextoTrade(k, fecha) {
+  const hoy = new Date().toLocaleDateString("en-CA", {timeZone: "America/Santiago"});
+  if (fecha !== hoy || !DATA) return null;
+  const cx = {}, kk = k === "Otro" ? "ES" : k, p = precioK(kk), o = DATA.opc?.[kk];
+  if (o && p) cx.gm = (o.flip ? p < o.flip : o.total_bn < 0) ? "Gamma negativa" : "Gamma positiva";
+  if (kk !== "BTC") { const g = gapHoy(kk); if (g) cx.gap = g.g <= -0.5 ? "Gap bajista grande" : g.g <= -0.1 ? "Gap bajista" : g.g < 0.1 ? "Sin gap" : g.g < 0.5 ? "Gap alcista" : "Gap alcista grande"; }
+  const vc = DATA.vixc; if (vc) cx.vx = vc.ratio >= 1 ? "VIX invertido (estrés)" : vc.ratio >= 0.93 ? "VIX plano" : "VIX normal (calma)";
+  return cx;
+}
+function bloqueHora(h) {   // h = "HH:MM" Chile -> tramo en hora NY
+  if (!h) return null;
+  const [H, M] = h.split(":").map(Number), n = new Date(); n.setHours(H, M, 0, 0);
+  const off = (tzOffsetSec("America/Santiago", n / 1000) - tzOffsetSec("America/New_York", n / 1000)) / 60, m = H * 60 + M - off;
+  return m < 570 ? "Antes de 9:30 NY" : m < 600 ? "9:30–10:00 NY" : m < 660 ? "10:00–11:00 NY" : m < 720 ? "11:00–12:00 NY" : m < 840 ? "12:00–14:00 NY" : m < 960 ? "14:00–16:00 NY" : "Después de 16:00 NY";
+}
+function pintarCondiciones(L) {
+  const T = L.filter(x => x.r !== null);
+  if (T.length < 5) return `<div class="mut" style="font-size:11.5px;margin-top:8px">Con 5 trades o más aparece aquí <b>en qué condiciones te va mejor</b>: por setup, hora, gamma, gap y VIX. Desde ahora cada trade de hoy guarda solo el contexto del mercado.</div>`;
+  const dias = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
+  const grupos = [["Setup", x => x.s], ["Instrumento", x => x.i], ["Lado", x => x.l === "L" ? "Largo" : "Corto"], ["Hora de entrada", x => bloqueHora(x.h)],
+    ["Gamma", x => x.cx?.gm], ["Gap del día", x => x.cx?.gap], ["Curva VIX", x => x.cx?.vx], ["Día", x => dias[new Date(x.d + "T12:00").getDay()]]];
+  const filas = [];
+  for (const [g, fn] of grupos) {
+    const m = {}; T.forEach(x => { const v = fn(x); if (v) (m[v] = m[v] || []).push(x.r); });
+    const ks = Object.keys(m); if (ks.length < 2 && g !== "Gamma") continue;
+    ks.sort((a, b) => m[b].reduce((s, r) => s + r, 0) / m[b].length - m[a].reduce((s, r) => s + r, 0) / m[a].length);
+    filas.push(`<tr><td colspan="5" class="mut" style="padding-top:8px;font-size:10.5px;text-transform:uppercase">${g}</td></tr>` + ks.map(v => {
+      const r = m[v], tot = r.reduce((s, x) => s + x, 0), ex = tot / r.length, ac = r.filter(x => x > 0).length / r.length * 100;
+      return `<tr><td>${esc(v)}</td><td>${r.length}${r.length < 10 ? "<span class='mut'>*</span>" : ""}</td><td>${fmt(ac, 0)}%</td><td class="${cl(ex)}">${sg(ex, 2)}R</td><td class="${cl(tot)}">${sg(tot, 1)}R</td></tr>`; }).join(""));
+  }
+  return `<div style="margin-top:10px"><div class="mut" style="font-size:11px;margin-bottom:4px">¿En qué condiciones te va mejor? (ordenado por R promedio)</div><div class="dj-l" style="max-height:260px"><table><tr class="mut"><td></td><td>Trades</td><td>Acierto</td><td>R prom.</td><td>Total</td></tr>${filas.join("")}</table></div>` +
+    `<div class="mut" style="font-size:10.5px;margin-top:4px">* menos de 10 trades: todavía es ruido, no saques conclusiones. Gamma, gap y VIX se guardan solo en trades registrados el mismo día.</div></div>`;
 }
 function pintarDiario() {
   const L = DIARIO.slice().sort((a, b) => a.d.localeCompare(b.d) || a.t - b.t);
@@ -1760,7 +1849,7 @@ function pintarDiario() {
   $("djK").innerHTML = `<div class="dj-k">${k("Trades", L.length)}${k("Acierto", R.length ? fmt(gan.length / R.length * 100, 0) + "%" : "—")}${k("Total", sg(tot, 1) + "R", cl(tot))}${k("Esperanza", R.length ? sg(tot / R.length, 2) + "R" : "—", cl(tot))}` +
     `${k("Profit factor", pf === null ? "—" : fmt(pf, 2))}${k("Máx. caída", fmt(dd, 1) + "R", dd < 0 ? "dn" : "")}${k("Racha actual", R.length ? racha + (R[R.length - 1] > 0 ? " ganadas" : " perdidas") : "—")}${k("USD", usd ? sg(usd, 0) : "—", cl(usd))}</div>` +
     `<svg viewBox="0 0 300 60" preserveAspectRatio="none" style="width:100%;height:60px;background:var(--panel2)"><line x1="0" x2="300" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--mut)" stroke-dasharray="3 3" stroke-width="1"/><polyline fill="none" stroke="${tot >= 0 ? "var(--up)" : "var(--dn)"}" stroke-width="2" points="${curva.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/></svg>` +
-    `<div class="mut" style="font-size:11px;margin:4px 0 6px">Curva en R · ${porSet.join(" · ")}</div>`;
+    `<div class="mut" style="font-size:11px;margin:4px 0 6px">Curva en R · ${porSet.join(" · ")}</div>` + pintarCondiciones(L);
   $("djLista").innerHTML = `<table>${L.slice().reverse().map(x => `<tr><td>${x.d.slice(5)}</td><td>${x.i}</td><td class="${x.l === "L" ? "up" : "dn"}">${x.l === "L" ? "▲" : "▼"}</td><td>${esc(x.s)}</td><td class="${cl(x.r ?? x.u ?? 0)}">${x.r !== null ? sg(x.r, 1) + "R" : ""}</td><td>${x.u !== null ? sg(x.u, 0) + "$" : ""}</td><td class="nt">${esc(x.n || "")}</td><td><button data-t="${x.t}" title="borrar">✕</button></td></tr>`).join("")}</table>`;
   $("djLista").querySelectorAll("button").forEach(b => b.onclick = () => { DIARIO = DIARIO.filter(x => x.t !== +b.dataset.t); store.set("diario", DIARIO); pintarDiario(); });
 }
