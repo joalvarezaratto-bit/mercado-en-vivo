@@ -334,6 +334,7 @@ body.foco #comite,body.foco .snav,body.foco .cable,body.foco .l-rest,body.foco #
 body.foco .l-top>*:not(#foco):not(#graficos),body.foco .l-side>*:not(#misAlSec):not(#agendaSec){display:none!important}
 body.foco #foco{display:block!important}
 #foco{margin-bottom:12px}
+.fo-m{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12px;background:var(--panel);border:1px solid var(--line);padding:7px 14px;margin:-4px 0 10px}.fo-m b{font-weight:600}
 .fo-h{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--acc);padding:10px 14px;margin-bottom:10px}
 .fo-cd{font:600 30px "IBM Plex Mono"}.fo-l{font:600 12px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
 .fo-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:1100px){.fo-g{grid-template-columns:1fr}}
@@ -1620,6 +1621,13 @@ function relojApertura() {
   if (sec < 960 * 60) return ["Sesión regular", "cierra 16:00 NY", mmss(960 * 60 - sec), "var(--mut)"];
   return cerrado("Sesión regular cerrada");
 }
+function franjaMundo() {
+  const g = (DATA.global || []).find(x => x.grupo === "Asia y Europa"); if (!g) return "";
+  const it = Object.fromEntries(g.items.filter(x => x.pct != null).map(x => [x.nm, x]));
+  const blq = (tit, ns) => { const v = ns.filter(n => it[n]); return v.length ? `<span><span class="fo-l">${tit}</span> ${v.map(n => `${esc(n)} <b class="${cl(it[n].pct)}">${pc(it[n].pct, 2)}</b>`).join(" · ")}</span>` : ""; };
+  const a = blq("🌏 Asia (cierre)", ["Nikkei", "Hang Seng", "Shanghái"]), e = blq("🌍 Europa", ["Euro Stoxx 50", "DAX", "FTSE 100"]);
+  return a || e ? `<div class="fo-m">${a}${e}</div>` : "";
+}
 function pintarFoco() {
   if (!DATA) return;
   const [tit, sub, cd, col] = relojApertura();
@@ -1653,7 +1661,7 @@ function pintarFoco() {
       `<table class="fo-n">${arr.map(fila).join("")}<tr class="fpx"><td>▶ Precio ahora</td><td class="n">${fmt(p, d)}</td><td class="n"></td></tr>${abj.map(fila).join("")}</table>${orib}</div>`;
   }).join("");
   $("foco").innerHTML = `<div class="fo-h"><div><div class="fo-l">${tit}</div><div class="fo-cd" style="color:${col}">${cd}</div></div><div style="font-size:12.5px">${sub}</div>` +
-    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div><div class="fo-g">${col3}</div>`;
+    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div>${franjaMundo()}<div class="fo-g">${col3}</div>`;
 }
 
 /* ============================================================ opciones / gamma */
