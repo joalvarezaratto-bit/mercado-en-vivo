@@ -375,6 +375,16 @@ body.foco #foco{display:block!important}
 .mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 #mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
 @media(max-width:600px){#mapaW{height:440px}}
+/* ---- datos macro y días trampa */
+.two.ev2{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}@media(max-width:980px){.two.ev2{grid-template-columns:1fr}}
+.evh-l{font-size:11.5px;color:var(--mut);margin-top:3px;line-height:1.35}.evh-l b{color:var(--tx)}
+table.evt{width:100%;border-collapse:collapse;font-size:12.5px}table.evt td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+table.evt tr.sin td{border-bottom:0;padding-bottom:2px}table.evt td:first-child{min-width:110px}table.evt .n{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}table.evt tr.h td{color:var(--mut);font-size:11px}
+.evt .sub{display:block;color:var(--mut);font-size:11px}.evu{font:11px "IBM Plex Mono",monospace;color:var(--mut);margin-top:2px}
+.tr-d{padding:8px 0;border-bottom:1px solid var(--line)}.tr-d:last-child{border-bottom:0}.tr-d.hoy{background:rgba(255,159,26,.08);margin:0 -14px;padding:8px 14px}
+.tr-f{font:600 12px "IBM Plex Mono",monospace;color:var(--acc,#ff9f1a);margin-bottom:4px}.tr-i{margin:3px 0 6px}
+.tr-c{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:3px;background:rgba(255,159,26,.15);color:#ffb54d;margin-right:6px}
+.tr-c.dato{background:rgba(239,83,80,.15);color:#ff8a80}.tr-t{font-size:12px;color:var(--mut);margin-top:2px;line-height:1.4}.tr-s{font-size:11.5px;margin-top:2px}
 /* ---- quién mueve el índice */
 .qm{width:100%;border-collapse:collapse;font-size:12.5px}.qm td{padding:4px 4px;border-bottom:1px solid var(--line)}.qm td.n{text-align:right;font-family:"IBM Plex Mono";white-space:nowrap}
 .qm .w{color:var(--mut);font:11px "IBM Plex Mono"}.qm tr.tot td{font-weight:600;border-top:1px solid var(--mut)}.qm tr.rs td{color:var(--mut)}
@@ -425,7 +435,7 @@ body.foco #foco{display:block!important}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -477,6 +487,11 @@ body.foco #foco{display:block!important}
 
   <h2 id="estacSec">Estacionalidad <small>cómo se comporta cada hora y cada día de la semana desde 2024 · resaltada la hora y el día actual</small></h2>
   <div class="panel" id="estac"><p class="mut">Cargando…</p></div>
+
+  <div class="two ev2">
+    <div id="evhSec"><h2>Cómo reacciona el mercado a cada dato <small>CPI, empleo, PPI y Fed · últimos 2 años · minuto a minuto</small></h2><div class="panel" id="evh"><p class="mut">Cargando…</p></div></div>
+    <div id="trampaSec"><h2>Días trampa <small>vencimientos, cambio de contrato, fin de mes, cierres anticipados · próximas 3 semanas</small></h2><div class="panel" id="trampas"><p class="mut">Cargando…</p></div></div>
+  </div>
 
   <div class="two" id="moversSec">
     <div><h2>Quién mueve el Nasdaq 100 <small>puntos que aporta cada empresa · en vivo</small></h2><div class="panel" id="qmNDX"><p class="mut">Esperando precios…</p></div></div>
@@ -1334,11 +1349,13 @@ function pintarAgenda() {
   const evs = DATA.agenda.map(e => ({...e, ms: new Date(e.t).getTime()}));
   evs.forEach(e => { if (e.ms > now && (e.impacto !== "Low") && !next) next = e; });
   if (!DATA.calendario_ok) { $("agenda").innerHTML = "<p class='dn'>Calendario no disponible (ForexFactory no respondió). Revisa forexfactory.com.</p>"; return; }
+  const yaEv = new Set();
   $("agenda").innerHTML = evs.map(e => {
     const past = e.ms <= now, esNext = next && e === next;
+    const tEv = EV_T[e.orig], hist = tEv && !yaEv.has(tEv + e.t) ? (yaEv.add(tEv + e.t), evLinea(tEv)) : "";
     const manana = new Date(e.t).toLocaleDateString("en-CA", {timeZone: "America/New_York"}) !== fechaNY() ? " <span class='mut'>(mañana)</span>" : "";
     return `<div class="ev ${past && !DATOS[e.orig] ? "past" : ""} ${esNext ? "next" : ""}" data-orig="${esc(e.orig)}"><span class="m">${horaCL(e.t)}${manana}</span>` +
-      `<span><span class="imp ${e.impacto}">${esc(e.pais)}</span>${esc(e.titulo)}${realHTML(e)}${e.esperado ? ` <span class="mut">· esp. ${esc(e.esperado)}</span>` : ""}${e.anterior ? ` <span class="mut">· ant. ${esc(e.anterior)}</span>` : ""}${lecHTML(e)}</span>` +
+      `<span><span class="imp ${e.impacto}">${esc(e.pais)}</span>${esc(e.titulo)}${realHTML(e)}${e.esperado ? ` <span class="mut">· esp. ${esc(e.esperado)}</span>` : ""}${e.anterior ? ` <span class="mut">· ant. ${esc(e.anterior)}</span>` : ""}${lecHTML(e)}${hist}</span>` +
       `<span class="cd" data-ms="${e.ms}">${past ? "✓" : ""}</span></div>`;
   }).join("") || "<p class='mut'>Sin eventos relevantes de EE.UU. hoy.</p>";
 }
@@ -1351,7 +1368,7 @@ function pintarSemana() {
   $("semana").innerHTML = ev.map(e => {
     const d = new Date(e.t);
     return `<div class="ev"><span class="m">${d.toLocaleDateString("es-CL", {timeZone: "America/Santiago", weekday: "short", day: "numeric"})}</span>` +
-      `<span><span class="imp High">USD</span>${esc(e.titulo)} <span class="mut">${horaCL(e.t)}${e.esperado ? " · esp. " + esc(e.esperado) : ""}</span></span><span></span></div>`;
+      `<span><span class="imp High">USD</span>${esc(e.titulo)} <span class="mut">${horaCL(e.t)}${e.esperado ? " · esp. " + esc(e.esperado) : ""}</span>${EV_T[e.orig] ? evLinea(EV_T[e.orig]) : ""}</span><span></span></div>`;
   }).join("") || "<p class='mut'>Sin eventos de alto impacto cargados para los próximos días.</p>";
 }
 function pintarSectores() {
@@ -1464,7 +1481,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarEstac(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEvh(); pintarTrampas(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarEstac(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1675,7 +1692,7 @@ function pintarFoco() {
       `<table class="fo-n">${arr.map(fila).join("")}<tr class="fpx"><td>▶ Precio ahora</td><td class="n">${fmt(p, d)}</td><td class="n"></td></tr>${abj.map(fila).join("")}</table>${orib}</div>`;
   }).join("");
   $("foco").innerHTML = `<div class="fo-h"><div><div class="fo-l">${tit}</div><div class="fo-cd" style="color:${col}">${cd}</div></div><div style="font-size:12.5px">${sub}</div>` +
-    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div>${guardianHTML(guardian(), false)}${franjaMundo()}<div class="fo-g">${col3}</div>`;
+    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div>${guardianHTML(guardian(), false)}${trampaHoyHTML()}${franjaMundo()}<div class="fo-g">${col3}</div>`;
 }
 
 /* ============================================================ opciones / gamma */
@@ -2040,6 +2057,78 @@ function mapaUI() {
   document.querySelectorAll("#mapaT button").forEach(b => { b.classList.toggle("on", b.dataset.m === mapaSel);
     b.onclick = () => { mapaSel = b.dataset.m; store.set("mapa", mapaSel); document.querySelectorAll("#mapaT button").forEach(x => x.classList.toggle("on", x === b)); mapaCargado = true; mapaDibujar(); }; });
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting && !mapaCargado) { mapaCargado = true; mapaDibujar(); o.disconnect(); } }, {rootMargin: "300px"}).observe($("mapaW"));
+}
+
+/* ============================================================ datos macro: reacción histórica */
+const EV_T = {"CPI m/m": "CPI", "Core CPI m/m": "CPI", "CPI y/y": "CPI", "Non-Farm Employment Change": "NFP", "PPI m/m": "PPI",
+  "Core PPI m/m": "PPI", "Federal Funds Rate": "FOMC", "FOMC Statement": "FOMC"};
+const evStat = (tipo, k) => { const e = DATA?.eventos?.ev?.[tipo]?.[k]; return e && (e.rec || e.todo); };
+const ptsDe = (k, pct) => { const p = DATA?.fut?.[k]?.precio; return p ? Math.round(p * pct / 100) : null; };
+function evLinea(tipo) {
+  const a = evStat(tipo, "ES"), b = evStat(tipo, "NQ"); if (!a) return "";
+  return `<div class="evh-l">📊 Las últimas ${a.n} veces, en 5 min el <b>ES se movió ~${fmt(a.m5, 2)}% (±${ptsDe("ES", a.m5)} pts)</b>` +
+    (b ? ` y el <b>NQ ~${fmt(b.m5, 2)}% (±${ptsDe("NQ", b.m5)} pts)</b>` : "") +
+    ` · ${fmt(a.veces, 0)}× un día sin dato · 1 de cada 10 veces más de ${fmt(a.p90_5, 2)}% (${ptsDe("ES", a.p90_5)} pts)</div>`;
+}
+function proxEvento(tipo) {
+  const L = [...(DATA.agenda || []), ...(DATA.semana || [])].filter(e => EV_T[e.orig] === tipo && new Date(e.t).getTime() > Date.now() - 3600e3)
+    .sort((a, b) => a.t.localeCompare(b.t));
+  return L[0];
+}
+function pintarEvh() {
+  const E = DATA?.eventos?.ev; if (!E || !$("evh")) { if ($("evh")) $("evh").innerHTML = "<p class='mut'>Sin historia calculada todavía.</p>"; return; }
+  const fP = (k, x) => `${fmt(x, 2)}% <span class="mut">${ptsDe(k, x)} pts</span>`;
+  const filas = ["CPI", "NFP", "PPI", "FOMC"].filter(t => E[t]?.ES).map(t => {
+    const a = evStat(t, "ES"), b = evStat(t, "NQ"), px = proxEvento(t);
+    const cuando = px ? new Date(px.t).toLocaleString("es-CL", {timeZone: "America/Santiago", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
+    const ult = (DATA.eventos.ult?.[t]?.ES || []).slice(-4).reverse().map(u => `${u.d.slice(8, 10)}-${u.d.slice(5, 7)} <span class="${cl(u.r5)}">${pc(u.r5)}</span>→<span class="${cl(u.r30)}">${pc(u.r30)}</span>`).join(" · ");
+    return `<tr class="sin"><td><b>${esc(E[t].nm)}</b><span class="sub">${E[t].hora} NY${cuando ? ` · <b style="color:#ffb54d">próximo ${esc(cuando)}</b>` : ""}</span></td>` +
+      `<td class="n">${fP("ES", a.m5)}${b ? `<span class="sub">NQ ${fP("NQ", b.m5)}</span>` : ""}</td>` +
+      `<td class="n">${fP("ES", a.p90_5)}${b ? `<span class="sub">NQ ${fP("NQ", b.p90_5)}</span>` : ""}</td>` +
+      `<td class="n"><b>${fmt(a.veces, 0)}×</b><span class="sub">NQ ${b ? fmt(b.veces, 0) + "×" : "—"}</span></td>` +
+      `<td class="n">${a.giro ?? "—"}%<span class="sub">NQ ${b?.giro ?? "—"}%</span></td></tr>` +
+      `<tr><td colspan="5" class="evu" style="padding-top:0">ES las últimas veces (5 min → 30 min): ${ult}</td></tr>`;
+  });
+  const g = DATA.eventos.generado ? new Date(DATA.eventos.generado).toLocaleDateString("es-CL") : "";
+  $("evh").innerHTML = `<div style="overflow-x:auto"><table class="evt"><tr class="h"><td>Dato</td><td class="n">5 min típico</td><td class="n">1 de cada 10</td><td class="n">vs normal</td><td class="n">Se dio vuelta</td></tr>${filas.join("")}</table></div>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0;line-height:1.45"><b>5 min típico</b>: movimiento mediano (para arriba o para abajo) desde el minuto antes del dato hasta 5 min después; los puntos son al precio de hoy. ` +
+    `<b>1 de cada 10</b>: el 10% de las veces se movió más que eso; úsalo para tu stop. <b>vs normal</b>: cuántas veces más que a esa misma hora en un día normal. ` +
+    `<b>Se dio vuelta</b>: veces en que a los 30 min el precio terminó del lado contrario al primer impulso de 5 min. «Últimas»: 5 min → 30 min. ` +
+    `Sin el consenso histórico no se puede medir aún cómo reacciona según si el dato sale mejor o peor de lo esperado. Desde ahora queda registrado cada dato nuevo. Actualizado ${esc(g)}.</p>`;
+}
+
+/* ============================================================ días trampa */
+function trampasLista() {
+  const T = (DATA?.eventos?.trampas || []).map(x => ({d: x.d, items: x.items.slice()}));
+  const por = Object.fromEntries(T.map(x => [x.d, x]));
+  for (const e of [...(DATA.agenda || []), ...(DATA.semana || [])]) {
+    const t = EV_T[e.orig]; if (!t) continue;
+    const d = new Date(e.t).toLocaleDateString("en-CA", {timeZone: "America/New_York"});
+    const x = por[d] || (por[d] = {d, items: []}); if (!por[d].d) por[d].d = d;
+    if (!x.items.some(i => i.k === "dato-" + t)) x.items.unshift({k: "dato-" + t, tit: DATA.eventos.ev?.[t]?.nm || t, hora: horaCL(e.t), tipo: t});
+  }
+  return Object.values(por).filter(x => x.d >= fechaNY()).sort((a, b) => a.d.localeCompare(b.d));
+}
+function trampaStat(k) {
+  const s = DATA?.eventos?.tst?.[k]; if (!s) return "";
+  if (k === "corto") return `Últimos 3 años: el rango hasta las 13:00 fue ${fmt(s.rango, 2)}× el de un día completo normal.`;
+  return `Últimos 3 años (${s.n} veces): rango del día <b class="${s.rango >= 1.1 ? "dn" : s.rango <= 0.9 ? "up" : ""}">${fmt(s.rango, 2)}×</b> lo normal (más grande ${s.mayor}% de las veces)` +
+    (s.uh ? ` · última hora <b class="${s.uh >= 1.3 ? "dn" : ""}">${fmt(s.uh, 1)}×</b> lo normal` : "") + ".";
+}
+function pintarTrampas() {
+  if (!$("trampas")) return;
+  const L = trampasLista(), hoy = fechaNY();
+  const fLbl = d => { const x = new Date(d + "T12:00:00Z"); const m = new Date(hoy + "T12:00:00Z"); const dd = Math.round((x - m) / 864e5);
+    return (dd === 0 ? "HOY · " : dd === 1 ? "MAÑANA · " : "") + x.toLocaleDateString("es-CL", {timeZone: "UTC", weekday: "long", day: "numeric", month: "short"}); };
+  $("trampas").innerHTML = L.map(x => `<div class="tr-d ${x.d === hoy ? "hoy" : ""}"><div class="tr-f">${esc(fLbl(x.d))}</div>${x.items.map(i => i.tipo
+      ? `<div class="tr-i"><span class="tr-c dato">📅 ${esc(i.tit)} · ${esc(i.hora)} Chile</span>${evLinea(i.tipo)}</div>`
+      : `<div class="tr-i"><span class="tr-c">⚠ ${esc(i.tit)}</span><div class="tr-t">${esc(i.txt)}</div><div class="tr-s">${trampaStat(i.k)}</div></div>`).join("")}</div>`).join("")
+    || "<p class='mut'>Sin días especiales en las próximas 3 semanas.</p>";
+}
+function trampaHoyHTML() {
+  const x = trampasLista().find(x => x.d === fechaNY()); if (!x) return "";
+  const t = x.items.filter(i => !i.tipo); if (!t.length) return "";
+  return `<div class="fo-m">⚠ <b>Día trampa</b>: ${t.map(i => esc(i.tit)).join(" · ")}. <span class="mut">${esc(t[0].txt)}</span></div>`;
 }
 
 /* ============================================================ quién mueve el índice */
