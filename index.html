@@ -363,6 +363,14 @@ body.foco #foco{display:block!important}
 .dj-l{max-height:230px;overflow:auto;font:11.5px "IBM Plex Mono"}.dj-l table{width:100%;border-collapse:collapse}.dj-l td{padding:3px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
 .dj-l td.nt{white-space:normal;color:var(--mut);font-family:"IBM Plex Sans",sans-serif}.dj-l button{background:none;border:0;color:var(--mut);cursor:pointer}
 .dj-b{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}.dj-b button{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 9px;cursor:pointer}
+/* ---- guardián de disciplina */
+.gd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;margin-bottom:8px;font-size:12.5px;border:1px solid var(--line);border-left:4px solid var(--up);background:var(--panel2)}
+.gd.pausa{border-left-color:#ffd43b;background:rgba(255,212,59,.08)}.gd.stop{border-left-color:var(--dn);background:rgba(255,77,79,.1)}.gd.meta{border-left-color:var(--up);background:rgba(46,204,113,.1)}
+.gd b.t{font:600 13px "IBM Plex Mono"}.gd .bar{display:flex;gap:3px}.gd .bar i{width:14px;height:6px;background:var(--line)}.gd .bar i.on{background:var(--acc)}
+.gd button{margin-left:auto;background:none;border:1px solid var(--line);color:var(--mut);font:11px "IBM Plex Mono";padding:3px 8px;cursor:pointer}
+.gd-r{display:none;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;font-size:11px;color:var(--mut)}.gd-r.on{display:grid}
+.gd-r input{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);font:12px "IBM Plex Mono";padding:5px;margin-top:2px}
+#guardTop{margin-bottom:10px}
 /* ---- mapa de calor */
 .mp-t{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 #mapaW{height:560px;background:var(--panel2)}#mapaW .tradingview-widget-container{height:100%}
@@ -430,6 +438,7 @@ body.foco #foco{display:block!important}
 </div>
 <main>
   <div id="viejo" hidden></div>
+  <div id="guardTop" hidden></div>
   <div class="status" id="status"></div>
   <div class="zn" id="zn"><span class="zl" id="znL"></span><span class="zt" id="znT"></span><span class="zc" id="znC"></span></div>
   <a class="uh" id="uh" target="_blank" rel="noopener noreferrer"><span class="lb" id="uhLb">ÚLTIMA HORA</span><span class="tx" id="uhTx"></span><span class="hc" id="uhHc"></span></a>
@@ -1666,7 +1675,7 @@ function pintarFoco() {
       `<table class="fo-n">${arr.map(fila).join("")}<tr class="fpx"><td>▶ Precio ahora</td><td class="n">${fmt(p, d)}</td><td class="n"></td></tr>${abj.map(fila).join("")}</table>${orib}</div>`;
   }).join("");
   $("foco").innerHTML = `<div class="fo-h"><div><div class="fo-l">${tit}</div><div class="fo-cd" style="color:${col}">${cd}</div></div><div style="font-size:12.5px">${sub}</div>` +
-    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div>${franjaMundo()}<div class="fo-g">${col3}</div>`;
+    `<span style="flex:1"></span><div style="font-size:12.5px"><span class="fo-l">Próximo dato</span><div class="m">${esc(prox)}</div></div></div>${guardianHTML(guardian(), false)}${franjaMundo()}<div class="fo-g">${col3}</div>`;
 }
 
 /* ============================================================ opciones / gamma */
@@ -1789,10 +1798,60 @@ function pintarGap() {
 
 /* ============================================================ diario de trades */
 let DIARIO = store.get("diario", []);
+/* ---- guardián de disciplina: reglas del día (máx. trades, pérdida máx., pausa tras pérdida, meta) */
+let REGLAS = Object.assign({maxTr: 2, maxPer: 2, pausa: 15, meta: 0}, store.get("reglas", {}));
+const hoyCL = () => new Date().toLocaleDateString("en-CA", {timeZone: "America/Santiago"});
+const minDiaCL = ms => { const [H, M] = new Date(ms).toLocaleTimeString("en-GB", {timeZone: "America/Santiago", hour12: false}).split(":").map(Number); return H * 60 + M; };
+const hhmm = m => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+function guardian() {
+  const hoy = hoyCL(), T = DIARIO.filter(x => x.d === hoy).sort((a, b) => a.t - b.t);
+  const R = T.reduce((s, x) => s + (x.r ?? 0), 0), n = T.length, ahora = minDiaCL(Date.now());
+  let seg = 0; for (let i = T.length - 1; i >= 0 && (T[i].r ?? 0) < 0; i--) seg++;
+  const ult = T[T.length - 1], base = {n, R, T};
+  if (REGLAS.maxPer && R <= -REGLAS.maxPer) return {...base, nv: "stop", tit: "CERRADO POR HOY", txt: `Llevas ${sg(R, 1)}R y tu límite es −${REGLAS.maxPer}R. Cierra la plataforma: mañana es otro día.`};
+  if (REGLAS.meta && R >= REGLAS.meta) return {...base, nv: "meta", tit: "META CUMPLIDA", txt: `Llevas ${sg(R, 1)}R (meta +${REGLAS.meta}R). Protege el día: no devuelvas la ganancia.`};
+  if (REGLAS.maxTr && n >= REGLAS.maxTr) return {...base, nv: "stop", tit: "CERRADO POR HOY", txt: `Ya hiciste ${n} de ${REGLAS.maxTr} trades. El mejor trade ahora es no operar.`};
+  if (seg >= 2) return {...base, nv: "stop", tit: "2 PÉRDIDAS SEGUIDAS", txt: "Hoy el mercado no está para ti. Seguir ahora es revancha, no trading."};
+  if (ult && (ult.r ?? 0) < 0 && REGLAS.pausa) { const fin = minDiaCL(ult.t) + REGLAS.pausa;
+    if (ahora < fin) return {...base, nv: "pausa", tit: `PAUSA HASTA LAS ${hhmm(fin)}`, txt: `Quedan ${fin - ahora} min. Respira, revisa qué pasó y no persigas el precio.`, fin}; }
+  return {...base, nv: "ok", tit: "PUEDES OPERAR", txt: `${n} de ${REGLAS.maxTr || "∞"} trades · ${sg(R, 1)}R hoy` + (REGLAS.maxPer ? ` · te quedan ${fmt(REGLAS.maxPer + R, 1)}R antes del límite` : "")};
+}
+function guardianHTML(g, conBoton) {
+  const ico = {ok: "🛡", pausa: "⏸", stop: "⛔", meta: "✅"}[g.nv];
+  const barra = REGLAS.maxTr ? `<span class="bar">${Array.from({length: REGLAS.maxTr}, (_, i) => `<i class="${i < g.n ? "on" : ""}"></i>`).join("")}</span>` : "";
+  return `<div class="gd ${g.nv}">${ico} <b class="t">${g.tit}</b>${barra}<span>${g.txt}</span>${conBoton ? `<button id="gdCfg">⚙ reglas</button>` : ""}</div>`;
+}
+function pintarGuardian() {
+  if (!$("djG")) return;
+  const g = guardian();
+  $("djG").innerHTML = guardianHTML(g, true);
+  $("gdCfg").onclick = () => $("gdR").classList.toggle("on");
+  const top = $("guardTop"); top.hidden = g.nv === "ok"; if (!top.hidden) top.innerHTML = guardianHTML(g, false);
+}
+function reglasUI() {
+  const campos = [["maxTr", "Máx. trades por día"], ["maxPer", "Pérdida máx. del día (R)"], ["pausa", "Pausa tras una pérdida (min)"], ["meta", "Meta del día (R, 0 = sin meta)"]];
+  $("gdR").innerHTML = campos.map(([k, n]) => `<label>${n}<input type="number" min="0" step="${k === "maxTr" || k === "pausa" ? 1 : 0.5}" data-k="${k}" value="${REGLAS[k]}"></label>`).join("");
+  $("gdR").querySelectorAll("input").forEach(i => i.onchange = () => { const v = Math.max(0, parseFloat(i.value) || 0); REGLAS[i.dataset.k] = v; i.value = v;
+    store.set("reglas", REGLAS); djEnviar({op: "reglas", reglas: REGLAS}); pintarGuardian(); });
+}
+/* ---- copia del diario en el equipo (ntfy <canal>-diario): permite avisos por Telegram y la revisión del viernes */
+const NTFY_DIARIO = NTFY_TOPIC + "-diario";
+function djEnviar(obj) {
+  return fetch("https://ntfy.sh/", {method: "POST", body: JSON.stringify({topic: NTFY_DIARIO, message: JSON.stringify(obj)})}).then(r => r.ok).catch(() => false);
+}
+async function djSnapshot() {       // una vez al día manda todo el diario (en partes) para que el equipo tenga la copia completa
+  if (store.get("djSnap", "") === hoyCL() + "|" + DIARIO.length) return;
+  let ok = await djEnviar({op: "reglas", reglas: REGLAS});
+  const partes = []; let cur = [];
+  for (const x of DIARIO) { cur.push(x); if (JSON.stringify(cur).length > 3000) { cur.pop(); partes.push(cur); cur = [x]; } }
+  if (cur.length) partes.push(cur);
+  for (const pt of partes) ok = (await djEnviar({op: "snap", trades: pt})) && ok;
+  if (ok) store.set("djSnap", hoyCL() + "|" + DIARIO.length);
+}
 const DJ_SET = ["TJR", "ICT", "Fede", "RIPS", "Jdun", "Propio"];
 function diarioUI() {
   const hoy = new Date().toLocaleDateString("en-CA", {timeZone: "America/Santiago"});
-  $("diario").innerHTML = `<div class="dj-f"><input id="djD" type="date" value="${hoy}" class="w2"><select id="djI"><option>ES</option><option>NQ</option><option>BTC</option><option>Otro</option></select>` +
+  $("diario").innerHTML = `<div id="djG"></div><div class="gd-r" id="gdR"></div><div class="dj-f"><input id="djD" type="date" value="${hoy}" class="w2"><select id="djI"><option>ES</option><option>NQ</option><option>BTC</option><option>Otro</option></select>` +
     `<select id="djL"><option value="L">Largo</option><option value="C">Corto</option></select><select id="djS">${DJ_SET.map(x => `<option>${x}</option>`).join("")}</select>` +
     `<input id="djH" type="time" title="hora de entrada (Chile)"><input id="djR" type="number" step="any" placeholder="R (ej. 2 / -1)"><input id="djU" type="number" step="any" placeholder="USD (opcional)"><input id="djN" placeholder="nota: por qué entré, qué aprendí" class="w3"><button id="djA">+ registrar</button></div>` +
     `<div id="djK"></div><div class="dj-l" id="djLista"></div>` +
@@ -1801,8 +1860,15 @@ function diarioUI() {
   $("djA").onclick = () => {
     const r = parseFloat($("djR").value), u = parseFloat($("djU").value);
     if (isNaN(r) && isNaN(u)) { $("djR").focus(); return; }
-    DIARIO.push({d: $("djD").value, i: $("djI").value, l: $("djL").value, s: $("djS").value, r: isNaN(r) ? null : r, u: isNaN(u) ? null : u, n: $("djN").value.trim(), t: Date.now(),
-      h: $("djH").value || null, cx: contextoTrade($("djI").value, $("djD").value)});
+    const g = guardian(); let fr = false;
+    if ($("djD").value === hoyCL() && (g.nv === "stop" || g.nv === "pausa" || g.nv === "meta")) {
+      if (!confirm(`${g.tit}\n${g.txt}\n\n¿Registrar igual este trade? Quedará marcado como FUERA DE TUS REGLAS y aparecerá en tu revisión del viernes.`)) return;
+      fr = true;
+    }
+    const nuevo = {d: $("djD").value, i: $("djI").value, l: $("djL").value, s: $("djS").value, r: isNaN(r) ? null : r, u: isNaN(u) ? null : u, n: $("djN").value.trim(), t: Date.now(),
+      h: $("djH").value || null, cx: contextoTrade($("djI").value, $("djD").value)};
+    if (fr) nuevo.fr = 1;
+    DIARIO.push(nuevo); djEnviar({op: "add", x: nuevo});
     $("djH").value = "";
     store.set("djS", $("djS").value); store.set("diario", DIARIO); $("djR").value = $("djU").value = $("djN").value = ""; pintarDiario();
   };
@@ -1811,8 +1877,8 @@ function diarioUI() {
     const csv = "\ufeff" + filas.map(f => f.map(v => `"${typeof v === "number" ? String(v).replace(".", ",") : v}"`).join(";")).join("\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"})); a.download = "diario-trades.csv"; a.click();
   };
-  $("djBorrar").onclick = () => { if (DIARIO.length && confirm(`¿Borrar los ${DIARIO.length} trades del diario? No se puede deshacer (exporta antes si los quieres guardar).`)) { DIARIO = []; store.set("diario", DIARIO); pintarDiario(); } };
-  pintarDiario();
+  $("djBorrar").onclick = () => { if (DIARIO.length && confirm(`¿Borrar los ${DIARIO.length} trades del diario? No se puede deshacer (exporta antes si los quieres guardar).`)) { DIARIO = []; store.set("diario", DIARIO); djEnviar({op: "clear"}); pintarDiario(); } };
+  reglasUI(); pintarDiario(); setInterval(pintarGuardian, 20000); setTimeout(djSnapshot, 8000);
 }
 /* contexto del mercado que se guarda con cada trade (solo si es de hoy: es la foto del día) */
 function contextoTrade(k, fecha) {
@@ -1849,6 +1915,7 @@ function pintarCondiciones(L) {
     `<div class="mut" style="font-size:10.5px;margin-top:4px">* menos de 10 trades: todavía es ruido, no saques conclusiones. Gamma, gap y VIX se guardan solo en trades registrados el mismo día.</div></div>`;
 }
 function pintarDiario() {
+  pintarGuardian();
   const L = DIARIO.slice().sort((a, b) => a.d.localeCompare(b.d) || a.t - b.t);
   if (!L.length) { $("djK").innerHTML = ""; $("djLista").innerHTML = `<p class="mut" style="font-size:12px">Todavía no hay trades. Registra cada trade en R (ganancia o pérdida dividida por lo que arriesgaste: +2 = ganaste 2 veces el riesgo, −1 = tocó el stop) y aquí verás tu tasa de acierto, tu esperanza y la curva.</p>`; return; }
   const R = L.filter(x => x.r !== null).map(x => x.r), gan = R.filter(x => x > 0), per = R.filter(x => x < 0);
@@ -1863,8 +1930,8 @@ function pintarDiario() {
     `${k("Profit factor", pf === null ? "—" : fmt(pf, 2))}${k("Máx. caída", fmt(dd, 1) + "R", dd < 0 ? "dn" : "")}${k("Racha actual", R.length ? racha + (R[R.length - 1] > 0 ? " ganadas" : " perdidas") : "—")}${k("USD", usd ? sg(usd, 0) : "—", cl(usd))}</div>` +
     `<svg viewBox="0 0 300 60" preserveAspectRatio="none" style="width:100%;height:60px;background:var(--panel2)"><line x1="0" x2="300" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--mut)" stroke-dasharray="3 3" stroke-width="1"/><polyline fill="none" stroke="${tot >= 0 ? "var(--up)" : "var(--dn)"}" stroke-width="2" points="${curva.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/></svg>` +
     `<div class="mut" style="font-size:11px;margin:4px 0 6px">Curva en R · ${porSet.join(" · ")}</div>` + pintarCondiciones(L);
-  $("djLista").innerHTML = `<table>${L.slice().reverse().map(x => `<tr><td>${x.d.slice(5)}</td><td>${x.i}</td><td class="${x.l === "L" ? "up" : "dn"}">${x.l === "L" ? "▲" : "▼"}</td><td>${esc(x.s)}</td><td class="${cl(x.r ?? x.u ?? 0)}">${x.r !== null ? sg(x.r, 1) + "R" : ""}</td><td>${x.u !== null ? sg(x.u, 0) + "$" : ""}</td><td class="nt">${esc(x.n || "")}</td><td><button data-t="${x.t}" title="borrar">✕</button></td></tr>`).join("")}</table>`;
-  $("djLista").querySelectorAll("button").forEach(b => b.onclick = () => { DIARIO = DIARIO.filter(x => x.t !== +b.dataset.t); store.set("diario", DIARIO); pintarDiario(); });
+  $("djLista").innerHTML = `<table>${L.slice().reverse().map(x => `<tr><td>${x.d.slice(5)}</td><td>${x.i}</td><td class="${x.l === "L" ? "up" : "dn"}">${x.l === "L" ? "▲" : "▼"}</td><td>${esc(x.s)}</td><td class="${cl(x.r ?? x.u ?? 0)}">${x.r !== null ? sg(x.r, 1) + "R" : ""}</td><td>${x.u !== null ? sg(x.u, 0) + "$" : ""}</td><td class="nt">${x.fr ? "<b class='dn'>⚠ fuera de reglas</b> " : ""}${esc(x.n || "")}</td><td><button data-t="${x.t}" title="borrar">✕</button></td></tr>`).join("")}</table>`;
+  $("djLista").querySelectorAll("button").forEach(b => b.onclick = () => { DIARIO = DIARIO.filter(x => x.t !== +b.dataset.t); store.set("diario", DIARIO); djEnviar({op: "del", t: +b.dataset.t}); pintarDiario(); });
 }
 
 /* ============================================================ correlaciones */
