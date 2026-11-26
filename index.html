@@ -137,11 +137,11 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-
 .ni .mt{display:flex;gap:6px;align-items:center;font:10.5px "IBM Plex Mono";color:var(--mut)}
 .ni .tt{display:block;font-weight:500;margin-top:2px}.ni .ms{display:block;font-size:12px;color:var(--mut);white-space:pre-line}
 .tg{font:600 9.5px "IBM Plex Mono";padding:1px 5px;letter-spacing:.04em}
-.tg.alta{background:var(--dn);color:#fff}.tg.media{border:1px solid var(--acc);color:var(--acc)}.tg.dato{background:var(--blue);color:#000}
+.tg.alta{background:var(--dn);color:#fff}.tg.media{border:1px solid var(--acc);color:var(--acc)}.tg.dato{background:var(--blue);color:#000}.tg.lat{background:#ffd43b;color:#000}
 .nvac{padding:18px 12px;color:var(--mut);font-size:13px}
 #ntoasts{position:fixed;top:118px;right:14px;z-index:35;display:flex;flex-direction:column;gap:8px;width:min(400px,calc(100vw - 28px))}
 .nt{background:#1b2027;border:1px solid var(--line);border-left:4px solid var(--acc);padding:10px 30px 10px 12px;box-shadow:0 10px 28px rgba(0,0,0,.55);cursor:pointer;animation:in2 .3s;position:relative}
-.nt.alta{border-left-color:var(--dn)}.nt.dato{border-left-color:var(--blue)}
+.nt.alta{border-left-color:var(--dn)}.nt.dato{border-left-color:var(--blue)}.nt.latigazo{border-left-color:#ffd43b;background:linear-gradient(90deg,rgba(255,212,59,.12),transparent 60%),var(--panel)}
 .nt .x{position:absolute;top:4px;right:6px;background:none;border:0;color:var(--mut);font-size:16px;cursor:pointer}
 .nt .tt{display:block;font-weight:600;margin-top:2px}.nt .ms{display:block;font-size:12px;color:var(--mut);white-space:pre-line}
 .nt .bar{position:absolute;left:0;bottom:0;height:2px;background:var(--acc);animation:shrink linear forwards}
@@ -837,12 +837,12 @@ function agendaPorNombre(ev, t) {         // dato de FinancialJuice -> fila de l
 function parsear(m) {
   const kv = {}, tags = m.tags || [];
   tags.forEach(x => { const i = x.indexOf("="); if (i > 0) kv[x.slice(0, i)] = x.slice(i + 1); });
-  const tipo = tags.includes("previo") ? "previo" : tags.includes("dato") ? "dato" : "noticia", nivel = tags.includes("alta") ? "alta" : "media";
+  const tipo = tags.includes("latigazo") ? "latigazo" : tags.includes("previo") ? "previo" : tags.includes("dato") ? "dato" : "noticia", nivel = tags.includes("alta") ? "alta" : "media";
   const lineas = (m.message || "").split("\n");
   const lec = tipo === "dato" ? (lineas.slice(1).find(l => !l.startsWith("—")) || "") : "";
   const flecha = tipo === "noticia" ? (lineas.find(l => l.startsWith("→ ")) || "") : "";
   const xp = flecha ? flecha.slice(2).replace(/^[^:]*▲[^:]*:|^[^:]*▼[^:]*:/, "").trim() : "";
-  return {id: m.id, t: m.time, tipo, nivel, titulo: (m.title || "").replace(/^🔴\s*/, "").replace(/^📊\s*/, ""),
+  return {id: m.id, t: m.time, tipo, nivel, titulo: (m.title || "").replace(/^🔴\s*/, "").replace(/^📊\s*/, "").replace(/^⚡\s*/, ""),
     en: tipo === "noticia" ? lineas[0] : "", ms: tipo === "noticia" ? lineas.filter((l, i) => i > 0 && !l.startsWith("→ ")).join("\n").replace(/^—\s*/, "") : m.message || "",
     xp, imp: kv.imp || "", reg: kv.reg || "",
     link: linkSeguro(m.click) || "#", src: kv.src || "", kv, lec, silencio: tags.includes("silencio"), t0: +kv.t0 || m.time};
@@ -857,8 +857,12 @@ function aplicarDato(n, animar) {
   DATOS[orig] = {act: n.kv.act, cons: n.kv.cons, prev: n.kv.prev, dir: n.kv.dir, sorp: n.kv.sorp, lec: n.lec, t: n.t};
   if (DATA) { pintarAgenda(); if (animar) { const el = document.querySelector(`.ev[data-orig="${CSS.escape(orig)}"]`); if (el) el.classList.add("flash"); } }
 }
-function chime(alta) {
+function chime(alta, lat) {
   if (!OPT.snd) return;
+  if (lat) { try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    [0, .18, .36, .54].forEach((dt, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t0 = audioCtx.currentTime + dt;
+      o.type = "square"; o.frequency.setValueAtTime(1500, t0); o.frequency.exponentialRampToValueAtTime(700, t0 + .15); o.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(.07, t0 + .01); g.gain.exponentialRampToValueAtTime(.0001, t0 + .16); o.start(t0); o.stop(t0 + .17); }); } catch (e) {} return; }
   try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
     (alta ? [988, 1319, 988] : [784, 1047]).forEach((f, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t0 = audioCtx.currentTime + i * .14;
       o.type = "sine"; o.frequency.value = f; o.connect(g); g.connect(audioCtx.destination);
@@ -866,26 +870,27 @@ function chime(alta) {
 }
 function abrirNoti(n) {
   marcarLeido(n.t);
+  if (n.tipo === "latigazo") { cerrarPanel(); $("graficos").scrollIntoView({behavior: "smooth", block: "start"}); return; }
   if (n.tipo === "dato" || n.tipo === "previo") { cerrarPanel(); $("agendaSec").scrollIntoView({behavior: "smooth", block: "start"});
     const orig = n.kv.orig || agendaPorNombre(n.kv.ev || n.titulo, n.t)?.orig; const el = orig && document.querySelector(`.ev[data-orig="${CSS.escape(orig)}"]`);
     if (el) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); } }
   else if (n.link !== "#") window.open(n.link, "_blank", "noopener");
 }
 function toast(n) {
-  const d = document.createElement("div"), dura = n.nivel === "alta" || n.tipo === "dato" ? 30000 : 15000;
-  d.className = `nt ${n.tipo === "dato" || n.tipo === "previo" ? n.tipo : n.nivel}`;
+  const d = document.createElement("div"), dura = n.tipo === "latigazo" ? 60000 : n.nivel === "alta" || n.tipo === "dato" ? 30000 : 15000;
+  d.className = `nt ${n.tipo === "dato" || n.tipo === "previo" || n.tipo === "latigazo" ? n.tipo : n.nivel}`;
   d.innerHTML = `<button class="x" aria-label="Cerrar">×</button><span class="mt m" style="font-size:10.5px;color:var(--mut)">${etiqueta(n)} ${esc(n.src)} · ${horaCL(n.t * 1000)}</span>` +
-    `<span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "noticia" ? n.en : n.ms)}</span>${impHTML(n)}${n.tipo === "previo" ? "" : `<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`}<span class="bar" style="animation-duration:${dura}ms"></span>`;
+    `<span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "noticia" ? n.en : n.ms)}</span>${impHTML(n)}${n.tipo === "previo" || n.tipo === "latigazo" ? "" : `<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`}<span class="bar" style="animation-duration:${dura}ms"></span>`;
   d.onclick = ev => { d.remove(); if (!ev.target.classList.contains("x")) abrirNoti(n); };
   $("ntoasts").prepend(d); setTimeout(() => d.remove(), dura);
   while ($("ntoasts").children.length > 3) $("ntoasts").lastChild.remove();
 }
-const etiqueta = n => n.tipo === "previo" ? `<span class="tg previo">EN 5 MIN</span>` : n.tipo === "dato" ? `<span class="tg dato">DATO</span>` : n.nivel === "alta" ? `<span class="tg alta">IMPORTANTE</span>` : `<span class="tg media">NOTICIA</span>`;
+const etiqueta = n => n.tipo === "latigazo" ? `<span class="tg lat">⚡ LATIGAZO</span>` : n.tipo === "previo" ? `<span class="tg previo">EN 5 MIN</span>` : n.tipo === "dato" ? `<span class="tg dato">DATO</span>` : n.nivel === "alta" ? `<span class="tg alta">IMPORTANTE</span>` : `<span class="tg media">NOTICIA</span>`;
 function ultimaHora() {
   const n = NOTIS.find(x => x.nivel === "alta" && Date.now() / 1000 - x.t < 4 * 3600);
   const uh = $("uh"); if (!n) { uh.classList.remove("on"); return; }
   uh.classList.add("on"); uh.classList.toggle("dato", n.tipo === "dato");
-  $("uhLb").textContent = n.tipo === "dato" ? "DATO" : "ÚLTIMA HORA"; $("uhTx").textContent = n.titulo;
+  $("uhLb").textContent = n.tipo === "dato" ? "DATO" : n.tipo === "latigazo" ? "⚡ LATIGAZO" : "ÚLTIMA HORA"; $("uhTx").textContent = n.titulo;
   const min = Math.round((Date.now() / 1000 - n.t) / 60); $("uhHc").textContent = `${n.src} · ${min < 1 ? "ahora" : "hace " + (min < 60 ? min + " min" : Math.round(min / 60) + " h")}`;
   uh.href = n.tipo === "dato" ? "#agendaSec" : n.link; uh.target = n.tipo === "dato" ? "" : "_blank";
   uh.onclick = ev => { if (n.tipo === "dato") { ev.preventDefault(); abrirNoti(n); } else marcarLeido(n.t); };
@@ -897,7 +902,7 @@ function pintarNotis() {
   $("nlist").innerHTML = l.length ? "" : `<div class="nvac">${nHistoria ? "Conectando…" : "Sin avisos en las últimas 12 horas. Apenas salga una noticia importante o un dato, aparece aquí."}</div>`;
   l.slice(0, 80).forEach(n => {
     const a = document.createElement("a"); a.className = "ni" + (n.t > nVisto ? " nuevo" : "");
-    a.innerHTML = `<span class="mt">${etiqueta(n)}<span>${horaCL(n.t * 1000)}</span><span>· ${esc(n.src)}</span></span><span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "dato" ? n.ms : n.en)}</span>${impHTML(n)}<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`;
+    a.innerHTML = `<span class="mt">${etiqueta(n)}<span>${horaCL(n.t * 1000)}</span><span>· ${esc(n.src)}</span></span><span class="tt">${esc(n.titulo)}</span><span class="ms">${esc(n.tipo === "dato" || n.tipo === "latigazo" ? n.ms : n.en)}</span>${impHTML(n)}<span class="rxw" data-id="${esc(n.id)}">${rxHTML(n)}</span>`;
     a.onclick = () => abrirNoti(n); $("nlist").appendChild(a);
   });
   ultimaHora();
@@ -918,9 +923,9 @@ function nuevaNoti(m) {
   const reciente = !nHistoria && Date.now() / 1000 - n.t < 600;
   if (reciente) {
     $("bell").classList.remove("ring"); void $("bell").offsetWidth; $("bell").classList.add("ring");
-    if (OPT.nws) { toast(n); chime(n.nivel === "alta" || n.tipo === "dato"); }
-    if (OPT.not && OPT.nws && "Notification" in window && Notification.permission === "granted") {
-      try { const nt = new Notification((n.tipo === "dato" ? "📊 " : n.nivel === "alta" ? "🔴 " : "") + n.titulo, {body: n.tipo === "dato" ? n.ms : n.en, tag: n.id});
+    if (OPT.nws || n.tipo === "latigazo") { toast(n); chime(n.nivel === "alta" || n.tipo === "dato", n.tipo === "latigazo"); }
+    if (OPT.not && (OPT.nws || n.tipo === "latigazo") && "Notification" in window && Notification.permission === "granted") {
+      try { const nt = new Notification((n.tipo === "latigazo" ? "⚡ " : n.tipo === "dato" ? "📊 " : n.nivel === "alta" ? "🔴 " : "") + n.titulo, {body: n.tipo === "dato" || n.tipo === "latigazo" ? n.ms : n.en, tag: n.id, requireInteraction: n.tipo === "latigazo"});
         nt.onclick = () => { window.focus(); abrirNoti(n); nt.close(); }; } catch (e) {}
     }
   }
