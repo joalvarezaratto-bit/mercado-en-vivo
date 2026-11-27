@@ -593,6 +593,7 @@ main h2.pg.plg::before{transform:rotate(-90deg)}
 main h2.pg.plg{opacity:.75}
 main h2.pg.plg + *{display:none!important}
 main h2.pg:hover::before{color:var(--acc)}
+.nh-pl{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0 0 10px;font-size:12.5px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -2821,6 +2822,22 @@ function nhStat(k, nombre) {                 // estadística (12 meses) del nive
   const c = NHN_INV[nombre.replace(/ \(formándose\)/, "").trim()];
   return c ? DATA?.nivh?.st?.[k]?.["12m"]?.[c] || null : null;
 }
+function nhR(q) {                            // celda con el R medio del plan simulado
+  if (!q) return `<td class="mut">—</td>`;
+  const fuerte = q.n >= 40 && Math.abs(q.r) >= 0.15 && Math.abs(q.z || 0) >= 2;
+  return `<td class="m ${q.r > 0 ? "up" : q.r < 0 ? "dn" : ""}" style="${fuerte ? "font-weight:700" : "opacity:.8"}" title="${q.n} trades · ganó ${q.gana}% · llegó a 2R ${q.obj}% · precio cualquiera ${q.ctrl == null ? "—" : sg(q.ctrl, 2) + "R"} · total ${sg(q.tot, 1)}R">${sg(q.r, 2)}R${fuerte ? (q.r > 0 ? " ✓" : " ✗") : ""}</td>`;
+}
+function nhResPlan(filas) {                  // resumen honesto: ¿algún nivel paga por sí solo?
+  const P = filas.flatMap(([c, s]) => ["reb", "rup"].map(m => [c, m, s.plan?.[m]])).filter(x => x[2]);
+  if (!P.length) return "";
+  const pagan = P.filter(x => x[2].n >= 40 && x[2].r >= 0.15 && x[2].z >= 2), pierden = P.filter(x => x[2].n >= 40 && x[2].r <= -0.15 && x[2].z <= -2);
+  const nm = x => `${NHN[x[0]]} (${x[1] === "reb" ? "rebote" : "ruptura"} ${sg(x[2].r, 2)}R)`;
+  const mr = P.map(x => x[2].r).sort((a, b) => a - b), med = mr[Math.floor(mr.length / 2)];
+  return `<div class="nh-pl"><b>💵 ¿Paga operar el nivel solo?</b> Simulamos el plan de trade de la página (entrada en el nivel, stop fijo, objetivo 2R, costo de Exness) en cada toque. ` +
+    (pagan.length ? `Deja ganancia consistente: <b class="up">${pagan.map(nm).map(esc).join(", ")}</b>. ` : `<b>Ningún nivel deja ganancia consistente por sí solo</b> en esta ventana (el plan típico da ${sg(med, 2)}R por trade). `) +
+    (pierden.length ? `Pierden de forma consistente: <span class="dn">${pierden.map(nm).map(esc).join(", ")}</span>. ` : "") +
+    `Los niveles dicen <b>dónde</b> mirar; la ganancia tiene que venir de tu confirmación (barrido, cambio de estructura, tu setup).</div>`;
+}
 function pintarNivh() {
   const el = $("nivh"), N = DATA?.nivh; if (!el) return;
   if (!N) { el.innerHTML = `<p class="mut">Se calcula en el Mac con las velas de 1 minuto; aparece en la próxima actualización.</p>`; return; }
@@ -2831,16 +2848,17 @@ function pintarNivh() {
   el.innerHTML = `<div class="nh-t"><span class="seg" style="margin-left:0">${btn("k", "ES", "ES", nhK === "ES")}${btn("k", "NQ", "NQ", nhK === "NQ")}</span>` +
     `<span class="seg" style="margin-left:0">${btn("v", "30d", "30 días", nhV === "30d")}${btn("v", "12m", "12 meses", nhV === "12m")}${btn("v", "2024", "Desde 2024", nhV === "2024")}</span>` +
     `<span class="mut" style="font-size:11.5px">actualizado ${esc((N.generado || "").slice(0, 10))}</span></div>` +
-    `<div class="nh-r">${res("sirve", "✅ Rebotan más que un precio cualquiera")}${res("se rompe", "💥 Se rompen más de lo normal (mejores para rupturas)")}` +
+    nhResPlan(filas) + `<div class="nh-r">${res("sirve", "✅ Rebotan más que un precio cualquiera")}${res("se rompe", "💥 Se rompen más de lo normal (mejores para rupturas)")}` +
     `<div><b>⚪ El resto</b>rebotan casi igual que un precio al azar: úsalos como referencia, no como razón para entrar.</div></div>` +
-    `<table class="nh"><tr><th>Nivel</th><th class="hm">Días</th><th>Lo tocó</th><th>Rebotó</th><th class="hm">Rompió</th><th>Precio cualquiera</th><th>Ventaja</th><th>Veredicto</th></tr>` +
+    `<table class="nh"><tr><th>Nivel</th><th class="hm">Días</th><th>Lo tocó</th><th>Rebotó</th><th class="hm">Rompió</th><th>Precio cualquiera</th><th>Ventaja</th><th>Veredicto</th><th title="R promedio por trade del plan de rebote (objetivo 2R, costo Exness)">Plan rebote</th><th title="R promedio por trade del plan de ruptura">Plan ruptura</th></tr>` +
     filas.map(([c, s]) => { const v = NH_VER[s.ver] || ["", s.ver];
       return `<tr><td>${esc(NHN[c] || c)}</td><td class="hm">${s.n}</td><td>${s.toco}%</td><td><b>${s.reb ?? "—"}%</b></td><td class="hm">${s.rom ?? "—"}%</td><td>${s.ctrl ?? "—"}%</td>` +
-        `<td class="${cl(s.ventaja)}">${s.ventaja == null ? "—" : sg(s.ventaja, 0)}${bar(s.ventaja)}</td><td><span class="tg2 ${v[0]}">${v[1]}</span></td></tr>`; }).join("") + `</table>` +
+        `<td class="${cl(s.ventaja)}">${s.ventaja == null ? "—" : sg(s.ventaja, 0)}${bar(s.ventaja)}</td><td><span class="tg2 ${v[0]}">${v[1]}</span></td>${nhR(s.plan?.reb)}${nhR(s.plan?.rup)}</tr>`; }).join("") + `</table>` +
     `<div class="nh-x"><b>Cómo se mide:</b> en cada sesión regular (9:30–16:00 NY) se mira si el precio llegó al nivel (margen ${fmt(N.reglas?.toque, 2)}%). ` +
     `<b>Rebotó</b> = después de tocarlo se alejó ${fmt(N.reglas?.rebote, 2)}% (≈ 10 pts ES / 40 pts NQ) antes de pasarlo por ${fmt(N.reglas?.rompe, 2)}%. ` +
     `<b>Precio cualquiera</b> = cuánto rebotan precios elegidos al azar a la misma distancia de la apertura: si un nivel no le gana a eso, no tiene nada especial. ` +
     `«Sirve» y «se rompe» solo cuando la diferencia es de 6 puntos o más y difícil de explicar por suerte. Con 30 días casi todo sale «pocos datos»: es normal. ` +
+    `<b>Plan rebote / ruptura</b> = resultado promedio en R de operar el nivel con el plan de la página: stop = 0,05% + 6% del ATR, objetivo 2R, salida al cierre si no llega a ninguno, costo ${fmt(N.reglas?.spread?.[nhK] ?? 0, 1)} pts. En negrita con ✓/✗ solo si es consistente (40 trades o más y difícil de explicar por suerte). Pasa el mouse para ver detalles. ` +
     `Velas de 1 min de Exness/Dukascopy (CFD del índice: misma estructura que el futuro). Los muros de opciones se miden aparte en la sección Opciones.</div>`;
   el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { nhK = b.dataset.k; store.set("nhK", nhK); pintarNivh(); });
   el.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { nhV = b.dataset.v; store.set("nhV", nhV); pintarNivh(); });
@@ -2891,6 +2909,12 @@ function planChecks(P) {
   else if (q && q.ver === "se rompe") C.push([P.modo === "reb" ? "⚠" : "✓", P.modo === "reb" ? "w" : "u", `${esc(P.nombre)} se rompe <b>${q.rom}%</b> de las veces: ` + (P.modo === "reb" ? "un rebote aquí va contra la estadística." : "la ruptura va a favor de la estadística.")]);
   else if (q && q.reb != null) C.push(["⚪", "", `${esc(P.nombre)} rebota ${q.reb}% — casi igual que un precio cualquiera (${q.ctrl}%). Necesitas otra confirmación (tu setup).`]);
   else if (P.k !== "BTC") C.push(["⚪", "", "Este nivel no tiene medición histórica (opciones, alertas o niveles del día)."]);
+  const pm = q?.plan?.[P.modo];
+  if (pm) { const t = `Este mismo plan (${P.modo === "reb" ? "rebote" : "ruptura"}, objetivo 2R, costo Exness), operado <b>${pm.n}</b> veces en este nivel los últimos 12 meses: ` +
+      `promedio <b class="${pm.r > 0 ? "up" : pm.r < 0 ? "dn" : ""}">${sg(pm.r, 2)}R</b> por trade, ganó ${pm.gana}%` + (pm.ctrl != null ? ` (en un precio cualquiera: ${sg(pm.ctrl, 2)}R)` : "") + ".";
+    if (pm.n >= 40 && pm.r >= 0.15 && pm.z >= 2) C.push(["✓", "u", t + " Deja ganancia de forma consistente."]);
+    else if (pm.n >= 40 && pm.r <= -0.15 && pm.z <= -2) C.push(["⚠", "w", t + " <b>Pierde de forma consistente</b>: solo entra con tu confirmación."]);
+    else C.push(["⚪", "", t + " Por sí solo no gana ni pierde: la ventaja tiene que venir de tu setup."]); }
   const o = P.objs[0];
   if (!o) C.push(["⚠", "w", "No hay un nivel claro como objetivo en esa dirección: usa 2R fijo."]);
   else if (o.rr < 1.5) C.push(["⚠", "w", `El primer objetivo (${esc(o.n)}) está cerca: <b>${fmt(o.rr, 1)}R</b>. Vale poco el riesgo.`]);
