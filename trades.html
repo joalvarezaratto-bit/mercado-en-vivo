@@ -3,6 +3,7 @@
 <title>Estadísticas · ES NQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root{--bg:#0b0d10;--panel:#12161b;--panel2:#0d1014;--line:#222a33;--tx:#e6e9ee;--tx2:#aeb8c5;--mut:#8592a3;--acc:#ff9f1a;--up:#2ecc71;--dn:#ff4d4f;--fl:#aab4c0;--warn:#fbbf24;--r:10px}
 *{box-sizing:border-box}
@@ -60,12 +61,22 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 table.evt{width:100%;border-collapse:collapse;font-size:12.5px}table.evt td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
 table.evt tr.sin td{border-bottom:0;padding-bottom:2px}table.evt td:first-child{min-width:110px}table.evt .n{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}table.evt tr.h td{color:var(--mut);font-size:11px}
 .evt .sub{display:block;color:var(--mut);font-size:11px}.evu{font:11px "IBM Plex Mono",monospace;color:var(--mut);margin-top:2px}
+.pr-g{position:relative;height:12px;background:linear-gradient(90deg,#ff4d4f 0%,#ff9f1a 35%,#8592a3 50%,#9be15d 65%,#2ecc71 100%);margin:10px 0 4px}
+.pr-g i{position:absolute;top:-5px;width:4px;height:22px;background:#fff;box-shadow:0 0 0 2px #000;transition:left .6s}
+.pr-e{display:flex;justify-content:space-between;font:10px "IBM Plex Mono";color:var(--mut)}
+.pr-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.pr-n{font:600 34px "IBM Plex Mono"}.pr-l{font:600 14px "IBM Plex Mono";text-transform:uppercase;letter-spacing:.08em}
+.pr-t{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}.pr-t td{padding:4px 4px;border-bottom:1px solid var(--line)}.pr-t td.n{text-align:right;font-family:"IBM Plex Mono"}
+.pr-b{position:relative;width:110px;height:8px;background:var(--panel2)}.pr-b i{position:absolute;top:0;height:100%}.pr-b:after{content:"";position:absolute;left:50%;top:-2px;width:1px;height:12px;background:var(--mut)}
+.cr{border-collapse:collapse;font:11.5px "IBM Plex Mono";width:100%}.cr td,.cr th{padding:5px 2px;text-align:center}.cr th{color:var(--mut);font-weight:500;font-size:10.5px}
+.cr td:first-child{text-align:left;color:var(--mut);font-size:10.5px;white-space:nowrap}.cr td.c{color:#fff}
+#rel-chart{height:300px}.prb{border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.06);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--tx2);margin:0 0 12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.two>*{min-width:0}@media(max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
 </style></head><body>
 <header><div class="hbar"><span class="brand">MERCADO EN VIVO · ESTADÍSTICAS</span><a class="volver" href="./">← Volver a la página en vivo</a></div></header>
 <main>
   <h1>Estadísticas: lo que dice la historia</h1>
   <p class="lead">Todo lo medido con datos pasados de ES y NQ, vela a vela de 1 minuto: si el precio respeta cada nivel, cuánto deja el plan de trade, si una confirmación lo mejora, cómo reacciona el mercado a cada dato macro y qué horas y días se mueven más. Se recalcula solo una vez al día.</p>
-  <nav class="ix"><a href="#nivhSec">Niveles</a><a href="#confSec">Confirmaciones</a><a href="#evhSec">Datos macro</a><a href="#estacSec">Estacionalidad</a></nav>
+  <nav class="ix"><a href="#nivhSec">Niveles</a><a href="#confSec">Confirmaciones</a><a href="#evhSec">Datos macro</a><a href="#estacSec">Estacionalidad</a><a href="#pruebaSec">En prueba</a></nav>
   <div class="concl" id="concl"></div>
 
   <h2 id="nivhSec">¿Qué niveles funcionan? <small>rebote medido en cada sesión desde 2024 vs. un precio cualquiera · y lo que deja el plan de trade en R</small></h2>
@@ -79,6 +90,15 @@ table.evt tr.sin td{border-bottom:0;padding-bottom:2px}table.evt td:first-child{
 
   <h2 id="estacSec">Estacionalidad <small>cómo se comporta cada hora y cada día de la semana desde 2024 · resaltada la hora y el día actual</small></h2>
   <div class="panel" id="estac"><p class="mut">Cargando…</p></div>
+
+  <h2 id="pruebaSec">Indicadores en prueba <small>se ven bien, pero nunca se probó que anticipen algo · contexto, no señal</small></h2>
+  <div class="prb">⚠ Estos tres no están validados: no hay evidencia de que mejoren tus entradas en ES/NQ. Los dejamos aquí como contexto; si algún día se mide que aportan, vuelven a la página en vivo.</div>
+  <div class="two">
+    <div><h2 style="margin-top:0">Pulso de riesgo <small>11 señales · 0 = pánico, 100 = euforia</small></h2><div class="panel" id="pulso"><p class="mut">Cargando precios…</p></div></div>
+    <div><h2 style="margin-top:0">Rendimiento relativo <small>ES · NQ · BTC · % desde el inicio de la ventana</small></h2><div class="panel"><div class="rl-k" id="relK"></div><div id="rel-chart"></div></div></div>
+  </div>
+  <h2>Correlaciones <small>retornos diarios · verde = se mueven juntos · rojo = al revés</small></h2>
+  <div class="panel" id="corr"><p class="mut">Cargando…</p></div>
 
   <p class="mut" style="font-size:11.5px;margin-top:24px">Simulación con datos históricos: no incluye deslizamiento ni el criterio de cada estrategia (sesgo del día, horario, order flow). Informativo, no es recomendación de inversión.</p>
 </main>
@@ -255,11 +275,114 @@ function pintarConcl() {          // tres conclusiones arriba, calculadas con lo
     `<div><b>2 · Operarlos solos no paga</b>${pagan ? `${pagan} combinación(es) nivel + plan dejan ganancia consistente.` : "Ningún nivel deja ganancia consistente con el plan simple (stop fijo, objetivo 2R, costo Exness)."}</div>` +
     `<div><b>3 · Confirmar ayuda, pero no alcanza</b>Desde 2024, sin confirmación: ES ${sg(b("ES").base?.r, 2)}R · NQ ${sg(b("NQ").base?.r, 2)}R por trade. Con la mejor confirmación: ES ${mE ? sg(mE[1].r, 2) : "—"}R · NQ ${mN ? sg(mN[1].r, 2) : "—"}R.</div>`;
 }
+
+/* ---- precios en vivo mínimos para Pulso y Rendimiento relativo (Hyperliquid + Binance, cada 60 s) */
+const INST = {ES: {coin: "xyz:SP500"}, NQ: {coin: "xyz:XYZ100"}, BTC: {}};
+const LIVE = {BTC: null, btc24o: null, "xyz:SP500": null, "xyz:XYZ100": null};
+const M1 = {ES: new Map(), NQ: new Map(), BTC: new Map()};
+function precioFut(k) { const f = DATA?.fut?.[k], c = LIVE[INST[k].coin]; if (!f || c == null) return null; return f.base != null ? c + f.base : null; }
+const gq = s => DATA?.global?.flatMap(g => g.items).find(i => i.s === s);
+async function vivo() {
+  const now = Date.now();
+  await Promise.all([["ES", "xyz:SP500"], ["NQ", "xyz:XYZ100"]].map(async ([k, coin]) => {
+    try { const r = await fetch("https://api.hyperliquid.xyz/info", {method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({type: "candleSnapshot", req: {coin, interval: "1m", startTime: now - 13 * 3600e3, endTime: now}})}).then(r => r.json());
+      r.forEach(x => M1[k].set(x.t / 1000, +x.c)); if (r.length) LIVE[coin] = +r[r.length - 1].c; } catch (e) {}
+  }).concat((async () => {
+    try { const r = await fetch("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=800").then(r => r.json());
+      r.forEach(x => M1.BTC.set(x[0] / 1000, +x[4])); if (r.length) LIVE.BTC = +r[r.length - 1][4]; } catch (e) {}
+    try { const t = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT").then(r => r.json()); LIVE.btc24o = +t.openPrice; } catch (e) {}
+  })()));
+  pintarPulso(); pintarRel(false);
+}
+function pulsoComp() {
+  const c = [], clip = v => Math.max(-1, Math.min(1, v));
+  const add = (n, txt, sc, w, cls) => { if (sc === null || isNaN(sc)) return; c.push({n, txt, sc: clip(sc), w, cls}); };
+  for (const [k, esc_] of [["ES", 1.0], ["NQ", 1.3]]) {
+    const p = precioFut(k), f = DATA?.fut?.[k];
+    if (p !== null && f) { const v = (p / f.pdc - 1) * 100; add(k + " vs cierre", pc(v), v / esc_, 1.5, cl(v)); }
+  }
+  if (LIVE.BTC && LIVE.btc24o) { const v = (LIVE.BTC / LIVE.btc24o - 1) * 100; add("Bitcoin 24 h", pc(v), v / 3, 1, cl(v)); }
+  const vix = gq("^VIX");
+  if (vix) add("VIX (miedo)", fmt(vix.precio, 2) + " · " + pc(vix.pct, 1), 0.5 * (20 - vix.precio) / 8 + 0.5 * (-vix.pct / 8), 2, vix.pct > 0 ? "dn" : "up");
+  const vc = DATA?.vixc; if (vc) add("Curva VIX (30d ÷ 3M)", fmt(vc.ratio, 2) + (vc.ratio >= 1 ? " invertida" : ""), (0.92 - vc.ratio) / 0.1, 1.25, vc.ratio >= 0.93 ? "dn" : "up");
+  const sox = gq("SOXX"); if (sox) add("Semis (SOXX)", pc(sox.pct), sox.pct / 2.5, 1, cl(sox.pct));
+  const tnx = gq("^TNX"); if (tnx) add("Bono 10 años", sg(tnx.chg * 100, 1) + " pb", -tnx.chg * 100 / 8, 1, tnx.chg > 0 ? "dn" : "up");
+  const dxy = gq("DX-Y.NYB"); if (dxy) add("Dólar (DXY)", pc(dxy.pct), -dxy.pct / 0.5, 0.75, dxy.pct > 0 ? "dn" : "up");
+  const jpy = gq("JPY=X"); if (jpy) add("USD/JPY (yen refugio)", pc(jpy.pct), jpy.pct / 0.6, 0.5, cl(jpy.pct));
+  const oro = gq("GC=F"); if (oro) add("Oro (refugio)", pc(oro.pct), -oro.pct / 1.5, 0.75, oro.pct > 0 ? "dn" : "up");
+  const cu = gq("HG=F"); if (cu) add("Cobre (crecimiento)", pc(cu.pct), cu.pct / 2, 0.5, cl(cu.pct));
+  return c;
+}
+function pintarPulso() {
+  if (!DATA) return;
+  const c = pulsoComp(); if (c.length < 4) return;
+  const W = c.reduce((a, x) => a + x.w, 0), sc = 50 + 50 * c.reduce((a, x) => a + x.w * x.sc, 0) / W;
+  const [lab, col] = sc < 30 ? ["Risk-off fuerte", "var(--dn)"] : sc < 42 ? ["Risk-off", "#ff7a45"] : sc < 58 ? ["Neutral", "var(--acc)"] : sc < 70 ? ["Risk-on", "#9be15d"] : ["Risk-on fuerte", "var(--up)"];
+  c.sort((a, b) => Math.abs(b.w * b.sc) - Math.abs(a.w * a.sc));
+  $("pulso").innerHTML = `<div class="pr-h"><span class="pr-n" style="color:${col}">${Math.round(sc)}</span><span class="pr-l" style="color:${col}">${lab}</span>` +
+    `<span class="mut" style="font-size:12px">${c.filter(x => x.sc > 0.15).length} señales a favor del riesgo · ${c.filter(x => x.sc < -0.15).length} en contra</span></div>` +
+    `<div class="pr-g"><i style="left:calc(${sc.toFixed(1)}% - 2px)"></i></div><div class="pr-e"><span>PÁNICO</span><span>NEUTRAL</span><span>EUFORIA</span></div>` +
+    `<table class="pr-t">${c.map(x => `<tr><td>${esc(x.n)}</td><td class="n ${x.cls}">${esc(x.txt)}</td><td style="width:120px"><div class="pr-b"><i style="${x.sc >= 0 ? `left:50%;width:${x.sc * 50}%;background:var(--up)` : `left:${50 + x.sc * 50}%;width:${-x.sc * 50}%;background:var(--dn)`}"></i></div></td></tr>`).join("")}</table>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">Indicador propio: ES, NQ y BTC en vivo; el resto con ~10 min de retraso. Barra verde = empuja hacia apetito por riesgo, roja = hacia aversión. Lectura de contexto, no es una señal de entrada.</p>`;
+}
+
+/* ============================================================ correlaciones */
+let corrN = store.get("corrN", "c20");
+function pintarCorr() {
+  const C = DATA?.corr; if (!C || !C[corrN]) { $("corr").innerHTML = `<p class="mut">Sin datos por ahora.</p>`; return; }
+  const N = C.nombres, M = C[corrN];
+  const celda = v => { if (v === null) return `<td class="mut">—</td>`; const a = (0.1 + 0.75 * Math.abs(v)).toFixed(2);
+    return `<td class="c" style="background:${v >= 0 ? `rgba(46,204,113,${a})` : `rgba(255,77,79,${a})`}">${fmt(v, 2)}</td>`; };
+  const i = n => N.indexOf(n), par = (a, b) => (i(a) >= 0 && i(b) >= 0) ? M[i(a)][i(b)] : null;
+  const lee = [];
+  const bE = par("BTC", "NQ"); if (bE !== null) lee.push(`<b>BTC con Nasdaq ${fmt(bE, 2)}</b>: ${Math.abs(bE) < 0.3 ? "Bitcoin va por su cuenta; lo que pase en acciones no lo arrastra" : bE > 0 ? "Bitcoin se mueve como una acción tecnológica: una caída del NQ suele pegarle" : "Bitcoin se mueve al revés de las acciones"}.`);
+  const tE = par("10 años", "ES"); if (tE !== null) lee.push(`<b>Bono 10 años con ES ${fmt(tE, 2)}</b>: ${tE < -0.3 ? "tasas arriba = acciones abajo; vigilar los datos de inflación y las subastas" : tE > 0.3 ? "suben juntos: el mercado lee crecimiento, no miedo a la Fed" : "relación débil; la tasa no es el motor ahora"}.`);
+  const dE = par("DXY", "ES"); if (dE !== null && Math.abs(dE) >= 0.3) lee.push(`<b>Dólar con ES ${fmt(dE, 2)}</b>: ${dE < 0 ? "dólar fuerte pesa sobre las acciones" : "dólar y acciones suben juntos"}.`);
+  $("corr").innerHTML = `<div class="rl-k" style="margin-bottom:8px"><span class="mut">Ventana:</span><button data-c="c20" class="${corrN === "c20" ? "on" : ""}">20 sesiones</button><button data-c="c60" class="${corrN === "c60" ? "on" : ""}">60 sesiones</button><span class="sp"></span><span class="mut">hasta ${esc(C.hasta || "")}</span></div>` +
+    `<table class="cr"><tr><th></th>${N.map(n => `<th>${esc(n)}</th>`).join("")}</tr>${N.map((a, r) => `<tr><td>${esc(a)}</td>${M[r].map((v, c) => c === r ? `<td class="mut">·</td>` : celda(v)).join("")}</tr>`).join("")}</table>` +
+    `<div style="font-size:12.5px;line-height:1.55;margin-top:10px">${lee.map(x => `<div>• ${x}</div>`).join("")}</div>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0">1 = se mueven igual, −1 = al revés, 0 = sin relación. Bono y VIX usan el cambio en puntos. Solo días en que operan todos (BTC sin fines de semana).</p>`;
+  $("corr").querySelectorAll("button[data-c]").forEach(b => b.onclick = () => { corrN = b.dataset.c; store.set("corrN", corrN); pintarCorr(); });
+}
+
+/* ============================================================ rendimiento relativo */
+let REL = null, relHoras = store.get("relH", 8);
+const RELC = {ES: "#ff9f1a", NQ: "#4fc3f7", BTC: "#ce93d8"};
+function relUI() {
+  $("relK").innerHTML = Object.entries(RELC).map(([k, c]) => `<span><b style="background:${c}"></b>${k} <span id="relV${k}" class="m"></span></span>`).join("") +
+    `<span class="sp"></span>` + [2, 4, 8, 13].map(h => `<button data-h="${h}" class="${h === relHoras ? "on" : ""}">${h} h</button>`).join("");
+  $("relK").querySelectorAll("button").forEach(b => b.onclick = () => { relHoras = +b.dataset.h; store.set("relH", relHoras);
+    $("relK").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); pintarRel(true); });
+  if (!window.LightweightCharts) return;
+  const chart = LightweightCharts.createChart($("rel-chart"), {autoSize: true, layout: {background: {color: "#12161b"}, textColor: "#8592a3", fontFamily: "IBM Plex Mono", fontSize: 11},
+    grid: {vertLines: {color: "#1a2028"}, horzLines: {color: "#1a2028"}}, rightPriceScale: {borderColor: "#222a33"},
+    timeScale: {borderColor: "#222a33", timeVisible: true, secondsVisible: false}, localization: {priceFormatter: v => sg(v, 2) + "%"}});
+  const ser = {};
+  for (const [k, c] of Object.entries(RELC)) ser[k] = chart.addLineSeries({color: c, lineWidth: 2, priceLineVisible: false, lastValueVisible: true});
+  ser.ES.createPriceLine({price: 0, color: "#3a4552", lineWidth: 1, lineStyle: 2, axisLabelVisible: false});
+  REL = {chart, ser};
+}
+function pintarRel(ajustar) {
+  if (!REL) return;
+  const desde = Date.now() / 1000 - relHoras * 3600;
+  for (const k of ["ES", "NQ", "BTC"]) {
+    const pts = [...M1[k].entries()].filter(([t]) => t >= desde).sort((a, b) => a[0] - b[0]);
+    if (!pts.length) continue;
+    const b = pts[0][1];
+    const data = pts.map(([t, v]) => ({time: t + tzOffsetSec("America/Santiago", t), value: (v / b - 1) * 100}));
+    REL.ser[k].setData(data);
+    const u = data[data.length - 1].value, el = $("relV" + k); if (el) { el.textContent = sg(u, 2) + "%"; el.className = "m " + cl(u); }
+  }
+  if (ajustar) REL.chart.timeScale().fitContent();
+}
+
 async function cargar() {
   try { DATA = await (await fetch("data.json?v=" + Math.floor(Date.now() / 600000), {cache: "no-store"})).json(); } catch (e) { DATA = null; }
-  pintarNivh(); pintarConcl(); pintarEvh(); pintarEstac();
+  pintarNivh(); pintarConcl(); pintarEvh(); pintarEstac(); pintarCorr();
+  if (!REL) relUI(); await vivo(); pintarRel(true);
   if (!DATA?.conf) $("conf").innerHTML = `<p class="mut">Se calcula en el Mac con las velas de 1 minuto; aparece en la próxima actualización.</p>`;
 }
-cargar();
+cargar(); setInterval(vivo, 60000);
 </script>
 </body></html>
