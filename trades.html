@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estadísticas de trades · ES NQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0d10;--panel:#12161b;--panel2:#0d1014;--line:#222a33;--tx:#e6e9ee;--tx2:#aeb8c5;--mut:#8592a3;--acc:#ff9f1a;--up:#2ecc71;--dn:#ff4d4f;--fl:#aab4c0;--warn:#fbbf24;--r:10px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+.m{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+a{color:inherit}
+.up{color:var(--up)}.dn{color:var(--dn)}.fl{color:var(--fl)}.mut{color:var(--mut)}.acc{color:var(--acc)}
+header{position:sticky;top:0;z-index:20;background:rgba(11,13,16,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;gap:14px;padding:10px 16px;flex-wrap:wrap;max-width:1300px;margin:0 auto}
+.brand{font:600 12px "IBM Plex Mono";letter-spacing:.16em;color:var(--acc);white-space:nowrap}
+.volver{margin-left:auto;font:500 12.5px "IBM Plex Sans";text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;color:var(--tx2)}
+.volver:hover{color:var(--tx);border-color:#3a4450}
+main{max-width:1300px;margin:0 auto;padding:8px 16px 60px}
+h1{font:600 22px "IBM Plex Sans";margin:22px 0 6px}
+.lead{color:var(--tx2);margin:0 0 6px;max-width:900px}
+h2{font:600 12px "IBM Plex Mono";letter-spacing:.14em;color:var(--tx2);text-transform:uppercase;margin:30px 0 10px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+h2::before{content:"";display:inline-block;width:3px;height:11px;background:var(--acc);border-radius:2px;align-self:center}
+h2 small{font:400 11px "IBM Plex Mono";letter-spacing:0;text-transform:none;color:var(--mut);margin-left:auto}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;overflow-x:auto}
+.concl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 4px}
+.concl>div{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--tx2)}
+.concl b{display:block;color:var(--tx);font-size:14px;margin-bottom:4px}
+@media(max-width:800px){.concl{grid-template-columns:1fr}h2 small{margin-left:0}.brand{white-space:normal;letter-spacing:.08em}}
+.seg{display:inline-flex;margin-left:auto;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:2px}
+.seg button{background:none;border:0;padding:2px 9px;font:500 11.5px "IBM Plex Mono";border-radius:5px;color:var(--mut);cursor:pointer}
+.seg button.on{background:#1b222b;color:var(--tx)}
+.tg2{font:600 10px "IBM Plex Mono";letter-spacing:.05em;padding:2px 6px;border-radius:4px;text-transform:uppercase;background:#1b222b;color:var(--tx2)}
+.tg2.u{background:rgba(46,204,113,.12);color:var(--up)}.tg2.d{background:rgba(255,77,79,.12);color:var(--dn)}.tg2.w{background:rgba(251,191,36,.12);color:var(--warn)}
+.nh-t{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+table.nh{width:100%;border-collapse:collapse;font-size:12.5px}
+table.nh th{font:500 10.5px "IBM Plex Mono";color:var(--mut);text-align:right;padding:4px 6px;border-bottom:1px solid var(--line);letter-spacing:.04em}
+table.nh th:first-child,table.nh td:first-child{text-align:left}
+table.nh td{padding:6px;border-bottom:1px solid var(--line);text-align:right;font-family:"IBM Plex Mono"}
+table.nh td:first-child{font-family:"IBM Plex Sans"}
+.nh-v{position:relative;width:110px;height:10px;display:inline-block;vertical-align:middle;margin-left:6px}
+.nh-v::before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#3a4450}
+.nh-v i{position:absolute;top:0;bottom:0;border-radius:2px}
+.nh-x{font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.5}
+.nh-r{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.nh-r>div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--tx2)}
+.nh-r b{display:block;color:var(--tx);font-size:13px;margin-bottom:2px}
+@media(max-width:800px){.nh-r{grid-template-columns:1fr}.nh-v{width:60px}table.nh .hm{display:none}}
+.mu-h{display:flex;align-items:center;gap:10px;font-size:14px;margin:16px 0 8px;color:var(--tx)}
+.nh-pl{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0 0 10px;font-size:12.5px;line-height:1.5}
+</style></head><body>
+<header><div class="hbar"><span class="brand">MERCADO EN VIVO · ESTADÍSTICAS DE TRADES</span><a class="volver" href="./">← Volver a la página en vivo</a></div></header>
+<main>
+  <h1>¿Funcionan los niveles cuando los operas?</h1>
+  <p class="lead">Todo lo medido con trades simulados en ES y NQ, vela a vela de 1 minuto: si el precio respeta cada nivel, cuánto deja el plan de trade de la página y si una confirmación de entrada lo mejora. Se recalcula solo una vez al día.</p>
+  <div class="concl" id="concl"></div>
+
+  <h2 id="nivhSec">¿Qué niveles funcionan? <small>rebote medido en cada sesión desde 2024 vs. un precio cualquiera · y lo que deja el plan de trade en R</small></h2>
+  <div class="panel" id="nivh"><p class="mut">Cargando…</p></div>
+
+  <h2 id="confSec">¿Y si espero una confirmación? <small>barrido, cambio de estructura, vela de rechazo, ruptura + retest · todos los niveles juntos</small></h2>
+  <div class="panel" id="conf"><p class="mut">Cargando…</p></div>
+
+  <p class="mut" style="font-size:11.5px;margin-top:24px">Simulación con datos históricos: no incluye deslizamiento ni el criterio de cada estrategia (sesgo del día, horario, order flow). Informativo, no es recomendación de inversión.</p>
+</main>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const NF = {};
+const fmt = (x, d = 2) => (x === null || x === undefined || isNaN(x)) ? "—" :
+  (NF[d] || (NF[d] = new Intl.NumberFormat("es-CL", {minimumFractionDigits: d, maximumFractionDigits: d}))).format(x);
+const sg = (x, d = 2) => (x > 0 ? "+" : "") + fmt(x, d);
+const cl = x => x > 0 ? "up" : (x < 0 ? "dn" : "fl");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const store = {get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+               set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }};
+let DATA = null;
+/* ============================================================ acierto medido de los niveles */
+let nhK = store.get("nhK", "ES"), nhV = store.get("nhV", "12m");
+const NH_VER = {sirve: ["u", "SIRVE"], algo: ["", "ALGO"], ruido: ["", "RUIDO"], "se rompe": ["d", "SE ROMPE"], "pocos datos": ["", "POCOS DATOS"]};
+const NHN = {pdh: "Máx. ayer (PDH)", pdl: "Mín. ayer (PDL)", pdc: "Cierre ayer", pdm: "Medio de ayer", onh: "Máx. overnight", onl: "Mín. overnight",
+  asia_h: "Máx. Asia", asia_l: "Mín. Asia", lon_h: "Máx. Londres", lon_l: "Mín. Londres", mo: "Apertura medianoche", pwh: "Máx. sem. anterior",
+  pwl: "Mín. sem. anterior", mov_s: "Mov. implícito ↑", mov_i: "Mov. implícito ↓", orh: "Máx. rango 15m", orl: "Mín. rango 15m", ibh: "Máx. 1ª hora (IB)", ibl: "Mín. 1ª hora (IB)"};
+const NHN_INV = Object.fromEntries(Object.entries(NHN).map(([c, n]) => [n, c]));
+function nhStat(k, nombre) {                 // estadística (12 meses) del nivel de la página con ese nombre
+  const c = NHN_INV[nombre.replace(/ \(formándose\)/, "").trim()];
+  return c ? DATA?.nivh?.st?.[k]?.["12m"]?.[c] || null : null;
+}
+function nhR(q) {                            // celda con el R medio del plan simulado
+  if (!q) return `<td class="mut">—</td>`;
+  const fuerte = q.n >= 40 && Math.abs(q.r) >= 0.15 && Math.abs(q.z || 0) >= 2;
+  return `<td class="m ${q.r > 0 ? "up" : q.r < 0 ? "dn" : ""}" style="${fuerte ? "font-weight:700" : "opacity:.8"}" title="${q.n} trades · ganó ${q.gana}% · llegó a 2R ${q.obj}% · precio cualquiera ${q.ctrl == null ? "—" : sg(q.ctrl, 2) + "R"} · total ${sg(q.tot, 1)}R">${sg(q.r, 2)}R${fuerte ? (q.r > 0 ? " ✓" : " ✗") : ""}</td>`;
+}
+function nhResPlan(filas) {                  // resumen honesto: ¿algún nivel paga por sí solo?
+  const P = filas.flatMap(([c, s]) => ["reb", "rup"].map(m => [c, m, s.plan?.[m]])).filter(x => x[2]);
+  if (!P.length) return "";
+  const pagan = P.filter(x => x[2].n >= 40 && x[2].r >= 0.15 && x[2].z >= 2), pierden = P.filter(x => x[2].n >= 40 && x[2].r <= -0.15 && x[2].z <= -2);
+  const nm = x => `${NHN[x[0]]} (${x[1] === "reb" ? "rebote" : "ruptura"} ${sg(x[2].r, 2)}R)`;
+  const mr = P.map(x => x[2].r).sort((a, b) => a - b), med = mr[Math.floor(mr.length / 2)];
+  return `<div class="nh-pl"><b>💵 ¿Paga operar el nivel solo?</b> Simulamos el plan de trade de la página (entrada en el nivel, stop fijo, objetivo 2R, costo de Exness) en cada toque. ` +
+    (pagan.length ? `Deja ganancia consistente: <b class="up">${pagan.map(nm).map(esc).join(", ")}</b>. ` : `<b>Ningún nivel deja ganancia consistente por sí solo</b> en esta ventana (el plan típico da ${sg(med, 2)}R por trade). `) +
+    (pierden.length ? `Pierden de forma consistente: <span class="dn">${pierden.map(nm).map(esc).join(", ")}</span>. ` : "") +
+    `Los niveles dicen <b>dónde</b> mirar; la ganancia tiene que venir de tu confirmación (barrido, cambio de estructura, tu setup).</div>`;
+}
+function nhConf() {                         // ¿con confirmación de entrada paga?
+  const C = DATA?.conf?.st?.[nhK]; if (!C) return "";
+  const M = DATA.conf.metodos, a = C["12m"], b = C["2024"];
+  const cel = q => !q ? `<td class="mut">—</td>` : `<td class="m ${q.r > 0 ? "up" : "dn"}" style="${q.n >= 40 && Math.abs(q.z || 0) >= 2 ? "font-weight:700" : ""}" title="${q.n} trades · ganó ${q.gana}% · total ${sg(q.tot, 1)}R · z ${q.z}">${sg(q.r, 2)}R <span class="mut" style="font-weight:400">· ${q.n}</span></td>`;
+  const ms = Object.keys(M), paga = ms.filter(m => a.todos[m] && b.todos[m] && a.todos[m].r >= 0.1 && a.todos[m].z >= 2 && b.todos[m].r > 0);
+  const mej = ms.filter(m => m !== "base" && b.todos[m]).sort((x, y) => b.todos[y].r - b.todos[x].r)[0];
+  return `<div class="nh-pl">${paga.length ? `<b class="up">Paga de forma consistente: ${paga.map(m => esc(M[m])).join(", ")}.</b> `
+      : `<b>Ninguna confirmación hace que los niveles paguen por sí solos.</b> `}` +
+    `Esperar una señal sí <b>reduce la pérdida</b>: sin confirmación el plan da ${sg(b.todos.base?.r, 2)}R por trade desde 2024; la mejor (${esc(M[mej] || "")}) da ${sg(b.todos[mej]?.r, 2)}R. ` +
+    `Todos los niveles juntos, ${nhK}, reglas fijas decididas antes de mirar (objetivo 2R, costo Exness). Los números por nivel suelto tienen pocos trades y casi siempre son suerte.</div>` +
+    `<div style="overflow-x:auto"><table class="nh"><tr><th>Entrada</th><th>Últimos 12 meses</th><th>Desde 2024</th><th>En un precio cualquiera (12m)</th></tr>` +
+    ms.map(m => `<tr><td>${esc(M[m])}</td>${cel(a.todos[m])}${cel(b.todos[m])}${cel(a.ctrl[m])}</tr>`).join("") + `</table></div>` +
+    `<div class="nh-x"><b>Barrido + recuperación</b>: pasa el nivel 0,05% y en ≤ 15 min una vela de 1 min cierra de vuelta → entra, stop tras el extremo. ` +
+    `<b>Cambio de estructura</b>: tras tocar el nivel, una vela de 1 min cierra más allá del mín./máx. de los 10 min previos. ` +
+    `<b>Vela de rechazo</b>: la vela de 5 min que toca el nivel cierra del lado original con mecha ≥ 50%. ` +
+    `<b>Ruptura + retest</b>: cierra pasado el nivel, vuelve a testearlo y cierra pasado otra vez. Número chico = cantidad de trades.</div>`;
+}
+function pintarNivh() {
+  const el = $("nivh"), N = DATA?.nivh; if (!el) return;
+  if (!N) { el.innerHTML = `<p class="mut">Se calcula en el Mac con las velas de 1 minuto; aparece en la próxima actualización.</p>`; return; }
+  const S = N.st?.[nhK]?.[nhV] || {}, filas = Object.entries(S).sort((a, b) => (b[1].ventaja ?? -99) - (a[1].ventaja ?? -99));
+  const btn = (grp, v, t, on) => `<button data-${grp}="${v}" class="${on ? "on" : ""}">${t}</button>`;
+  const res = (ver, tit) => { const L = filas.filter(([, s]) => s.ver === ver).map(([c]) => NHN[c]); return `<div><b>${tit}</b>${L.length ? L.map(esc).join(", ") : "ninguno en esta ventana"}</div>`; };
+  const vmax = 25, bar = v => v == null ? "" : `<span class="nh-v"><i style="${v >= 0 ? `left:50%;width:${Math.min(50, v / vmax * 50)}%;background:var(--up)` : `right:50%;width:${Math.min(50, -v / vmax * 50)}%;background:var(--dn)`}"></i></span>`;
+  el.innerHTML = `<div class="nh-t"><span class="seg" style="margin-left:0">${btn("k", "ES", "ES", nhK === "ES")}${btn("k", "NQ", "NQ", nhK === "NQ")}</span>` +
+    `<span class="seg" style="margin-left:0">${btn("v", "30d", "30 días", nhV === "30d")}${btn("v", "12m", "12 meses", nhV === "12m")}${btn("v", "2024", "Desde 2024", nhV === "2024")}</span>` +
+    `<span class="mut" style="font-size:11.5px">actualizado ${esc((N.generado || "").slice(0, 10))}</span></div>` +
+    nhResPlan(filas) + `<div class="nh-r">${res("sirve", "✅ Rebotan más que un precio cualquiera")}${res("se rompe", "💥 Se rompen más de lo normal (mejores para rupturas)")}` +
+    `<div><b>⚪ El resto</b>rebotan casi igual que un precio al azar: úsalos como referencia, no como razón para entrar.</div></div>` +
+    `<table class="nh"><tr><th>Nivel</th><th class="hm">Días</th><th>Lo tocó</th><th>Rebotó</th><th class="hm">Rompió</th><th>Precio cualquiera</th><th>Ventaja</th><th>Veredicto</th><th title="R promedio por trade del plan de rebote (objetivo 2R, costo Exness)">Plan rebote</th><th title="R promedio por trade del plan de ruptura">Plan ruptura</th></tr>` +
+    filas.map(([c, s]) => { const v = NH_VER[s.ver] || ["", s.ver];
+      return `<tr><td>${esc(NHN[c] || c)}</td><td class="hm">${s.n}</td><td>${s.toco}%</td><td><b>${s.reb ?? "—"}%</b></td><td class="hm">${s.rom ?? "—"}%</td><td>${s.ctrl ?? "—"}%</td>` +
+        `<td class="${cl(s.ventaja)}">${s.ventaja == null ? "—" : sg(s.ventaja, 0)}${bar(s.ventaja)}</td><td><span class="tg2 ${v[0]}">${v[1]}</span></td>${nhR(s.plan?.reb)}${nhR(s.plan?.rup)}</tr>`; }).join("") + `</table>` +
+    `<div class="nh-x"><b>Cómo se mide:</b> en cada sesión regular (9:30–16:00 NY) se mira si el precio llegó al nivel (margen ${fmt(N.reglas?.toque, 2)}%). ` +
+    `<b>Rebotó</b> = después de tocarlo se alejó ${fmt(N.reglas?.rebote, 2)}% (≈ 10 pts ES / 40 pts NQ) antes de pasarlo por ${fmt(N.reglas?.rompe, 2)}%. ` +
+    `<b>Precio cualquiera</b> = cuánto rebotan precios elegidos al azar a la misma distancia de la apertura: si un nivel no le gana a eso, no tiene nada especial. ` +
+    `«Sirve» y «se rompe» solo cuando la diferencia es de 6 puntos o más y difícil de explicar por suerte. Con 30 días casi todo sale «pocos datos»: es normal. ` +
+    `<b>Plan rebote / ruptura</b> = resultado promedio en R de operar el nivel con el plan de la página: stop = 0,05% + 6% del ATR, objetivo 2R, salida al cierre si no llega a ninguno, costo ${fmt(N.reglas?.spread?.[nhK] ?? 0, 1)} pts. En negrita con ✓/✗ solo si es consistente (40 trades o más y difícil de explicar por suerte). Pasa el mouse para ver detalles. ` +
+    `Velas de 1 min de Exness/Dukascopy (CFD del índice: misma estructura que el futuro). Los muros de opciones se miden aparte en la sección Opciones.</div>`;
+  const cf = $("conf"); if (cf) cf.innerHTML = nhConf();
+  el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { nhK = b.dataset.k; store.set("nhK", nhK); pintarNivh(); });
+  el.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { nhV = b.dataset.v; store.set("nhV", nhV); pintarNivh(); });
+}
+
+function pintarConcl() {          // tres conclusiones arriba, calculadas con los datos
+  const el = $("concl"); if (!el || !DATA?.nivh) return;
+  const cuenta = (k, ver) => Object.values(DATA.nivh.st?.[k]?.["12m"] || {}).filter(s => s.ver === ver).length;
+  const pagan = ["ES", "NQ"].flatMap(k => Object.values(DATA.nivh.st?.[k]?.["12m"] || {}).flatMap(s => Object.values(s.plan || {})))
+    .filter(q => q.n >= 40 && q.r >= 0.15 && q.z >= 2).length;
+  const C = DATA.conf?.st, b = k => C?.[k]?.["2024"]?.todos || {};
+  const mejor = k => Object.entries(b(k)).filter(([m, q]) => q && m !== "base").sort((x, y) => y[1].r - x[1].r)[0];
+  const mE = mejor("ES"), mN = mejor("NQ");
+  el.innerHTML = `<div><b>1 · Algunos niveles frenan al precio</b>En los últimos 12 meses: ${cuenta("ES", "sirve") + cuenta("NQ", "sirve")} niveles rebotan más que un precio al azar y ${cuenta("ES", "se rompe") + cuenta("NQ", "se rompe")} se rompen más de lo normal.</div>` +
+    `<div><b>2 · Operarlos solos no paga</b>${pagan ? `${pagan} combinación(es) nivel + plan dejan ganancia consistente.` : "Ningún nivel deja ganancia consistente con el plan simple (stop fijo, objetivo 2R, costo Exness)."}</div>` +
+    `<div><b>3 · Confirmar ayuda, pero no alcanza</b>Desde 2024, sin confirmación: ES ${sg(b("ES").base?.r, 2)}R · NQ ${sg(b("NQ").base?.r, 2)}R por trade. Con la mejor confirmación: ES ${mE ? sg(mE[1].r, 2) : "—"}R · NQ ${mN ? sg(mN[1].r, 2) : "—"}R.</div>`;
+}
+async function cargar() {
+  try { DATA = await (await fetch("data.json?v=" + Math.floor(Date.now() / 600000), {cache: "no-store"})).json(); } catch (e) { DATA = null; }
+  pintarNivh(); pintarConcl();
+  if (!DATA?.conf) $("conf").innerHTML = `<p class="mut">Se calcula en el Mac con las velas de 1 minuto; aparece en la próxima actualización.</p>`;
+}
+cargar();
+</script>
+</body></html>
