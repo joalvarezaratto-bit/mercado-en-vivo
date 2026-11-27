@@ -91,7 +91,7 @@ h2{font:600 12px "IBM Plex Mono";letter-spacing:.14em;color:var(--acc);text-tran
 h2 small{color:var(--mut);letter-spacing:0;text-transform:none;font-weight:400}
 .panel{background:var(--panel);border:1px solid var(--line);padding:10px 14px}
 .keys{margin:0;padding-left:18px}.keys li{margin:0 0 8px}.keys b{color:#fff}
-.two{display:grid;grid-template-columns:1.25fr 1fr;gap:12px}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:12px}.two>*,.three>*{min-width:0}#nivh,#corr{overflow-x:auto}
 .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:980px){.two,.three{grid-template-columns:1fr}}
 .mc{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
@@ -559,6 +559,8 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 /* visión global */
 #mundoSec{margin-bottom:18px}
 .mu-top{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:6px}
+.mu-svg{width:100%;height:auto;display:block;margin:4px 0 2px}.mu-ax{font:10px "IBM Plex Mono",monospace;fill:var(--mut)}
+.mu-gt{font-size:13px;margin:6px 0 0;line-height:1.45}.mu-gn{font-size:11px;margin:6px 0 0}
 .mu-c{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:12px}
 .mu-c p{margin:6px 0;color:var(--tx2);font-size:13px;line-height:1.5}
 .mu-ch{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:600;font-size:13.5px}
@@ -573,7 +575,7 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 .mu-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px}
 .mu-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
 .mu-fs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.mu-f{font:10.5px "IBM Plex Mono";color:var(--mut);background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.mu-f{display:inline-block;vertical-align:top;font:10.5px "IBM Plex Mono";color:var(--mut);background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .mu-f:hover{color:var(--acc);border-color:var(--acc)}
 .mu-tm{font-size:11.5px;color:var(--mut);margin-top:3px}
 .mu-px{font-size:12px;color:var(--acc)}
@@ -582,7 +584,15 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 .mu-nt p{font-size:12.5px;color:var(--tx2);margin:6px 0}
 .mu-ul{margin:6px 0 0;padding-left:18px;color:var(--tx2);font-size:13px}.mu-ul li{margin:4px 0}
 #chileMu .ci-k{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media(max-width:900px){.mu-top,.mu-g3,.mu-g2{grid-template-columns:1fr}#chileMu .ci-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.mu-top,.mu-g3,.mu-g2{grid-template-columns:minmax(0,1fr)}#chileMu .ci-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* secciones plegables: toca el título */
+main h2.pg{cursor:pointer;user-select:none}
+main h2.pg::before{content:"▾";display:inline-block;margin-right:6px;color:var(--tx3,#777);transition:transform .15s;font-size:11px}
+main h2.pg.plg::before{transform:rotate(-90deg)}
+main h2.pg.plg{opacity:.75}
+main h2.pg.plg + *{display:none!important}
+main h2.pg:hover::before{color:var(--acc)}
 </style>
 </head>
 <body>
@@ -597,7 +607,7 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#nivhSec">Niveles que sirven</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#saberSec">Claves</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#nivhSec">Niveles que sirven</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -637,6 +647,11 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
     <section class="card" id="card-BTC"></section>
   </div>
 
+  <div class="two">
+    <div id="saberSec" data-modo="pre"><h2>Lo que hay que saber <small id="genTxt"></small></h2><div class="panel"><ul class="keys" id="puntos"></ul></div></div>
+    <div data-modo="pre ses"><h2>Megacaps en vivo <small>vs cierre de ayer</small></h2><div class="panel"><div class="mc" id="megacaps"></div></div></div>
+  </div>
+
   <div class="two" id="pulsoSec" data-modo="ses">
     <div><h2>Pulso de riesgo · en vivo <small>11 señales entre activos · 0 = pánico, 100 = euforia</small></h2><div class="panel" id="pulso"><p class="mut">Calculando…</p></div></div>
     <div><h2>Rendimiento relativo <small>ES · NQ · BTC · % desde el inicio de la ventana</small></h2><div class="panel"><div class="rl-k" id="relK"></div><div id="rel-chart"></div></div></div>
@@ -655,8 +670,8 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
   <h2 id="opcSec" data-modo="pre ses">Opciones · niveles de gamma <small>dónde están las apuestas grandes y cómo pueden frenar o acelerar el precio · SPY→ES · QQQ→NQ · Deribit→BTC</small></h2>
   <div data-modo="pre ses" class="panel" id="opc"><p class="mut">Cargando…</p></div>
 
-  <h2 id="nivhSec" data-modo="pre cie">¿Qué niveles funcionan? <small>rebote medido en cada sesión desde 2024 vs. un precio cualquiera a la misma distancia</small></h2>
-  <div class="panel" id="nivh" data-modo="pre cie"><p class="mut">Cargando…</p></div>
+  <h2 id="nivhSec" data-modo="cie yo">¿Qué niveles funcionan? <small>rebote medido en cada sesión desde 2024 vs. un precio cualquiera a la misma distancia</small></h2>
+  <div class="panel" id="nivh" data-modo="cie yo"><p class="mut">Cargando…</p></div>
 
   <div class="two" id="gapSec">
     <div data-modo="pre ses"><h2>El gap de hoy y su historia <small>qué pasó en los últimos 5 años con gaps parecidos (índice contado)</small></h2><div class="panel" id="gap"><p class="mut">Esperando precios…</p></div></div>
@@ -695,16 +710,12 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
   </aside>
 
   <div class="l-rest">
-  <div class="two">
-    <div id="saberSec" data-modo="pre"><h2>Lo que hay que saber <small id="genTxt"></small></h2><div class="panel"><ul class="keys" id="puntos"></ul></div></div>
-    <div data-modo="pre ses"><h2>Megacaps en vivo <small>vs cierre de ayer</small></h2><div class="panel"><div class="mc" id="megacaps"></div></div></div>
-  </div>
 
-  <h2 id="earnSemSec" data-modo="pre cie">Resultados de la semana <small>empresas &gt; 40 B USD · NQ = está en el Nasdaq 100 · hora del reporte</small></h2>
-  <div data-modo="pre cie" class="panel"><div class="ew" id="earnSem"><p class="mut">Cargando…</p></div></div>
+  <h2 id="earnSemSec" data-modo="pre">Resultados de la semana <small>empresas &gt; 40 B USD · NQ = está en el Nasdaq 100 · hora del reporte</small></h2>
+  <div data-modo="pre" class="panel"><div class="ew" id="earnSem"><p class="mut">Cargando…</p></div></div>
 
   <div class="two">
-    <div data-modo="pre cie"><h2>Resultados corporativos <small>cap. &gt; 40 B USD</small></h2><div class="panel" style="overflow-x:auto"><table id="earn"></table>
+    <div data-modo="cie"><h2>Resultados corporativos <small>cap. &gt; 40 B USD</small></h2><div class="panel" style="overflow-x:auto"><table id="earn"></table>
       <p class="mut" style="font-size:11px;margin:6px 0 0">EPS según Nasdaq: a veces compara cifra contable (GAAP) con consenso ajustado.</p></div></div>
     <div id="criptoSec" data-modo="pre cie"><h2>Bitcoin: derivados y flujos</h2><div class="panel" id="btcder"></div></div>
   </div>
@@ -717,8 +728,8 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
   <h2 id="globalSec" data-modo="pre cie">Mercados globales <small>con retraso (Yahoo) · hora del último dato · toca uno para ver su gráfico</small></h2>
   <div data-modo="pre cie" class="three" id="global"></div>
 
-  <h2 id="newsSec" data-modo="pre cie">Titulares <small>los marcados en rojo llegaron en vivo</small></h2>
-  <div data-modo="pre cie" class="panel" id="news"></div>
+  <h2 id="newsSec" data-modo="cie">Titulares <small>los marcados en rojo llegaron en vivo</small></h2>
+  <div data-modo="cie" class="panel" id="news"></div>
 
   <h2 data-modo="yo">Alertas y verificación</h2>
   <div class="two" data-modo="yo">
@@ -2942,6 +2953,25 @@ function planUI() {
 }
 
 
+
+/* ============================================================ secciones plegables (se recuerda en este equipo) */
+const PLG_DEF = ["mapaSec", "estacSec"];
+let PLG = store.get("plg", null) || Object.fromEntries(PLG_DEF.map(k => [k, 1]));
+const plgKey = h => h.id || h.parentElement?.id || (h.childNodes[0]?.textContent || "").trim().slice(0, 40);
+function plegarUI() {
+  document.querySelectorAll("main h2").forEach(h => {
+    if (!h.nextElementSibling) return;
+    const k = plgKey(h); h.classList.add("pg"); h.classList.toggle("plg", !!PLG[k]);
+    h.title = "Toca para plegar o abrir esta sección";
+    h.addEventListener("click", e => {
+      if (e.target.closest("a,button,select,input")) return;
+      const on = !h.classList.contains("plg"); h.classList.toggle("plg", on);
+      if (on) PLG[k] = 1; else delete PLG[k]; store.set("plg", PLG);
+      if (!on) setTimeout(() => window.dispatchEvent(new Event("resize")), 40);
+    });
+  });
+}
+
 /* ============================================================ visión global + Chile (vision.json, resumido por Claude) */
 let VIS = null, visT = 0, muPais = store.get("muPais", "todos");
 async function cargarVision() {
@@ -2960,6 +2990,64 @@ const MU_TONO = {positivo: ["u", "POSITIVO"], neutral: ["", "NEUTRAL"], negativo
   dura: ["d", "DURA · no quiere bajar tasas"], blanda: ["u", "BLANDA · quiere bajar tasas"]};
 const muTag = v => { const t = MU_TONO[v] || ["", v]; return `<span class="tg2 ${t[0]}">${esc(t[1])}</span>`; };
 const MU_DIR = {sube: ["▲", "up"], baja: ["▼", "dn"], estable: ["■", "mut"], incierto: ["?", "acc"]};
+
+/* ---- gráficos de la visión global */
+const MES_C = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+function muFed(V) {
+  const M = V.fed?.meses || [], c = (h, b) => `<div class="mu-c"><div class="mu-ch"><span>🏦 Tasa de la Fed que espera el mercado</span></div>${b}</div>`;
+  if (M.length < 3) return c("", `<p class="mut">Sin datos de futuros de la Fed por ahora.</p>`);
+  const W = 320, H = 150, L = 34, R = 10, T = 12, B = 24, t = M.map(m => m.tasa);
+  let lo = Math.floor((Math.min(...t) - .05) * 4) / 4, hi = Math.ceil((Math.max(...t) + .05) * 4) / 4; if (hi - lo < .5) hi = lo + .5;
+  const x = i => L + i * (W - L - R) / (M.length - 1), y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+  let g = "";
+  for (let v = lo; v <= hi + 1e-9; v += .25) g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L - 5}" y="${y(v) + 3.5}" text-anchor="end" class="mu-ax">${fmt(v, 2)}</text>`;
+  M.forEach((m, i) => { if (i % 2 === 0) g += `<text x="${x(i)}" y="${H - 7}" text-anchor="middle" class="mu-ax">${MES_C[+m.mes.slice(5) - 1]}${m.mes.slice(5) === "01" ? " " + m.mes.slice(2, 4) : ""}</text>`; });
+  const pts = M.map((m, i) => `${x(i).toFixed(1)},${y(m.tasa).toFixed(1)}`).join(" ");
+  const d = t[t.length - 1] - t[0], n = Math.round(d / .25), mx = t.indexOf(Math.max(...t)), mn = t.indexOf(Math.min(...t));
+  const ult = M[M.length - 1], fin = `${MES_C[+ult.mes.slice(5) - 1]} ${ult.mes.slice(0, 4)}`;
+  const txt = Math.abs(n) < 1 ? `El mercado no espera cambios netos de tasa hasta ${fin}.`
+    : `Hasta ${fin} el mercado descuenta ≈ <b class="${n > 0 ? "dn" : "up"}">${Math.abs(n)} ${n > 0 ? "alza" : "recorte"}${Math.abs(n) > 1 ? "s" : ""}</b> de 0,25 (de ${fmt(t[0], 2)}% a ${fmt(ult.tasa, 2)}%). ` +
+      (n > 0 ? "Tasas más altas suelen pesar sobre el Nasdaq y Bitcoin." : "Tasas más bajas suelen ayudar al Nasdaq y a Bitcoin.");
+  return c("", `<svg viewBox="0 0 ${W} ${H}" class="mu-svg">${g}<line x1="${L}" x2="${W - R}" y1="${y(t[0])}" y2="${y(t[0])}" stroke="var(--mut)" stroke-dasharray="3 3"/>` +
+    `<polygon points="${x(0)},${y(lo)} ${pts} ${x(M.length - 1)},${y(lo)}" fill="var(--acc)" opacity=".10"/><polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="2"/>` +
+    M.map((m, i) => `<circle cx="${x(i)}" cy="${y(m.tasa)}" r="${i === 0 ? 3.5 : 2.2}" fill="var(--acc)"><title>${MES_C[+m.mes.slice(5) - 1]} ${m.mes.slice(0, 4)}: ${fmt(m.tasa, 2)}%</title></circle>`).join("") +
+    `<text x="${x(0) + 5}" y="${y(t[0]) - 5}" class="mu-ax" style="fill:var(--tx)">hoy ${fmt(t[0], 2)}%</text>` +
+    (mx !== 0 && mx !== M.length - 1 ? `<text x="${x(mx)}" y="${y(t[mx]) - 6}" text-anchor="middle" class="mu-ax">máx ${fmt(t[mx], 2)}%</text>` : "") + `</svg>` +
+    `<p class="mu-gt">${txt}</p><p class="mut mu-gn">Futuros de fondos federales (CBOT, vía Yahoo): tasa promedio que se paga cada mes. Se actualiza cada hora.</p>`);
+}
+function muMetas(V) {
+  const B = (V.bancos || []).filter(b => b.meta_num), S = V.spx || (precio("ES") || null), c = b => `<div class="mu-c"><div class="mu-ch"><span>🎯 Meta del S&amp;P 500 por banco</span></div>${b}</div>`;
+  if (!B.length) return c(`<p class="mut">Ningún banco publicó una meta con número esta semana.</p>`);
+  const W = 320, L = 104, R = 78, rh = 24, T = 18, H = T + B.length * rh + 18, vals = B.map(b => b.meta_num).concat(S ? [S] : []);
+  const lo = Math.min(...vals) * .97, hi = Math.max(...vals) * 1.015, x = v => L + (v - lo) / (hi - lo) * (W - L - R);
+  let g = S ? `<line x1="${x(S)}" x2="${x(S)}" y1="${T - 6}" y2="${H - 14}" stroke="var(--mut)" stroke-dasharray="3 3"/><text x="${x(S)}" y="${T - 8}" text-anchor="middle" class="mu-ax" style="fill:var(--tx)">hoy ${fmt(S, 0)}</text>` : "";
+  B.sort((a, b) => b.meta_num - a.meta_num).forEach((b, i) => { const yy = T + i * rh + rh / 2, up = S ? (b.meta_num / S - 1) * 100 : null;
+    g += `<text x="${L - 8}" y="${yy + 4}" text-anchor="end" class="mu-ax" style="fill:var(--tx)">${esc(b.banco)}</text>` +
+      (S ? `<line x1="${x(S)}" x2="${x(b.meta_num)}" y1="${yy}" y2="${yy}" stroke="${up >= 0 ? "var(--up)" : "var(--dn)"}" stroke-width="2" opacity=".6"/>` : "") +
+      `<circle cx="${x(b.meta_num)}" cy="${yy}" r="5" fill="${up == null || up >= 0 ? "var(--up)" : "var(--dn)"}"><title>${esc(b.meta_sp)}</title></circle>` +
+      `<text x="${x(b.meta_num) + 9}" y="${yy + 4}" class="mu-ax">${fmt(b.meta_num, 0)}${up != null ? ` · ${sg(up, 0)}%` : ""}</text>`; });
+  const sin = (V.bancos || []).filter(b => !b.meta_num).map(b => b.banco);
+  const prom = B.reduce((a, b) => a + b.meta_num, 0) / B.length;
+  return c(`<svg viewBox="0 0 ${W} ${H}" class="mu-svg">${g}</svg>` +
+    `<p class="mu-gt">En promedio esperan <b>${fmt(prom, 0)}</b>${S ? ` (<span class="${cl(prom / S - 1)}">${sg((prom / S - 1) * 100, 1)}%</span> sobre hoy)` : ""}. Toca un punto para ver el plazo.</p>` +
+    (sin.length ? `<p class="mut mu-gn">Sin meta con número en las noticias: ${sin.map(esc).join(", ")}.</p>` : ""));
+}
+function muHist(V) {
+  const Hh = (V.historial || []).slice(-30), c = b => `<div class="mu-c"><div class="mu-ch"><span>🌡 El termómetro en el tiempo</span></div>${b}</div>`;
+  if (!Hh.length) return c(`<p class="mut">Aún no hay historial.</p>`);
+  const W = 320, H = 150, L = 28, R = 6, T = 10, B = 22, n = Math.max(Hh.length, 8), bw = (W - L - R) / n;
+  let g = [0, 50, 100].map(v => `<line x1="${L}" x2="${W - R}" y1="${T + (100 - v) / 100 * (H - T - B)}" y2="${T + (100 - v) / 100 * (H - T - B)}" stroke="var(--line)"/><text x="${L - 4}" y="${T + (100 - v) / 100 * (H - T - B) + 3.5}" text-anchor="end" class="mu-ax">${v}%</text>`).join("");
+  const ph = H - T - B, fd = ts => new Date(ts * 1000).toLocaleDateString("es-CL", {day: "numeric", month: "short"});
+  Hh.forEach((h, i) => { const tot = (h.optimista || 0) + (h.neutral || 0) + (h.pesimista || 0) || 1, xx = L + i * bw + bw * .12, w = bw * .76;
+    let yy = T; [["pesimista", "var(--dn)"], ["neutral", "#5c6878"], ["optimista", "var(--up)"]].forEach(([k, col]) => { const hh = (h[k] || 0) / tot * ph;
+      g += `<rect x="${xx}" y="${yy}" width="${w}" height="${hh}" fill="${col}"><title>${fd(h.ts)}: ${Math.round((h[k] || 0) / tot * 100)}% ${k}s</title></rect>`; yy += hh; });
+    if (i === 0 || (i === Hh.length - 1 && Hh.length > 3)) g += `<text x="${xx + w / 2}" y="${H - 7}" text-anchor="middle" class="mu-ax">${fd(h.ts)}</text>`; });
+  const net = h => { const tot = (h.optimista || 0) + (h.neutral || 0) + (h.pesimista || 0) || 1; return Math.round(((h.optimista || 0) - (h.pesimista || 0)) / tot * 100); };
+  const a = net(Hh[Hh.length - 1]), p0 = Hh.length > 1 ? net(Hh[0]) : null;
+  return c(`<svg viewBox="0 0 ${W} ${H}" class="mu-svg">${g}</svg>` +
+    `<p class="mu-gt">Balance hoy: <b class="${cl(a)}">${sg(a, 0)}</b> (optimistas menos pesimistas)${p0 != null ? `; en la primera medición era ${sg(p0, 0)}.` : "."}</p>` +
+    (Hh.length < 6 ? `<p class="mut mu-gn">Se llena solo: suma una barra en cada resumen (mañana y tarde).</p>` : ""));
+}
 function pintarVision() {
   const el = $("mundo"), ec = $("chileMu"); if (!el) return;
   if (!VIS) { el.innerHTML = `<p class="mut">La visión global se arma dos veces al día (mañana y tarde, hora de Chile).</p>`; if (ec) ec.innerHTML = ""; return; }
@@ -2976,6 +3064,7 @@ function pintarVision() {
     card("", `<div class="mu-k">TERMÓMETRO DE LOS GRANDES</div><div class="mu-bar"><i class="o" style="width:${pct(T.optimista)}%"></i><i class="n" style="width:${pct(T.neutral)}%"></i><i class="p" style="width:${pct(T.pesimista)}%"></i></div>` +
       `<div class="mu-lg"><span><i class="o"></i>Optimistas <b>${pct(T.optimista)}%</b>${dif("optimista")}</span><span><i class="n"></i>Neutrales <b>${pct(T.neutral)}%</b></span><span><i class="p"></i>Pesimistas <b>${pct(T.pesimista)}%</b>${dif("pesimista")}</span></div>` +
       `<p class="mut" style="font-size:11.5px;margin:8px 0 0">${tot} de ${(V.seguidos || []).length} economistas e inversionistas seguidos opinaron esta semana. Resumido por Claude con ${V.n_titulares} titulares · ${gen.toLocaleString("es-CL", {weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"})} Chile.</p>`) + `</div>` +
+    `<h3 class="mu-h">En gráficos</h3><div class="mu-g3">${muFed(V)}${muMetas(V)}${muHist(V)}</div>` +
     `<h3 class="mu-h">Los temas que mueven el mundo</h3><div class="mu-g3">${(V.temas || []).map(t => { const d = MU_DIR[t.direccion] || ["", ""];
       return card(`<span><span class="${d[1]}" style="font-family:'IBM Plex Mono'">${d[0]}</span> ${esc(t.tema)}</span>`, `<p>${esc(t.texto)}</p><div class="mu-fs">${muSrc(t.ids)}</div>`); }).join("")}</div>` +
     `<h3 class="mu-h">Por región</h3><div class="mu-g3">${(V.regiones || []).map(r => card(`<span>${esc(r.region)}</span>${muTag(r.tono)}`, `<p>${esc(r.texto)}</p><div class="mu-fs">${muSrc(r.ids)}</div>`)).join("")}</div>` +
@@ -3013,7 +3102,7 @@ function pintarVision() {
 setInterval(() => { if (["mundo", "todo"].includes(document.body.dataset.vista)) cargarVision(); }, 600000);
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
-  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); hoyUI(); planUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
+  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); hoyUI(); planUI(); plegarUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   modosUI();
