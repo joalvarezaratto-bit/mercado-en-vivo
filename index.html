@@ -517,6 +517,22 @@ h2 small{margin-left:auto;text-align:right}
 .dv-w{margin-top:8px;font-size:12.5px;color:var(--warn)}
 .dv-f{margin-top:10px;font-size:11px;color:var(--mut)}
 @media(max-width:800px){.dv-g{grid-template-columns:1fr}}
+
+/* acierto de niveles */
+.nh-t{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+table.nh{width:100%;border-collapse:collapse;font-size:12.5px}
+table.nh th{font:500 10.5px "IBM Plex Mono";color:var(--mut);text-align:right;padding:4px 6px;border-bottom:1px solid var(--line);letter-spacing:.04em}
+table.nh th:first-child,table.nh td:first-child{text-align:left}
+table.nh td{padding:6px;border-bottom:1px solid var(--line);text-align:right;font-family:"IBM Plex Mono"}
+table.nh td:first-child{font-family:"IBM Plex Sans"}
+.nh-v{position:relative;width:110px;height:10px;display:inline-block;vertical-align:middle;margin-left:6px}
+.nh-v::before{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#3a4450}
+.nh-v i{position:absolute;top:0;bottom:0;border-radius:2px}
+.nh-x{font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.5}
+.nh-r{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.nh-r>div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--tx2)}
+.nh-r b{display:block;color:var(--tx);font-size:13px;margin-bottom:2px}
+@media(max-width:800px){.nh-r{grid-template-columns:1fr}.nh-v{width:60px}table.nh .hm{display:none}}
 </style>
 </head>
 <body>
@@ -531,7 +547,7 @@ h2 small{margin-left:auto;text-align:right}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#nivhSec">Niveles que sirven</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -585,6 +601,9 @@ h2 small{margin-left:auto;text-align:right}
 
   <h2 id="opcSec" data-modo="pre ses">Opciones · niveles de gamma <small>dónde están las apuestas grandes y cómo pueden frenar o acelerar el precio · SPY→ES · QQQ→NQ · Deribit→BTC</small></h2>
   <div data-modo="pre ses" class="panel" id="opc"><p class="mut">Cargando…</p></div>
+
+  <h2 id="nivhSec" data-modo="pre cie">¿Qué niveles funcionan? <small>rebote medido en cada sesión desde 2024 vs. un precio cualquiera a la misma distancia</small></h2>
+  <div class="panel" id="nivh" data-modo="pre cie"><p class="mut">Cargando…</p></div>
 
   <div class="two" id="gapSec">
     <div data-modo="pre ses"><h2>El gap de hoy y su historia <small>qué pasó en los últimos 5 años con gaps parecidos (índice contado)</small></h2><div class="panel" id="gap"><p class="mut">Esperando precios…</p></div></div>
@@ -1588,7 +1607,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEvh(); pintarTrampas(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarEstac(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarEvh(); pintarTrampas(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarNivh(); pintarEstac(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -2579,6 +2598,9 @@ function pintarImporta() {
     const up = L.filter(x => x.v > p).sort((a, b) => a.v - b.v)[0], dn = L.filter(x => x.v < p).sort((a, b) => b.v - a.v)[0];
     if (up || dn) I.push([up ? `Techo más cercano: ${up.n} ${fmt(up.v, 2)}` : `Piso más cercano: ${dn.n} ${fmt(dn.v, 2)}`,
       (up ? `A ${fmt(up.v - p, 1)} pts del precio. ` : "") + (dn && up ? `Piso: ${esc(dn.n)} ${fmt(dn.v, 2)}, a ${fmt(p - dn.v, 1)} pts.` : dn ? `A ${fmt(p - dn.v, 1)} pts del precio.` : "")]);
+    const nota = x => { const q = x && nhStat(k, x.n); if (!q || !["sirve", "se rompe"].includes(q.ver)) return "";
+      return q.ver === "sirve" ? ` <b class="up">${esc(x.n)} rebota ${q.reb}% de las veces (un precio cualquiera ${q.ctrl}%).</b>` : ` <b class="dn">${esc(x.n)} se rompe ${q.rom}% de las veces: mejor para rupturas que para rebotes.</b>`; };
+    if (I.length && (up || dn)) I[I.length - 1][1] += nota(up) + nota(dn);
   }
   const ahora = Date.now() / 1000;
   const ev = (DATA.agenda || []).filter(e => e.pais === "USD" && e.impacto === "High" && e.t.slice(0, 10) === hoy && new Date(e.t) / 1000 > ahora - 600)[0];
@@ -2611,7 +2633,8 @@ function pintarEscalera() {
   for (const x of L) {
     const yy = y(x.v), ly = Math.max(yy, ult + 16); ult = ly; const dd = x.v - p, near = Math.abs(dd) < atr * 0.15;
     h += `<line x1="${ax - 7}" x2="${ax + 7}" y1="${yy}" y2="${yy}" stroke="${x.c}" stroke-width="2"/><path d="M${ax + 9},${yy} L${ax + 20},${ly}" stroke="#2a333e" fill="none"/>` +
-      `<text x="${ax + 24}" y="${ly + 4}" font-size="11.5" fill="${near ? "#e6e9ee" : "#aeb8c5"}" font-weight="${near ? 600 : 400}">${esc(x.n)}</text>` +
+      `<text x="${ax + 24}" y="${ly + 4}" font-size="11.5" fill="${near ? "#e6e9ee" : "#aeb8c5"}" font-weight="${near ? 600 : 400}">${esc(x.n)}${(() => { const q = k !== "BTC" && nhStat(k, x.n);
+        return q && q.ver === "sirve" ? `<tspan fill="#2ecc71" font-size="10.5"> ✓ rebota ${q.reb}%</tspan>` : q && q.ver === "se rompe" ? `<tspan fill="#ff4d4f" font-size="10.5"> ⇢ se rompe ${q.rom}%</tspan>` : ""; })()}</text>` +
       `<text x="${W - 2}" y="${ly + 4}" text-anchor="end" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="${dd > 0 ? "#2ecc71" : "#ff4d4f"}">${sg(dd, k === "BTC" ? 0 : 1)}</text>` +
       `<text x="${ax - 12}" y="${ly + 4}" text-anchor="end" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="#6f7c8c">${fmt(x.v, 0)}</text>`;
   }
@@ -2719,6 +2742,43 @@ function pintarDatoVivo() {
     `<div class="dv-f">Cada raya gris es una vez anterior de este dato; el punto es hoy. ` + (st ? `Medido minuto a minuto en ${st.n} publicaciones desde ${st.desde?.slice(0, 7) || "2024"}.` : "") +
     ` La tarjeta se va sola ${Math.round(DV_VENT / 60)} min después del dato.</div>`;
   $("dvX").onclick = () => { DV_OCULTO.add(g.t0); store.set("dvOculto", [...DV_OCULTO].slice(-20)); el.hidden = true; };
+}
+
+
+/* ============================================================ acierto medido de los niveles */
+let nhK = store.get("nhK", "ES"), nhV = store.get("nhV", "12m");
+const NH_VER = {sirve: ["u", "SIRVE"], algo: ["", "ALGO"], ruido: ["", "RUIDO"], "se rompe": ["d", "SE ROMPE"], "pocos datos": ["", "POCOS DATOS"]};
+const NHN = {pdh: "Máx. ayer (PDH)", pdl: "Mín. ayer (PDL)", pdc: "Cierre ayer", pdm: "Medio de ayer", onh: "Máx. overnight", onl: "Mín. overnight",
+  asia_h: "Máx. Asia", asia_l: "Mín. Asia", lon_h: "Máx. Londres", lon_l: "Mín. Londres", mo: "Apertura medianoche", pwh: "Máx. sem. anterior",
+  pwl: "Mín. sem. anterior", mov_s: "Mov. implícito ↑", mov_i: "Mov. implícito ↓", orh: "Máx. rango 15m", orl: "Mín. rango 15m", ibh: "Máx. 1ª hora (IB)", ibl: "Mín. 1ª hora (IB)"};
+const NHN_INV = Object.fromEntries(Object.entries(NHN).map(([c, n]) => [n, c]));
+function nhStat(k, nombre) {                 // estadística (12 meses) del nivel de la página con ese nombre
+  const c = NHN_INV[nombre.replace(/ \(formándose\)/, "").trim()];
+  return c ? DATA?.nivh?.st?.[k]?.["12m"]?.[c] || null : null;
+}
+function pintarNivh() {
+  const el = $("nivh"), N = DATA?.nivh; if (!el) return;
+  if (!N) { el.innerHTML = `<p class="mut">Se calcula en el Mac con las velas de 1 minuto; aparece en la próxima actualización.</p>`; return; }
+  const S = N.st?.[nhK]?.[nhV] || {}, filas = Object.entries(S).sort((a, b) => (b[1].ventaja ?? -99) - (a[1].ventaja ?? -99));
+  const btn = (grp, v, t, on) => `<button data-${grp}="${v}" class="${on ? "on" : ""}">${t}</button>`;
+  const res = (ver, tit) => { const L = filas.filter(([, s]) => s.ver === ver).map(([c]) => NHN[c]); return `<div><b>${tit}</b>${L.length ? L.map(esc).join(", ") : "ninguno en esta ventana"}</div>`; };
+  const vmax = 25, bar = v => v == null ? "" : `<span class="nh-v"><i style="${v >= 0 ? `left:50%;width:${Math.min(50, v / vmax * 50)}%;background:var(--up)` : `right:50%;width:${Math.min(50, -v / vmax * 50)}%;background:var(--dn)`}"></i></span>`;
+  el.innerHTML = `<div class="nh-t"><span class="seg" style="margin-left:0">${btn("k", "ES", "ES", nhK === "ES")}${btn("k", "NQ", "NQ", nhK === "NQ")}</span>` +
+    `<span class="seg" style="margin-left:0">${btn("v", "30d", "30 días", nhV === "30d")}${btn("v", "12m", "12 meses", nhV === "12m")}${btn("v", "2024", "Desde 2024", nhV === "2024")}</span>` +
+    `<span class="mut" style="font-size:11.5px">actualizado ${esc((N.generado || "").slice(0, 10))}</span></div>` +
+    `<div class="nh-r">${res("sirve", "✅ Rebotan más que un precio cualquiera")}${res("se rompe", "💥 Se rompen más de lo normal (mejores para rupturas)")}` +
+    `<div><b>⚪ El resto</b>rebotan casi igual que un precio al azar: úsalos como referencia, no como razón para entrar.</div></div>` +
+    `<table class="nh"><tr><th>Nivel</th><th class="hm">Días</th><th>Lo tocó</th><th>Rebotó</th><th class="hm">Rompió</th><th>Precio cualquiera</th><th>Ventaja</th><th>Veredicto</th></tr>` +
+    filas.map(([c, s]) => { const v = NH_VER[s.ver] || ["", s.ver];
+      return `<tr><td>${esc(NHN[c] || c)}</td><td class="hm">${s.n}</td><td>${s.toco}%</td><td><b>${s.reb ?? "—"}%</b></td><td class="hm">${s.rom ?? "—"}%</td><td>${s.ctrl ?? "—"}%</td>` +
+        `<td class="${cl(s.ventaja)}">${s.ventaja == null ? "—" : sg(s.ventaja, 0)}${bar(s.ventaja)}</td><td><span class="tg2 ${v[0]}">${v[1]}</span></td></tr>`; }).join("") + `</table>` +
+    `<div class="nh-x"><b>Cómo se mide:</b> en cada sesión regular (9:30–16:00 NY) se mira si el precio llegó al nivel (margen ${fmt(N.reglas?.toque, 2)}%). ` +
+    `<b>Rebotó</b> = después de tocarlo se alejó ${fmt(N.reglas?.rebote, 2)}% (≈ 10 pts ES / 40 pts NQ) antes de pasarlo por ${fmt(N.reglas?.rompe, 2)}%. ` +
+    `<b>Precio cualquiera</b> = cuánto rebotan precios elegidos al azar a la misma distancia de la apertura: si un nivel no le gana a eso, no tiene nada especial. ` +
+    `«Sirve» y «se rompe» solo cuando la diferencia es de 6 puntos o más y difícil de explicar por suerte. Con 30 días casi todo sale «pocos datos»: es normal. ` +
+    `Velas de 1 min de Exness/Dukascopy (CFD del índice: misma estructura que el futuro). Los muros de opciones se miden aparte en la sección Opciones.</div>`;
+  el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { nhK = b.dataset.k; store.set("nhK", nhK); pintarNivh(); });
+  el.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { nhV = b.dataset.v; store.set("nhV", nhV); pintarNivh(); });
 }
 
 (async function inicio() {
