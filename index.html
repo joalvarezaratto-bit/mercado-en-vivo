@@ -595,6 +595,7 @@ main h2.pg.plg + *{display:none!important}
 main h2.pg:hover::before{color:var(--acc)}
 .nh-pl{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0 0 10px;font-size:12.5px;line-height:1.5}
 .trl{display:flex;flex-direction:column;gap:3px;margin:26px 0 4px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:var(--r);padding:12px 16px;text-decoration:none}.trl:hover{border-color:#3a4450}.trl span{color:var(--tx2);font-size:13px}
+.mr-h{font:600 11.5px "IBM Plex Sans";letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);margin:16px 0 6px}table.mr td{vertical-align:middle}table.mr .sub{display:block;color:var(--mut);font-size:11px;margin-top:1px}
 </style>
 </head>
 <body>
@@ -710,7 +711,7 @@ main h2.pg:hover::before{color:var(--acc)}
   <div class="l-rest">
 
   <h2 id="earnSemSec" data-modo="pre">Resultados de la semana <small>empresas &gt; 40 B USD · NQ = está en el Nasdaq 100 · hora del reporte</small></h2>
-  <div data-modo="pre" class="panel"><div class="ew" id="earnSem"><p class="mut">Cargando…</p></div></div>
+  <div data-modo="pre" class="panel"><div class="ew" id="earnSem"><p class="mut">Cargando…</p></div><div id="earnMov"></div></div>
 
   <div class="two">
     <div data-modo="cie"><h2>Resultados corporativos <small>cap. &gt; 40 B USD</small></h2><div class="panel" style="overflow-x:auto"><table id="earn"></table>
@@ -2459,6 +2460,28 @@ function pintarEarnSem() {
     const d = new Date(f + "T12:00:00Z").toLocaleDateString("es-CL", {weekday: "long", day: "numeric", month: "short", timeZone: "UTC"});
     return `<div class="ewd"><div class="f">${esc(d)}</div>${es.map(e => `<div class="e"><span class="s">${esc(e.s)}${nq.has(e.s) ? '<span class="tq">NQ</span>' : ""}</span><span class="h">${hora(e.hora)}</span><span class="c">${fmt(e.cap / 1e9, 0)} B</span></div>`).join("")}</div>`;
   }).join("") || `<p class="mut">Sin resultados de empresas grandes en los próximos 7 días hábiles.</p>`;
+  pintarMovRes();
+}
+function pintarMovRes() {                    // cuánto descuentan las opciones vs. cuánto se movió de verdad
+  const el = $("earnMov"), M = (DATA?.mov_res || []).filter(r => r.esp || r.hist_med); if (!el) return;
+  if (!M.length) { el.innerHTML = ""; return; }
+  const w = (ix, s) => (DATA.pesos?.[ix] || []).find(x => x[0] === s)?.[1];
+  const nivel = k => precio(k) || DATA.fut?.[k]?.precio;
+  const hora = h => h === "time-pre-market" ? "antes de abrir" : h === "time-after-hours" ? "tras el cierre" : "hora s/d";
+  const lect = r => !r.ratio ? ["", "—"] : r.dias_extra > 4 ? ["", "Vence lejos: no comparable"] : r.ratio >= 1.3 ? ["w", "Opciones caras"] : r.ratio <= 0.8 ? ["u", "Opciones baratas"] : ["", "En línea"];
+  const filas = M.map(r => {
+    const f = new Date(r.fecha + "T12:00:00Z").toLocaleDateString("es-CL", {weekday: "short", day: "numeric", month: "short", timeZone: "UTC"});
+    const wn = w("NDX", r.s), ws = w("SPX", r.s), L = lect(r);
+    const imp = [wn && r.esp && nivel("NQ") ? `NQ ±${fmt(wn / 100 * r.esp / 100 * nivel("NQ"), 0)}` : "", ws && r.esp && nivel("ES") ? `ES ±${fmt(ws / 100 * r.esp / 100 * nivel("ES"), 0)}` : ""].filter(Boolean).join(" · ");
+    return `<tr><td><b>${esc(r.s)}</b><span class="sub">${esc(r.nombre)}</span></td><td>${esc(f)}<span class="sub">${hora(r.hora)}</span></td>` +
+      `<td class="n">${r.esp ? `<b>±${fmt(r.esp, 1)}%</b>` + (r.dias_extra > 1 ? `<span class="sub">venc. ${r.dias_extra} días después</span>` : "") : `<span class="mut">sin opciones</span>`}</td>` +
+      `<td class="n">${r.hist_med ? `±${fmt(r.hist_med, 1)}%` : "—"}<span class="sub">${(r.hist || []).map(([d, m]) => `<span class="${cl(m)}">${sg(m, 1)}</span>`).join(" ")}</span></td>` +
+      `<td><span class="tg2 ${L[0]}">${L[1]}</span>${imp ? `<span class="sub">si se mueve lo esperado: ${imp} pts</span>` : ""}</td></tr>`;
+  }).join("");
+  el.innerHTML = `<h3 class="mr-h">Cuánto se puede mover cada una</h3><div style="overflow-x:auto"><table class="evt mr"><tr class="h"><td>Empresa</td><td>Reporta</td><td class="n">Las opciones esperan</td><td class="n">Se movió (últimos 4)</td><td>Lectura</td></tr>${filas}</table></div>` +
+    `<p class="mut" style="font-size:11px;margin:8px 0 0;line-height:1.45"><b>Las opciones esperan</b>: precio del straddle en el precio actual (call + put) ÷ precio de la acción, en el primer vencimiento después del reporte; si vence varios días después, incluye algo de movimiento normal. ` +
+    `<b>Se movió</b>: cierre del día de reacción vs. el cierre anterior en sus últimos 4 reportes. <b>Caras</b> = esperan 30% más de lo que suele moverse; <b>baratas</b> = suele moverse más de lo que esperan. ` +
+    `Efecto en el índice solo para las 25 más grandes. Opciones de Nasdaq (con atraso) · se actualiza cada 3 h.</p>`;
 }
 
 /* ============================================================ carga de datos */
