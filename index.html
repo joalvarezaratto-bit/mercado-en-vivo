@@ -493,6 +493,30 @@ h2 small{margin-left:auto;text-align:right}
   .bnav button.on{color:var(--acc)}
   #escal{height:400px}
 }
+
+/* dato en vivo */
+#datoVivo{background:linear-gradient(180deg,rgba(255,159,26,.07),transparent 70%),var(--panel);border:1px solid rgba(255,159,26,.45);border-radius:var(--r);padding:14px 18px;margin:10px 0 14px}
+.dv-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.dv-h .lv{font:600 10.5px "IBM Plex Mono";letter-spacing:.12em;color:#111;background:var(--acc);border-radius:4px;padding:2px 7px}
+.dv-h .t{font:600 15px "IBM Plex Sans"}.dv-h .r{color:var(--mut);font:12px "IBM Plex Mono"}
+.dv-h button{margin-left:auto;background:none;border:1px solid var(--line);border-radius:6px;color:var(--mut);cursor:pointer;padding:2px 8px}
+.dv-c{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:6px}
+.dv-c b.v{font:600 14px "IBM Plex Mono"}
+.dv-l{color:var(--tx2);font-size:12.5px;margin:2px 0 12px}
+.dv-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dv-k{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.dv-k .a{display:flex;align-items:baseline;gap:10px}.dv-k .a .k{font:600 12px "IBM Plex Mono";color:var(--tx2)}
+.dv-k .a .p{font:600 22px "IBM Plex Mono"}.dv-k .a .q{font:12px "IBM Plex Mono";color:var(--tx2)}
+.dv-b{position:relative;height:30px;margin:10px 0 2px}
+.dv-b .dvax{position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:linear-gradient(90deg,rgba(46,204,113,.25),rgba(251,191,36,.3) 60%,rgba(255,77,79,.4))}
+.dv-b .dvtk{position:absolute;top:7px;width:1px;height:16px;background:#6f7c8c}
+.dv-b .dvtl{position:absolute;top:24px;font:9.5px "IBM Plex Mono";color:var(--mut);transform:translateX(-50%);white-space:nowrap}
+.dv-b .dvpt{position:absolute;top:6px;width:18px;height:18px;border-radius:50%;transform:translateX(-50%);border:3px solid var(--bg);box-shadow:0 0 0 1px currentColor}
+.dv-b .dvht{position:absolute;top:11px;width:3px;height:8px;border-radius:1px;background:rgba(174,184,197,.35);transform:translateX(-50%)}
+.dv-s{font-size:12.5px;margin-top:12px;color:var(--tx2);line-height:1.45}.dv-s b{color:var(--tx)}
+.dv-w{margin-top:8px;font-size:12.5px;color:var(--warn)}
+.dv-f{margin-top:10px;font-size:11px;color:var(--mut)}
+@media(max-width:800px){.dv-g{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -521,6 +545,7 @@ h2 small{margin-left:auto;text-align:right}
 <main>
   <div id="viejo" hidden></div>
   <div id="guardTop" hidden></div>
+  <section id="datoVivo" hidden></section>
   <div class="status" id="status"></div>
   <div class="zn" id="zn"><span class="zl" id="znL"></span><span class="zt" id="znT"></span><span class="zc" id="znC"></span></div>
   <a class="uh" id="uh" target="_blank" rel="noopener noreferrer"><span class="lb" id="uhLb">ÚLTIMA HORA</span><span class="tx" id="uhTx"></span><span class="hc" id="uhHc"></span></a>
@@ -2629,6 +2654,73 @@ function pintarCierre() {
     `<div class="ci-g">${bl.map(b => `<div class="ci-b">${soloBI(b)}</div>`).join("")}</div>`;
 }
 
+
+/* ============================================================ dato en vivo: la reacción de hoy vs. todas las anteriores */
+const DV_VENT = 45 * 60;                 // la tarjeta se muestra 45 min después del dato
+const DV_OCULTO = new Set(store.get("dvOculto", []));
+function dvGrupo() {
+  if (!DATA?.agenda) return null;
+  const ahora = Date.now() / 1000;
+  const evs = DATA.agenda.filter(e => e.pais === "USD" && e.impacto === "High" && e.t && (ahora - new Date(e.t) / 1000) >= 0 && (ahora - new Date(e.t) / 1000) < DV_VENT);
+  if (!evs.length) return null;
+  const t0 = Math.max(...evs.map(e => new Date(e.t) / 1000));
+  if (DV_OCULTO.has(t0)) return null;
+  return {t0, evs: evs.filter(e => new Date(e.t) / 1000 === t0)};
+}
+const pctil = (dist, x) => dist && dist.length ? dist.filter(v => v <= x).length / dist.length : null;
+function dvBarra(st, ventana, x, col) {          // regla 0 → máximo histórico con cada vez anterior como raya
+  const dist = st?.["d" + ventana]; if (!dist?.length) return "";
+  const max = Math.max(dist[dist.length - 1], x) * 1.05, pos = v => Math.min(100, v / max * 100);
+  const med = dist[Math.floor(dist.length / 2)], p90 = st["p90_" + ventana] ?? dist[Math.floor(dist.length * 0.9)];
+  return `<div class="dv-b"><div class="dvax"></div>${dist.map(v => `<i class="dvht" style="left:${pos(v)}%"></i>`).join("")}` +
+    `<i class="dvtk" style="left:${pos(med)}%"></i><span class="dvtl" style="left:${pos(med)}%">típico ${fmt(med)}%</span>` +
+    `<i class="dvtk" style="left:${pos(p90)}%"></i><span class="dvtl" style="left:${pos(p90)}%">1 de 10: ${fmt(p90)}%</span>` +
+    `<i class="dvpt" style="left:${pos(x)}%;color:${col};background:${col}"></i></div>`;
+}
+function dvInst(k, g, tipo, tr) {
+  const d = k === "BTC" ? 0 : 1, p0 = pxAntes(k, g.t0), pv = pxVivo(k);
+  if (p0 === null || pv === null || pv === undefined) return `<div class="dv-k"><div class="a"><span class="k">${k}</span><span class="q">esperando precios…</span></div></div>`;
+  const mv = pv - p0, pct = mv / p0 * 100, col = mv > 0 ? "var(--up)" : mv < 0 ? "var(--dn)" : "var(--mut)";
+  const st = tipo && evStat(tipo, k), vent = tr <= 330 ? 5 : 30;
+  const a5 = tr > 330 ? (() => { const p5 = pxAntes(k, g.t0 + 360); return p5 !== null ? p5 - p0 : null; })() : null;
+  let txt = "";
+  if (st?.["d" + vent]) {
+    const q = pctil(st["d" + vent], Math.abs(pct)), n = st["d" + vent].length, de10 = Math.round(q * 10);
+    txt = `${tr <= 330 ? "Ya se movió" : "En " + Math.round(tr / 60) + " min se movió"} <b>${sg(mv, d)} pts</b>: ` +
+      (q >= 0.9 ? `<b style="color:var(--dn)">más que 9 de cada 10</b>` : q <= 0.1 ? `menos que casi todas` : `más que <b>${de10} de cada 10</b>`) +
+      ` reacciones ${tr <= 330 ? "de 5 min" : "de 30 min"} a este dato (${n} veces, últimos 2 años).` +
+      (q >= 0.9 ? " Movimiento extremo: entrar ahora es perseguir." : q < 0.3 ? " Reacción tibia por ahora." : "");
+  } else if (k !== "BTC") {
+    const b = DATA.eventos?.ev?.CPI?.[k]?.rec ? DATA.eventos.ev.CPI[k].base5 : null;
+    txt = `Se movió <b>${sg(mv, d)} pts</b> desde el dato.` + (b ? ` Un movimiento normal de 5 min a esa hora es ±${fmt(b)}% (~${ptsDe(k, b)} pts): este fue <b>${fmt(Math.abs(pct) / b, 1)}×</b>.` : " No tengo historia de este dato.");
+  } else txt = `Se movió <b>${sg(mv, 0)}</b> desde el dato.`;
+  let giro = "";
+  if (a5 !== null && Math.abs(a5) > 0 && Math.sign(a5) !== Math.sign(mv) && Math.abs(mv) > Math.abs(a5) * 0.2)
+    giro = `<div class="dv-w">⚠ Se está dando vuelta: a los 5 min iba ${sg(a5, d)} y ahora ${sg(mv, d)}.` + (st?.giro != null ? ` Con este dato pasó ${st.giro}% de las veces.` : "") + `</div>`;
+  return `<div class="dv-k"><div class="a"><span class="k">${k}</span><span class="p" style="color:${col}">${sg(mv, d)}</span><span class="q">${pc(pct, 2)} · ${fmt(pv + (k === "BTC" ? 0 : (DATA.fut?.[k]?.base ?? 0)), k === "BTC" ? 0 : 2)}</span>` +
+    (a5 !== null ? `<span class="q" style="margin-left:auto">a los 5 min: ${sg(a5, d)}</span>` : "") + `</div>` +
+    (k !== "BTC" ? dvBarra(st, vent, Math.abs(pct), col) : "") + `<div class="dv-s">${txt}</div>${giro}</div>`;
+}
+function pintarDatoVivo() {
+  const el = $("datoVivo"); if (!el) return;
+  const g = dvGrupo(); if (!g) { el.hidden = true; return; }
+  const tr = Date.now() / 1000 - g.t0, tipo = g.evs.map(e => EV_T[e.orig]).find(Boolean);
+  const nom = tipo ? (DATA.eventos?.ev?.[tipo]?.nm || g.evs[0].titulo) : g.evs[0].titulo;
+  const filas = g.evs.slice(0, 4).map(e => { const x = DATOS[e.orig];
+    if (!x) return `<span>${esc(e.titulo)}: <span class="mut">esperando cifra…</span>${e.esperado ? ` <span class="mut">(esp. ${esc(e.esperado)})</span>` : ""}</span>`;
+    const c = x.dir === "1" ? "up" : x.dir === "-1" ? "dn" : "fl", fl = x.dir === "1" ? "▲ sobre lo esperado" : x.dir === "-1" ? "▼ bajo lo esperado" : "= en línea";
+    return `<span>${esc(e.titulo)}: <b class="v ${c}">${esc(x.act)}</b>${x.cons ? ` <span class="mut">vs ${esc(x.cons)}</span>` : ""} <b class="${c}" style="font-size:12px">${fl}</b></span>`; }).join("");
+  const lec = g.evs.map(e => DATOS[e.orig]?.lec).find(Boolean);
+  const st = tipo && evStat(tipo, "ES");
+  el.hidden = false;
+  el.innerHTML = `<div class="dv-h"><span class="lv">● DATO EN VIVO</span><span class="t">${esc(nom)}</span><span class="r">${horaCL(new Date(g.t0 * 1000))} Chile · hace ${dur(tr * 1000)}</span>` +
+    `<button id="dvX" title="Ocultar">✕</button></div><div class="dv-c">${filas}</div>${lec ? `<div class="dv-l">${esc(lec)}</div>` : ""}` +
+    `<div class="dv-g">${dvInst("ES", g, tipo, tr)}${dvInst("NQ", g, tipo, tr)}</div>` +
+    `<div class="dv-f">Cada raya gris es una vez anterior de este dato; el punto es hoy. ` + (st ? `Medido minuto a minuto en ${st.n} publicaciones desde ${st.desde?.slice(0, 7) || "2024"}.` : "") +
+    ` La tarjeta se va sola ${Math.round(DV_VENT / 60)} min después del dato.</div>`;
+  $("dvX").onclick = () => { DV_OCULTO.add(g.t0); store.set("dvOculto", [...DV_OCULTO].slice(-20)); el.hidden = true; };
+}
+
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
   setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); hoyUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
@@ -2637,6 +2729,7 @@ function pintarCierre() {
   modosUI();
   hlConectar(); bnConectar(); bnfConectar(); hlMids(); sembrarM1();
   setInterval(() => refrescarRx(false), 2000);
+  setInterval(pintarDatoVivo, 1000);
   setInterval(hlMids, 3000);
   setInterval(() => cargarDatos(false), 60000);
   cargarComite(); setInterval(cargarComite, 120000);
