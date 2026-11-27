@@ -555,6 +555,34 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 .pl-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.pl-a button{background:var(--panel2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:8px 12px;font-size:12.5px;cursor:pointer}
 .pl-a button:hover{border-color:var(--acc)}.pl-a button:disabled{color:var(--up);cursor:default}
 @media(max-width:600px){#plan{padding:0}.pl{border-radius:0;min-height:100%}.pl-g{grid-template-columns:1fr}.pl-t{font-size:12px}}
+
+/* visión global */
+#mundoSec{margin-bottom:18px}
+.mu-top{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:6px}
+.mu-c{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:12px}
+.mu-c p{margin:6px 0;color:var(--tx2);font-size:13px;line-height:1.5}
+.mu-ch{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:600;font-size:13.5px}
+.mu-big{border-top:3px solid var(--acc)}
+.mu-k{font:600 10.5px "IBM Plex Mono";letter-spacing:.12em;color:var(--acc)}
+.mu-res{font-size:15px!important;color:var(--tx)!important;line-height:1.55!important}
+.mu-ef{font-size:13px;color:var(--tx2);background:var(--panel2);border-radius:8px;padding:8px 10px;margin-top:8px}
+.mu-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:12px 0 8px;background:var(--panel2)}
+.mu-bar i{display:block}.mu-bar .o,.mu-lg .o{background:var(--up)}.mu-bar .n,.mu-lg .n{background:#5c6878}.mu-bar .p,.mu-lg .p{background:var(--dn)}
+.mu-lg{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--tx2)}.mu-lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+.mu-h{display:flex;align-items:center;gap:10px;font-size:14px;margin:16px 0 8px;color:var(--tx)}
+.mu-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px}
+.mu-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+.mu-fs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.mu-f{font:10.5px "IBM Plex Mono";color:var(--mut);background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.mu-f:hover{color:var(--acc);border-color:var(--acc)}
+.mu-tm{font-size:11.5px;color:var(--mut);margin-top:3px}
+.mu-px{font-size:12px;color:var(--acc)}
+.mu-t{width:100%;border-collapse:collapse;font-size:12.5px}.mu-t th{text-align:left;font:500 11px "IBM Plex Mono";color:var(--mut);padding:8px 10px}
+.mu-t td{padding:7px 10px;border-top:1px solid var(--line);vertical-align:top}
+.mu-nt p{font-size:12.5px;color:var(--tx2);margin:6px 0}
+.mu-ul{margin:6px 0 0;padding-left:18px;color:var(--tx2);font-size:13px}.mu-ul li{margin:4px 0}
+#chileMu .ci-k{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.mu-top,.mu-g3,.mu-g2{grid-template-columns:1fr}#chileMu .ci-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -562,14 +590,14 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
   <div class="hbar">
     <span class="brand">MERCADO EN VIVO · ES · NQ · BTC</span>
     <span class="live"><i></i>EN VIVO</span>
-    <nav class="modos" id="modos"><button data-m="pre"><i></i>Antes de abrir</button><button data-m="ses"><i></i>En sesión</button><button data-m="cie"><i></i>Cierre</button><button data-m="yo"><i></i>Mi trading</button><button data-m="todo"><i></i>Todo</button></nav>
+    <nav class="modos" id="modos"><button data-m="pre"><i></i>Antes de abrir</button><button data-m="ses"><i></i>En sesión</button><button data-m="cie"><i></i>Cierre</button><button data-m="mundo"><i></i>Mundo</button><button data-m="yo"><i></i>Mi trading</button><button data-m="todo"><i></i>Todo</button></nav>
     <div class="clocks"><span>Santiago <b id="clkCL" class="m">--:--:--</b></span><span>Nueva York <b id="clkNY" class="m">--:--:--</b></span><span id="rthCd"></span><a id="nxEv" href="#agendaSec" hidden></a></div>
     <button class="fbtn" id="fbtn" title="Ver solo lo necesario para la apertura">🎯 Modo apertura</button>
     <button class="bell" id="bell" title="Noticias y datos en tiempo real" aria-label="Notificaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="bdg" id="bdg" hidden>0</span></button>
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#nivhSec">Niveles que sirven</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="#nivhSec">Niveles que sirven</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#saberSec">Claves</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -599,6 +627,8 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
   </section>
   <div id="plan"><div class="pl"><div class="pl-hd"><b>Plan de trade</b><button class="gm-x" id="planX">cerrar ✕</button></div><div id="planB"></div></div></div>
   <section id="cierreSec" data-modo="cie"><div id="cierre"><p class="mut">Cargando el resumen de cierre…</p></div></section>
+  <section id="mundoSec" data-modo="mundo"><h2>Visión global <small>qué piensan los grandes economistas, bancos centrales y bancos de inversión · resumido por Claude</small></h2><div id="mundo"><p class="mut">Cargando…</p></div>
+    <h2 id="chileSec">Mercado chileno <small>cómo llega el mundo a Chile y qué pasa aquí</small></h2><div id="chileMu"></div></section>
   <section class="cm" id="comite" hidden data-modo="pre"></section>
   <section id="foco" hidden></section>
   <div class="grid" id="graficos" data-modo="pre ses">
@@ -708,7 +738,7 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
     <p>Informativo: describe hechos, no es recomendación de inversión. <span id="avisos"></span></p>
   </footer>
 </main>
-<nav class="bnav" id="bnav"><button data-m="pre"><b>☀</b>Antes</button><button data-m="ses"><b>◉</b>Sesión</button><button data-m="cie"><b>☾</b>Cierre</button><button data-m="yo"><b>◎</b>Mi trading</button><button data-m="todo"><b>☰</b>Todo</button></nav>
+<nav class="bnav" id="bnav"><button data-m="pre"><b>☀</b>Antes</button><button data-m="ses"><b>◉</b>Sesión</button><button data-m="cie"><b>☾</b>Cierre</button><button data-m="mundo"><b>◍</b>Mundo</button><button data-m="yo"><b>◎</b>Mi trading</button><button data-m="todo"><b>☰</b>Todo</button></nav>
 
 <script>
 "use strict";
@@ -2527,7 +2557,7 @@ function modoAuto() {
   return "pre";
 }
 let MODO_MAN = store.get("modoMan", null);
-{ const q = location.search.match(/[?&]modo=(pre|ses|cie|yo|todo)/); if (q) MODO_MAN = {m: q[1], auto: null}; }
+{ const q = location.search.match(/[?&]modo=(pre|ses|cie|mundo|yo|todo)/); if (q) MODO_MAN = {m: q[1], auto: null}; }
 function modoActual() {
   const a = modoAuto();
   if (MODO_MAN && (MODO_MAN.auto === null || MODO_MAN.auto === a)) { if (MODO_MAN.auto === null) MODO_MAN.auto = a; return MODO_MAN.m; }
@@ -2558,6 +2588,7 @@ function aplicarModo(forzar) {
   setTimeout(() => window.dispatchEvent(new Event("resize")), 60);
   if (m === "pre" || m === "ses") pintarHoy();
   if (m === "cie") cargarCierre();
+  if (m === "mundo" || m === "todo") cargarVision();
 }
 function modosUI() {
   document.querySelectorAll("#modos button, #bnav button").forEach(b => b.onclick = () => {
@@ -2910,6 +2941,76 @@ function planUI() {
   setInterval(() => { if (PLAN) pintarPlan(); }, 3000);
 }
 
+
+/* ============================================================ visión global + Chile (vision.json, resumido por Claude) */
+let VIS = null, visT = 0, muPais = store.get("muPais", "todos");
+async function cargarVision() {
+  if (Date.now() - visT < 600000 && VIS) return pintarVision();
+  visT = Date.now();
+  try { VIS = await (await fetch("vision.json?v=" + Math.floor(Date.now() / 600000), {cache: "no-store"})).json(); } catch (e) { VIS = null; }
+  pintarVision();
+}
+function muSrc(ids) {             // chips de fuente con link al titular original
+  return (ids || []).map(i => { const f = VIS.fuentes?.[i]; if (!f) return "";
+    let u = ""; try { u = new URL(f.link).protocol.startsWith("http") ? f.link : ""; } catch (e) {}
+    const d = new Date(f.ts * 1000).toLocaleDateString("es-CL", {day: "numeric", month: "short"});
+    return `<a class="mu-f" ${u ? `href="${esc(u)}"` : ""} target="_blank" rel="noopener noreferrer" title="${esc(f.t)}">${esc(f.f || "fuente")} · ${d}</a>`; }).join("");
+}
+const MU_TONO = {positivo: ["u", "POSITIVO"], neutral: ["", "NEUTRAL"], negativo: ["d", "NEGATIVO"], optimista: ["u", "OPTIMISTA"], pesimista: ["d", "PESIMISTA"],
+  dura: ["d", "DURA · no quiere bajar tasas"], blanda: ["u", "BLANDA · quiere bajar tasas"]};
+const muTag = v => { const t = MU_TONO[v] || ["", v]; return `<span class="tg2 ${t[0]}">${esc(t[1])}</span>`; };
+const MU_DIR = {sube: ["▲", "up"], baja: ["▼", "dn"], estable: ["■", "mut"], incierto: ["?", "acc"]};
+function pintarVision() {
+  const el = $("mundo"), ec = $("chileMu"); if (!el) return;
+  if (!VIS) { el.innerHTML = `<p class="mut">La visión global se arma dos veces al día (mañana y tarde, hora de Chile).</p>`; if (ec) ec.innerHTML = ""; return; }
+  const V = VIS, gen = new Date(V.generado), T = V.termometro || {}, P = V.termometro_previo, tot = (T.optimista || 0) + (T.neutral || 0) + (T.pesimista || 0) || 1;
+  const pct = x => Math.round((x || 0) / tot * 100);
+  const dif = k => { if (!P) return ""; const ptot = (P.optimista || 0) + (P.neutral || 0) + (P.pesimista || 0) || 1, d = pct(T[k]) - Math.round((P[k] || 0) / ptot * 100);
+    return d ? ` <span class="${(k === "pesimista" ? -d : d) > 0 ? "up" : "dn"}">${sg(d, 0)} pts vs sem. pasada</span>` : ""; };
+  const voces = (V.voces || []).filter(v => muPais === "todos" || v.pais === muPais);
+  const conOp = new Set((V.voces || []).map(v => v.nombre));
+  const sinOp = (V.seguidos || []).filter(s => !conOp.has(s.nombre) && (muPais === "todos" || s.pais === muPais)).map(s => s.nombre);
+  const card = (h, b, cls = "") => `<div class="mu-c ${cls}">${h ? `<div class="mu-ch">${h}</div>` : ""}${b}</div>`;
+  el.innerHTML =
+    `<div class="mu-top">${card("", `<div class="mu-k">EL MUNDO HOY</div><p class="mu-res">${esc(V.resumen)}</p><div class="mu-ef"><b>Para tu trading (S&amp;P · Nasdaq · Bitcoin):</b> ${esc(V.efecto)}</div>`, "mu-big")}` +
+    card("", `<div class="mu-k">TERMÓMETRO DE LOS GRANDES</div><div class="mu-bar"><i class="o" style="width:${pct(T.optimista)}%"></i><i class="n" style="width:${pct(T.neutral)}%"></i><i class="p" style="width:${pct(T.pesimista)}%"></i></div>` +
+      `<div class="mu-lg"><span><i class="o"></i>Optimistas <b>${pct(T.optimista)}%</b>${dif("optimista")}</span><span><i class="n"></i>Neutrales <b>${pct(T.neutral)}%</b></span><span><i class="p"></i>Pesimistas <b>${pct(T.pesimista)}%</b>${dif("pesimista")}</span></div>` +
+      `<p class="mut" style="font-size:11.5px;margin:8px 0 0">${tot} de ${(V.seguidos || []).length} economistas e inversionistas seguidos opinaron esta semana. Resumido por Claude con ${V.n_titulares} titulares · ${gen.toLocaleString("es-CL", {weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"})} Chile.</p>`) + `</div>` +
+    `<h3 class="mu-h">Los temas que mueven el mundo</h3><div class="mu-g3">${(V.temas || []).map(t => { const d = MU_DIR[t.direccion] || ["", ""];
+      return card(`<span><span class="${d[1]}" style="font-family:'IBM Plex Mono'">${d[0]}</span> ${esc(t.tema)}</span>`, `<p>${esc(t.texto)}</p><div class="mu-fs">${muSrc(t.ids)}</div>`); }).join("")}</div>` +
+    `<h3 class="mu-h">Por región</h3><div class="mu-g3">${(V.regiones || []).map(r => card(`<span>${esc(r.region)}</span>${muTag(r.tono)}`, `<p>${esc(r.texto)}</p><div class="mu-fs">${muSrc(r.ids)}</div>`)).join("")}</div>` +
+    `<h3 class="mu-h">Bancos centrales</h3><div class="mu-g2">${(V.bancos_centrales || []).map(b => card(`<span>${esc(b.banco)}</span>${muTag(b.postura)}`,
+      `<p>${esc(b.texto)}</p>${b.proximo ? `<div class="mu-px">Próximo: ${esc(b.proximo)}</div>` : ""}<div class="mu-fs">${muSrc(b.ids)}</div>`)).join("")}</div>` +
+    `<h3 class="mu-h">Qué dicen los grandes <span class="seg" id="muP">${["todos", "EE.UU.", "Chile"].map(p => `<button data-p="${p}" class="${p === muPais ? "on" : ""}">${p === "todos" ? "Todos" : p}</button>`).join("")}</span></h3>` +
+    `<div class="mu-g2">${voces.map(v => card(`<span><b>${esc(v.nombre)}</b> <span class="mut" style="font-weight:400">· ${esc(v.rol)}</span></span>${muTag(v.sesgo)}`,
+      `<div class="mu-tm">${esc(v.tema)}${v.antes ? ` <span class="acc">· antes estaba ${esc(v.antes)}</span>` : ""}</div><p>${esc(v.opinion)}</p><div class="mu-fs">${muSrc(v.ids)}</div>`)).join("") ||
+      `<p class="mut">Nadie de este grupo dio una opinión nueva esta semana.</p>`}</div>` +
+    (sinOp.length ? `<p class="mut" style="font-size:11.5px">Sin opiniones nuevas esta semana: ${sinOp.map(esc).join(", ")}.</p>` : "") +
+    `<div class="mu-g2"><div><h3 class="mu-h">Bancos de inversión · qué esperan</h3><div class="mu-c" style="padding:0;overflow-x:auto"><table class="mu-t"><tr><th>Banco</th><th>Meta S&amp;P 500</th><th>Tasas</th><th>¿Recesión?</th></tr>` +
+      (V.bancos || []).map(b => `<tr><td><b>${esc(b.banco)}</b><div class="mu-fs">${muSrc(b.ids)}</div></td><td class="m">${esc(b.meta_sp)}</td><td>${esc(b.tasas)}</td><td>${esc(b.recesion)}</td></tr>`).join("") + `</table></div>` +
+      ((V.bancos || []).some(b => b.texto) ? `<div class="mu-nt">${(V.bancos || []).filter(b => b.texto).map(b => `<p><b>${esc(b.banco)}:</b> ${esc(b.texto)}</p>`).join("")}</div>` : "") + `</div>` +
+    `<div><h3 class="mu-h">Proyecciones oficiales</h3>${(V.proyecciones || []).map(p => card(esc(p.institucion), `<p>${esc(p.texto)}</p><div class="mu-fs">${muSrc(p.ids)}</div>`)).join("") || `<p class="mut">Sin proyecciones nuevas en las últimas dos semanas.</p>`}</div></div>` +
+    `<div class="mu-g2"><div>${card("🧭 Lo que piensa la mayoría", `<p>${esc(V.consenso)}</p>`)}</div><div>${card("🔀 Los que ven otra cosa", (V.disidentes || []).map(d => `<p><b>${esc(d.nombre)}:</b> ${esc(d.texto)}</p><div class="mu-fs">${muSrc(d.ids)}</div>`).join("") || `<p class="mut">Nadie se aleja del consenso esta semana.</p>`)}</div></div>` +
+    `<p class="mut" style="font-size:11px">Resumen automático hecho por Claude a partir de titulares de prensa (Google Noticias, Reserva Federal). Cada punto trae su fuente: tócala para leer la nota original. Puede equivocarse: no es una recomendación.</p>`;
+  el.querySelectorAll("#muP button").forEach(b => b.onclick = () => { muPais = b.dataset.p; store.set("muPais", muPais); pintarVision(); });
+  // ---- Chile
+  if (!ec) return;
+  const C = V.chile || {}, D = V.chile_datos || {}, B = D.bolsa, I = D.ind || {};
+  const tile = (n, v, s, c = "") => `<div><div class="l">${n}</div><div class="v ${c}">${v}</div><div class="s">${s}</div></div>`;
+  const acc = L => (L || []).map(a => `<tr><td>${esc(a.n)}</td><td class="mut">${esc(a.s || "")}</td><td class="m ${cl(a.ch)}">${pc(a.ch, 2)}</td></tr>`).join("");
+  ec.innerHTML = `<div class="ci-k">` +
+    (B ? tile("IPSA (estimado)", pc(B.var, 2), `${B.nivel ? fmt(B.nivel, 0) + " pts · " : ""}${B.alzas} suben / ${B.bajas} bajan`, cl(B.var)) : "") +
+    (D.usdclp ? tile("Dólar (USD/CLP)", "$" + fmt(D.usdclp.p, 1), D.usdclp.ch != null ? pc(D.usdclp.ch, 2) + " hoy" : "", "") : I.dolar ? tile("Dólar observado", "$" + fmt(I.dolar.valor, 2), I.dolar.fecha) : "") +
+    (D.cobre ? tile("Cobre (USD/lb)", fmt(D.cobre.p, 3), D.cobre.ch != null ? pc(D.cobre.ch, 2) + " hoy" : "", cl(D.cobre.ch)) : "") +
+    (I.tpm ? tile("Tasa del Banco Central", fmt(I.tpm.valor, 2) + "%", "TPM · " + I.tpm.fecha) : I.uf ? tile("UF", "$" + fmt(I.uf.valor, 2), I.uf.fecha) : "") + `</div>` +
+    `<div class="mu-g2"><div>${card(`<span>Cómo viene Chile</span>${muTag(C.tono)}`, `<p class="mu-res" style="font-size:14px">${esc(C.resumen || "")}</p>` +
+      ((C.mirar || []).length ? `<div class="mu-k" style="margin-top:10px">QUÉ MIRAR</div><ul class="mu-ul">${C.mirar.map(m => `<li>${esc(m)}</li>`).join("")}</ul>` : ""))}` +
+      (C.temas || []).map(t => card(esc(t.tema), `<p>${esc(t.texto)}</p><div class="mu-fs">${muSrc(t.ids)}</div>`)).join("") + `</div>` +
+    `<div>${B ? card("Bolsa de Santiago · los que más se mueven", `<table class="mu-t">${acc(B.top)}${acc(B.peor)}</table><p class="mut" style="font-size:11px;margin:6px 0 0">IPSA estimado con las ~30 acciones grandes (Yahoo, puede venir con 15 min de atraso).</p>`) : ""}` +
+      `${(V.voces || []).filter(v => v.pais === "Chile").length ? card("Economistas chilenos", (V.voces || []).filter(v => v.pais === "Chile").map(v => `<p><b>${esc(v.nombre)}</b> ${muTag(v.sesgo)}<br>${esc(v.opinion)}</p>`).join("")) : ""}</div></div>`;
+}
+
+setInterval(() => { if (["mundo", "todo"].includes(document.body.dataset.vista)) cargarVision(); }, 600000);
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
   setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); hoyUI(); planUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
