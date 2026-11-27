@@ -577,6 +577,10 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 .mu-fs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .mu-f{display:inline-block;vertical-align:top;font:10.5px "IBM Plex Mono";color:var(--mut);background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .mu-f:hover{color:var(--acc);border-color:var(--acc)}
+.sm-ns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.sm-n{display:flex;flex-direction:column;gap:2px;background:var(--panel2);border-radius:8px;padding:8px 10px}.sm-n b{font:600 18px "IBM Plex Mono",monospace}.sm-n small{font-size:11px}
+.sm-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.sm-chip{font:12px "IBM Plex Mono",monospace;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.sm-t{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}.sm-t td{padding:3px 6px 3px 0;border-bottom:1px solid var(--line);vertical-align:top}.sm-ul{margin:4px 0;padding-left:18px;color:var(--tx2);font-size:13px;line-height:1.55}
+@media(max-width:700px){.sm-ns{grid-template-columns:1fr}}
 .mu-tm{font-size:11.5px;color:var(--mut);margin-top:3px}
 .mu-px{font-size:12px;color:var(--acc)}
 .mu-t{width:100%;border-collapse:collapse;font-size:12.5px}.mu-t th{text-align:left;font:500 11px "IBM Plex Mono";color:var(--mut);padding:8px 10px}
@@ -610,7 +614,7 @@ main h2.pg:hover::before{color:var(--acc)}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#saberSec">Claves</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango del día</a><a href="#opcSec">Opciones</a><a href="trades.html">Estadísticas ↗</a><a href="#gapSec">Gap</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#semanaSec">Semana</a><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#saberSec">Claves</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango del día</a><a href="#opcSec">Opciones</a><a href="trades.html">Estadísticas ↗</a><a href="#gapSec">Gap</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -640,6 +644,7 @@ main h2.pg:hover::before{color:var(--acc)}
   </section>
   <div id="plan"><div class="pl"><div class="pl-hd"><b>Plan de trade</b><button class="gm-x" id="planX">cerrar ✕</button></div><div id="planB"></div></div></div>
   <section id="cierreSec" data-modo="cie"><div id="cierre"><p class="mut">Cargando el resumen de cierre…</p></div></section>
+  <section id="semanaSec" data-modo="cie mundo" hidden><h2>Resumen de la semana <small>qué pasó y qué viene · se arma el sábado a las 9:00 (Chile) · resumido por Claude</small></h2><div id="semana"></div></section>
   <section id="mundoSec" data-modo="mundo"><h2>Visión global <small>qué piensan los grandes economistas, bancos centrales y bancos de inversión · resumido por Claude</small></h2><div id="mundo"><p class="mut">Cargando…</p></div>
     <h2 id="chileSec">Mercado chileno <small>cómo llega el mundo a Chile y qué pasa aquí</small></h2><div id="chileMu"></div></section>
   <section class="cm" id="comite" hidden data-modo="pre"></section>
@@ -2488,6 +2493,7 @@ function aplicarModo(forzar) {
   if (m === "pre" || m === "ses") pintarHoy();
   if (m === "cie") cargarCierre();
   if (m === "mundo" || m === "todo") cargarVision();
+  if (["cie", "mundo", "todo"].includes(m)) cargarSemana();
 }
 function modosUI() {
   document.querySelectorAll("#modos button, #bnav button").forEach(b => b.onclick = () => {
@@ -2840,6 +2846,53 @@ function plegarUI() {
       if (!on) setTimeout(() => window.dispatchEvent(new Event("resize")), 40);
     });
   });
+}
+
+/* ============================================================ resumen semanal (semana.json, sábado 9:00 Chile) */
+let SEM = null, semT = 0;
+async function cargarSemana() {
+  if (Date.now() - semT < 1800000 && SEM !== null) return pintarSemana();
+  semT = Date.now();
+  try { SEM = await (await fetch("semana.json?v=" + Math.floor(Date.now() / 1800000), {cache: "no-store"})).json(); } catch (e) { SEM = false; }
+  pintarSemana();
+}
+function pintarSemana() {
+  const sec = $("semanaSec"), el = $("semana"); if (!sec || !el) return;
+  // se muestra solo si es de los últimos 8 días
+  if (!SEM || !SEM.texto || Date.now() - new Date(SEM.generado) > 8 * 864e5) { sec.hidden = true; return; }
+  sec.hidden = false;
+  const J = SEM.texto, R = SEM.datos || {}, D = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
+  const fd = s => { const d = new Date(s + "T12:00:00"); return `${D[d.getDay()]} ${d.getDate()} ${MES_C[d.getMonth()]}`; };
+  const src = ids => (ids || []).map(i => { const f = SEM.fuentes?.[i]; if (!f) return "";
+    let u = ""; try { u = new URL(f.link).protocol.startsWith("http") ? f.link : ""; } catch (e) {}
+    return `<a class="mu-f" ${u ? `href="${esc(u)}"` : ""} target="_blank" rel="noopener noreferrer" title="${esc(f.t)}">${esc(f.f || "fuente")}</a>`; }).join(" ");
+  const card = (h, b, cls = "") => `<div class="mu-c ${cls}">${h ? `<div class="mu-ch">${h}</div>` : ""}${b}</div>`;
+  const num = ["ES", "NQ", "BTC"].map(k => { const r = R.rangos?.[k]; if (!r) return "";
+    return `<div class="sm-n"><span class="mut">${k}</span><b class="${cl(r.pct)}">${sg(r.pct, 2)}%</b><small class="mut">cierre ${fmt(r.cierre, k === "BTC" ? 0 : 2)} · rango ${fmt(r.rango_pct, 1)}%</small></div>`; }).join("");
+  const otros = (R.rend || []).filter(x => ["Bono 10 años", "DXY", "Oro", "Petróleo WTI", "USD/CLP"].includes(x.nm) && x.semana != null)
+    .map(x => `${esc(x.nm)} <b class="${cl(x.bono ? -x.semana : x.semana)}">${x.bono ? sg(x.semana, 0) + " pb" : sg(x.semana, 1) + "%"}</b>`).join(" · ");
+  const res = (R.resultados || []).slice().sort((a, b) => Math.abs(b.mov) - Math.abs(a.mov)).slice(0, 8)
+    .map(x => `<span class="sm-chip">${esc(x.s)} <b class="${cl(x.mov)}">${sg(x.mov, 1)}%</b></span>`).join("");
+  const cal = (R.cal_prox || []).filter(e => e.impacto === "High")
+    .map(e => `<tr><td>${fd(e.dia)}</td><td class="mut">${esc(e.hora_cl)}</td><td>${esc(e.titulo)}</td><td class="mut">${esc(e.esperado || "—")}</td></tr>`).join("");
+  const pr = (R.prox_resultados || []).slice(0, 10)
+    .map(e => `<span class="sm-chip">${esc(e.s)} <small class="mut">${fd(e.fecha)}${e.esperado ? ` · ±${fmt(e.esperado, 1)}%` : ""}</small></span>`).join("");
+  const rg = J.riesgo || {}, rc = {alto: "d", medio: "w", bajo: "u"}[rg.nivel] || "w";
+  const s0 = R.semana || [], gen = new Date(SEM.generado);
+  el.innerHTML =
+    card("", `<div class="mu-k">SEMANA ${s0[0] ? fd(s0[0]).toUpperCase() + " – " + fd(s0[1]).toUpperCase() : ""}</div>` +
+      `<p class="mu-res"><b>${esc(J.titular || "")}</b></p><p>${esc(J.resumen || "")}</p>` +
+      `<div class="sm-ns">${num}</div>${otros ? `<p class="mu-gn">${otros}</p>` : ""}`, "mu-big") +
+    `<div class="mu-g2">` +
+    card("📰 Qué pasó", (J.paso || []).map(p => `<p><b>${esc(p.tema)}:</b> ${esc(p.texto)} <span class="mu-fs" style="display:inline">${src(p.ids)}</span></p>`).join("") +
+      (res ? `<div class="mu-tm">Resultados de la semana (reacción):</div><div class="sm-chips">${res}</div>` : "")) +
+    card("⏭ Qué viene", (J.viene || []).map(v => `<p><b>${v.dia ? fd(v.dia) : ""}:</b> ${esc(v.texto)}</p>`).join("") +
+      (cal ? `<div class="mu-tm">Datos de alto impacto (hora Chile · esperado):</div><table class="sm-t">${cal}</table>` : "") +
+      (pr ? `<div class="mu-tm">Reportan (movimiento que descuentan las opciones):</div><div class="sm-chips">${pr}</div>` : "")) +
+    `</div>` +
+    card("🎯 Claves para tu trading", `<ul class="sm-ul">${(J.claves || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul>` +
+      `<p>Riesgo de la semana: <span class="tg2 ${rc}">${esc(String(rg.nivel || "").toUpperCase())}</span> ${esc(rg.por_que || "")}</p>` +
+      `<p class="mut mu-gn">Armado ${gen.toLocaleString("es-CL", {weekday: "long", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} con datos de Yahoo, Nasdaq, ForexFactory y Google Noticias. También llega por Telegram.</p>`);
 }
 
 /* ============================================================ visión global + Chile (vision.json, resumido por Claude) */
