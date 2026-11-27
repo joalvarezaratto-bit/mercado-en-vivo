@@ -609,7 +609,7 @@ main h2.pg:hover::before{color:var(--acc)}
     <div class="conn"><span><i class="dot wait" id="dNW"></i>Noticias</span><span><i class="dot wait" id="dHL"></i>Índices</span><span><i class="dot wait" id="dBN"></i>Cripto</span><span><i class="dot wait" id="dDJ"></i>Datos <span id="dataAge" class="m"></span></span></div>
   </div>
   <div class="tape" id="tape"></div>
-  <nav class="snav" id="snav"><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#saberSec">Claves</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="trades.html">Estadísticas de trades ↗</a><a href="#gapSec">Gap</a><a href="#estacSec">Estacionalidad</a><a href="#evhSec">Datos macro</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
+  <nav class="snav" id="snav"><a href="#mundoSec">Visión global</a><a href="#chileSec">Chile</a><a href="#comite">Comité</a><a href="#graficos">Gráficos</a><a href="#saberSec">Claves</a><a href="#pulsoSec">Pulso de riesgo</a><a href="#vixSec">Rendimiento</a><a href="#rangoSec">Rango y correlación</a><a href="#opcSec">Opciones</a><a href="trades.html">Estadísticas ↗</a><a href="#gapSec">Gap</a><a href="#trampaSec">Días trampa</a><a href="#diarioSec">Diario</a><a href="#moversSec">Quién mueve</a><a href="#mapaSec">Mapa de calor</a><a href="#lotajeSec">Lotaje</a><a href="#cableSec">Cable</a><a href="#agendaSec">Agenda</a><a href="#globalSec">Global</a><a href="#earnSemSec">Resultados</a><a href="#criptoSec">Cripto</a><a href="#newsSec">Titulares</a></nav>
   <div class="cable"><span class="cl">● CABLE<span> EN VIVO</span></span><div class="cv"><div class="ct" id="cableT"><span class="vacio">Conectando con el cable de noticias…</span></div></div></div>
 </header>
 <div id="alertas"></div>
@@ -672,18 +672,15 @@ main h2.pg:hover::before{color:var(--acc)}
   <h2 id="opcSec" data-modo="pre ses">Opciones · niveles de gamma <small>dónde están las apuestas grandes y cómo pueden frenar o acelerar el precio · SPY→ES · QQQ→NQ · Deribit→BTC</small></h2>
   <div data-modo="pre ses" class="panel" id="opc"><p class="mut">Cargando…</p></div>
 
-  <a class="trl" id="nivhSec" data-modo="cie yo" href="trades.html"><b>📊 Estadísticas de trades</b><span>¿Qué niveles funcionan, cuánto deja el plan en R y si una confirmación lo mejora? → página aparte</span></a>
+  <a class="trl" id="nivhSec" data-modo="pre cie yo" href="trades.html"><b>📊 Estadísticas</b><span>Qué niveles funcionan, R del plan, confirmaciones, reacción a datos macro y estacionalidad → página aparte</span></a>
 
   <div class="two" id="gapSec">
     <div data-modo="pre ses"><h2>El gap de hoy y su historia <small>qué pasó en los últimos 5 años con gaps parecidos (índice contado)</small></h2><div class="panel" id="gap"><p class="mut">Esperando precios…</p></div></div>
     <div id="diarioSec" data-modo="yo"><h2>Diario de trades <small>se guarda solo en este equipo · exporta a Excel (CSV)</small></h2><div class="panel" id="diario"></div></div>
   </div>
 
-  <h2 id="estacSec" data-modo="cie">Estacionalidad <small>cómo se comporta cada hora y cada día de la semana desde 2024 · resaltada la hora y el día actual</small></h2>
-  <div data-modo="cie" class="panel" id="estac"><p class="mut">Cargando…</p></div>
 
-  <div class="two ev2" data-modo="pre">
-    <div id="evhSec"><h2>Cómo reacciona el mercado a cada dato <small>CPI, empleo, PPI y Fed · últimos 2 años · minuto a minuto</small></h2><div class="panel" id="evh"><p class="mut">Cargando…</p></div></div>
+  <div class="ev2" data-modo="pre">
     <div id="trampaSec"><h2>Días trampa <small>vencimientos, cambio de contrato, fin de mes, cierres anticipados · próximas 3 semanas</small></h2><div class="panel" id="trampas"><p class="mut">Cargando…</p></div></div>
   </div>
 
@@ -1672,7 +1669,7 @@ function pintarInforme() {
   $("puntos").innerHTML = DATA.puntos.map(p => `<li>${soloNegrita(p)}</li>`).join("");
   const g = new Date(DATA.generado);
   $("genTxt").textContent = "datos del informe de las " + g.toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}) + " Chile";
-  pintarAgenda(); pintarSemana(); pintarEvh(); pintarTrampas(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarEstac(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
+  pintarAgenda(); pintarSemana(); pintarTrampas(); pintarEarnSem(); pintarRend(); pintarVixC(); pintarCorr(); pintarOpc(); pintarSectores(); pintarGlobal(); pintarNews(); pintarBtcDer(); pintarMegacaps();
   $("verif").innerHTML = DATA.verif.map(([ok, t]) => `<li class="${ok ? "up" : "acc"}">${ok ? "✓" : "⚠"} ${esc(t)}</li>`).join("");
   $("avisos").textContent = DATA.avisos.length ? "Avisos de datos: " + DATA.avisos.join(" · ") : "";
 }
@@ -1943,30 +1940,6 @@ function evalOpc() {
     `<div class="mut" style="font-size:11px;margin-top:4px">Si la gamma negativa no da rangos claramente mayores, o los muros se respetan cerca del 50%, estos niveles no están aportando y conviene ignorarlos.</div></div>`;
 }
 const fmtK = x => x >= 1e6 ? fmt(x / 1e6, 1) + "M" : x >= 1e3 ? fmt(x / 1e3, 0) + "k" : fmt(x, 0);
-
-/* ============================================================ estacionalidad */
-let estK = store.get("estK", "ES");
-function pintarEstac() {
-  const E = DATA?.estac; if (!E || !E[estK]) { $("estac").innerHTML = `<p class="mut">Sin datos por ahora.</p>`; return; }
-  const e = E[estK], n = ahoraNY(), hNY = +n.hour * 60 + +n.minute, dowNY = new Date().toLocaleDateString("en-US", {timeZone: "America/New_York", weekday: "short"});
-  const wdIdx = {Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6}[dowNY], DN = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-  const off = (tzOffsetSec("America/Santiago", Date.now() / 1000) - tzOffsetSec("America/New_York", Date.now() / 1000)) / 60;
-  const cl_ = h => { const [H, M] = h.split(":").map(Number); const m = ((H * 60 + M + off) % 1440 + 1440) % 1440; return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; };
-  const mx = Math.max(...e.horas.map(x => x.mov)), len = estK === "BTC" ? 60 : 60;
-  const enHora = h => { const [H, M] = h.split(":").map(Number), a = H * 60 + M; return hNY >= a && hNY < a + len; };
-  const h1 = e.horas[0], ult = e.horas[e.horas.length - 1];
-  const lect = estK === "BTC"
-    ? (() => { const top = e.horas.slice().sort((a, b) => b.mov - a.mov).slice(0, 3).map(x => cl_(x.h)).join(", "); return `Las horas más movidas de BTC (hora Chile) son ${top}. Fines de semana el rango cae a la mitad.`; })()
-    : `En la <b>primera hora</b> (9:30 NY) se hace el <b>máximo del día ${h1.hi}%</b> de las veces y el <b>mínimo ${h1.lo}%</b>: junto con la última hora concentran los extremos. Mediodía casi nunca los marca (${e.horas[2]?.hi ?? "—"}% / ${e.horas[2]?.lo ?? "—"}%). La última hora hace el máximo ${ult.hi}% de los días.`;
-  $("estac").innerHTML = `<div class="rl-k" style="margin-bottom:6px">${["ES", "NQ", "BTC"].filter(k => E[k]).map(k => `<button data-k="${k}" class="${k === estK ? "on" : ""}">${k}</button>`).join("")}<span class="sp"></span><span class="mut">desde ${esc(e.desde)} · ${e.dias} días${estK === "BTC" ? "" : " · sesión regular del índice contado"}</span></div>` +
-    `<p style="font-size:12.5px;line-height:1.5;margin:4px 0 10px">${lect}</p><div class="es-g"><div>` +
-    `<table class="es-t"><tr><th>Hora NY · Chile</th><th>Movimiento medio</th><th>Velas ▲</th><th>Hace el máx.</th><th>Hace el mín.</th></tr>` +
-    e.horas.map(x => `<tr class="${enHora(x.h) ? "on" : ""}"><td>${x.h} · ${cl_(x.h)}</td><td><span class="bar" style="width:${(x.mov / mx * 60).toFixed(0)}px"></span>${fmt(x.mov, 2)}%</td><td>${x.up}%</td><td>${x.hi}%</td><td>${x.lo}%</td></tr>`).join("") + `</table></div><div>` +
-    `<table class="es-t"><tr><th>Día</th><th>Retorno medio</th><th>Días ▲</th><th>Rango medio</th></tr>` +
-    e.semana.map(w => `<tr class="${w.d === wdIdx ? "on" : ""}"><td>${DN[w.d]}</td><td class="${cl(w.ret)}">${pc(w.ret, 2)}</td><td>${w.up}%</td><td>${fmt(w.rango, 2)}%</td></tr>`).join("") + `</table>` +
-    `<p class="mut" style="font-size:11px;margin:8px 0 0">"Hace el máx./mín." = % de días en que el extremo de la sesión ocurrió en esa hora. Retorno y rango del día: apertura a cierre${estK === "BTC" ? " (día de Nueva York)" : " de la sesión regular"}. Tendencias de fondo, no una señal: con ~140 días por fila, diferencias de pocos décimos son ruido.</p></div></div>`;
-  $("estac").querySelectorAll("button[data-k]").forEach(b => b.onclick = () => { estK = b.dataset.k; store.set("estK", estK); pintarEstac(); });
-}
 
 /* ============================================================ gap de hoy */
 let gapK = store.get("gapK", "ES");
@@ -2266,28 +2239,6 @@ function proxEvento(tipo) {
     .sort((a, b) => a.t.localeCompare(b.t));
   return L[0];
 }
-function pintarEvh() {
-  const E = DATA?.eventos?.ev; if (!E || !$("evh")) { if ($("evh")) $("evh").innerHTML = "<p class='mut'>Sin historia calculada todavía.</p>"; return; }
-  const fP = (k, x) => `${fmt(x, 2)}% <span class="mut">${ptsDe(k, x)} pts</span>`;
-  const filas = ["CPI", "NFP", "PPI", "FOMC"].filter(t => E[t]?.ES).map(t => {
-    const a = evStat(t, "ES"), b = evStat(t, "NQ"), px = proxEvento(t);
-    const cuando = px ? new Date(px.t).toLocaleString("es-CL", {timeZone: "America/Santiago", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
-    const ult = (DATA.eventos.ult?.[t]?.ES || []).slice(-4).reverse().map(u => `${u.d.slice(8, 10)}-${u.d.slice(5, 7)} <span class="${cl(u.r5)}">${pc(u.r5)}</span>→<span class="${cl(u.r30)}">${pc(u.r30)}</span>`).join(" · ");
-    return `<tr class="sin"><td><b>${esc(E[t].nm)}</b><span class="sub">${E[t].hora} NY${cuando ? ` · <b style="color:#ffb54d">próximo ${esc(cuando)}</b>` : ""}</span></td>` +
-      `<td class="n">${fP("ES", a.m5)}${b ? `<span class="sub">NQ ${fP("NQ", b.m5)}</span>` : ""}</td>` +
-      `<td class="n">${fP("ES", a.p90_5)}${b ? `<span class="sub">NQ ${fP("NQ", b.p90_5)}</span>` : ""}</td>` +
-      `<td class="n"><b>${fmt(a.veces, 0)}×</b><span class="sub">NQ ${b ? fmt(b.veces, 0) + "×" : "—"}</span></td>` +
-      `<td class="n">${a.giro ?? "—"}%<span class="sub">NQ ${b?.giro ?? "—"}%</span></td></tr>` +
-      `<tr><td colspan="5" class="evu" style="padding-top:0">ES las últimas veces (5 min → 30 min): ${ult}</td></tr>`;
-  });
-  const g = DATA.eventos.generado ? new Date(DATA.eventos.generado).toLocaleDateString("es-CL") : "";
-  $("evh").innerHTML = `<div style="overflow-x:auto"><table class="evt"><tr class="h"><td>Dato</td><td class="n">5 min típico</td><td class="n">1 de cada 10</td><td class="n">vs normal</td><td class="n">Se dio vuelta</td></tr>${filas.join("")}</table></div>` +
-    `<p class="mut" style="font-size:11px;margin:8px 0 0;line-height:1.45"><b>5 min típico</b>: movimiento mediano (para arriba o para abajo) desde el minuto antes del dato hasta 5 min después; los puntos son al precio de hoy. ` +
-    `<b>1 de cada 10</b>: el 10% de las veces se movió más que eso; úsalo para tu stop. <b>vs normal</b>: cuántas veces más que a esa misma hora en un día normal. ` +
-    `<b>Se dio vuelta</b>: veces en que a los 30 min el precio terminó del lado contrario al primer impulso de 5 min. «Últimas»: 5 min → 30 min. ` +
-    `Sin el consenso histórico no se puede medir aún cómo reacciona según si el dato sale mejor o peor de lo esperado. Desde ahora queda registrado cada dato nuevo. Actualizado ${esc(g)}.</p>`;
-}
-
 /* ============================================================ días trampa */
 function trampasLista() {
   const T = (DATA?.eventos?.trampas || []).map(x => ({d: x.d, items: x.items.slice()}));
@@ -2938,7 +2889,7 @@ function planUI() {
 
 
 /* ============================================================ secciones plegables (se recuerda en este equipo) */
-const PLG_DEF = ["mapaSec", "estacSec"];
+const PLG_DEF = ["mapaSec"];
 let PLG = store.get("plg", null) || Object.fromEntries(PLG_DEF.map(k => [k, 1]));
 const plgKey = h => h.id || h.parentElement?.id || (h.childNodes[0]?.textContent || "").trim().slice(0, 40);
 function plegarUI() {
