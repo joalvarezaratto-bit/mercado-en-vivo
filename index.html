@@ -533,6 +533,28 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
 .nh-r>div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--tx2)}
 .nh-r b{display:block;color:var(--tx);font-size:13px;margin-bottom:2px}
 @media(max-width:800px){.nh-r{grid-template-columns:1fr}.nh-v{width:60px}table.nh .hm{display:none}}
+
+/* plan de trade */
+.esc-n{cursor:pointer}.esc-n:hover rect{fill:rgba(255,159,26,.08)}
+.esc-hint{font-size:11px;color:var(--mut);margin-top:6px}
+#plan{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.72);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+#plan.on{display:flex}
+.pl{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--acc);border-radius:var(--r);width:min(760px,100%);padding:14px 16px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.pl-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:15px}
+.pl-h{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.pl-g{display:grid;grid-template-columns:1fr 210px;gap:14px}
+.pl-t{width:100%;border-collapse:collapse;font-size:13px}.pl-t th{font:500 11px "IBM Plex Mono";color:var(--mut);text-align:left;padding:4px 6px}
+.pl-t td{padding:6px;border-top:1px solid var(--line)}.pl-t td.m{font-family:"IBM Plex Mono"}
+.pl-t tr.en td:first-child{border-left:3px solid var(--acc)}.pl-t tr.st td:first-child{border-left:3px solid var(--dn)}.pl-t tr.tp td:first-child{border-left:3px solid var(--up)}
+.pl-l{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:12px;text-align:center}
+.pl-l .n{font-size:11px;color:var(--mut)}.pl-l .v{font:600 30px "IBM Plex Mono";color:var(--acc);margin:4px 0}.pl-l .s{font-size:11px;color:var(--tx2);line-height:1.5}
+.pl-v{margin:14px 0 6px;font:700 14px "IBM Plex Mono";letter-spacing:.08em;padding:8px 12px;border-radius:8px;background:rgba(46,204,113,.12);color:var(--up)}
+.pl-v.w{background:rgba(251,191,36,.12);color:var(--warn)}.pl-v.dn{background:rgba(255,77,79,.14);color:var(--dn)}
+.pl-c{list-style:none;margin:0;padding:0;font-size:12.5px}.pl-c li{display:flex;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line);color:var(--tx2)}
+.pl-c li.dn{color:#ff8a8a}.pl-c li.w{color:#f5d27a}
+.pl-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.pl-a button{background:var(--panel2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:8px 12px;font-size:12.5px;cursor:pointer}
+.pl-a button:hover{border-color:var(--acc)}.pl-a button:disabled{color:var(--up);cursor:default}
+@media(max-width:600px){#plan{padding:0}.pl{border-radius:0;min-height:100%}.pl-g{grid-template-columns:1fr}.pl-t{font-size:12px}}
 </style>
 </head>
 <body>
@@ -572,9 +594,10 @@ table.nh td:first-child{font-family:"IBM Plex Sans"}
       <div class="hc" id="semaC"><h3>Semáforo del día</h3><div id="sema"><p class="mut">Calculando…</p></div></div>
       <div class="hc" id="impC"><h3>Lo que importa hoy</h3><div id="importa"><p class="mut">Calculando…</p></div></div>
       <div class="hc" id="escC"><h3>Escalera de niveles <span class="seg" id="escK"><button data-k="ES">ES</button><button data-k="NQ">NQ</button><button data-k="BTC">BTC</button></span></h3><svg id="escal"></svg>
-        <div class="esc-l"><span><i style="background:#4fc3f7"></i>Ayer</span><span><i style="background:#ce93d8"></i>Overnight</span><span><i style="background:#ff8a65"></i>Mov. implícito</span><span><i style="background:#ffd43b"></i>Opciones</span></div></div>
+        <div class="esc-l"><span><i style="background:#4fc3f7"></i>Ayer</span><span><i style="background:#ce93d8"></i>Overnight</span><span><i style="background:#ff8a65"></i>Mov. implícito</span><span><i style="background:#ffd43b"></i>Opciones</span></div><div class="esc-hint">👆 Toca un nivel para armar el plan de trade</div></div>
     </div>
   </section>
+  <div id="plan"><div class="pl"><div class="pl-hd"><b>Plan de trade</b><button class="gm-x" id="planX">cerrar ✕</button></div><div id="planB"></div></div></div>
   <section id="cierreSec" data-modo="cie"><div id="cierre"><p class="mut">Cargando el resumen de cierre…</p></div></section>
   <section class="cm" id="comite" hidden data-modo="pre"></section>
   <section id="foco" hidden></section>
@@ -2632,11 +2655,11 @@ function pintarEscalera() {
   let ult = -99; const py = y(p);
   for (const x of L) {
     const yy = y(x.v), ly = Math.max(yy, ult + 16); ult = ly; const dd = x.v - p, near = Math.abs(dd) < atr * 0.15;
-    h += `<line x1="${ax - 7}" x2="${ax + 7}" y1="${yy}" y2="${yy}" stroke="${x.c}" stroke-width="2"/><path d="M${ax + 9},${yy} L${ax + 20},${ly}" stroke="#2a333e" fill="none"/>` +
+    h += `<g class="esc-n" data-v="${x.v}" data-n="${esc(x.n)}"><rect x="0" y="${ly - 8}" width="${W}" height="16" fill="transparent"/><line x1="${ax - 7}" x2="${ax + 7}" y1="${yy}" y2="${yy}" stroke="${x.c}" stroke-width="2"/><path d="M${ax + 9},${yy} L${ax + 20},${ly}" stroke="#2a333e" fill="none"/>` +
       `<text x="${ax + 24}" y="${ly + 4}" font-size="11.5" fill="${near ? "#e6e9ee" : "#aeb8c5"}" font-weight="${near ? 600 : 400}">${esc(x.n)}${(() => { const q = k !== "BTC" && nhStat(k, x.n);
         return q && q.ver === "sirve" ? `<tspan fill="#2ecc71" font-size="10.5"> ✓ rebota ${q.reb}%</tspan>` : q && q.ver === "se rompe" ? `<tspan fill="#ff4d4f" font-size="10.5"> ⇢ se rompe ${q.rom}%</tspan>` : ""; })()}</text>` +
       `<text x="${W - 2}" y="${ly + 4}" text-anchor="end" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="${dd > 0 ? "#2ecc71" : "#ff4d4f"}">${sg(dd, k === "BTC" ? 0 : 1)}</text>` +
-      `<text x="${ax - 12}" y="${ly + 4}" text-anchor="end" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="#6f7c8c">${fmt(x.v, 0)}</text>`;
+      `<text x="${ax - 12}" y="${ly + 4}" text-anchor="end" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="#6f7c8c">${fmt(x.v, 0)}</text></g>`;
   }
   h += `<line x1="0" x2="${W}" y1="${py}" y2="${py}" stroke="#ff9f1a" stroke-dasharray="4 4"/><rect x="0" y="${py - 10}" width="${ax - 10}" height="20" rx="5" fill="#ff9f1a"/>` +
     `<text x="${(ax - 10) / 2}" y="${py + 4}" text-anchor="middle" font-size="11" font-weight="600" font-family="IBM Plex Mono, monospace" fill="#111">${fmt(p, k === "BTC" ? 0 : 1)}</text>`;
@@ -2781,9 +2804,115 @@ function pintarNivh() {
   el.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { nhV = b.dataset.v; store.set("nhV", nhV); pintarNivh(); });
 }
 
+
+/* ============================================================ plan de trade con un clic (desde la escalera) */
+const PLAN_INST = {ES: "US500m", NQ: "USTECm", BTC: "BTCUSDm"};
+let PLAN = null;
+function planCalc(k, L, nombre, modo) {
+  const p = precio(k) || DATA.fut?.[k]?.precio; if (!p) return null;
+  const d = k === "BTC" ? 0 : 2, bz = k === "BTC" ? null : DATA.fut?.[k]?.base, base = bz ?? 0, sinEx = k === "BTC" || bz == null;
+  const atr = k === "BTC" ? (DATA.btc?.atr || p * 0.03) : (DATA.fut?.[k]?.atr || p * 0.02);
+  const b = L * 0.0005, sd = b + atr * 0.06;                 // margen de ruptura y stop base
+  const q = k !== "BTC" ? nhStat(k, nombre) : null;
+  modo = modo || (q?.ver === "se rompe" ? "rup" : "reb");
+  const arriba = L > p;                                       // nivel sobre el precio = resistencia
+  const largo = modo === "reb" ? !arriba : arriba;
+  let ent, stop;
+  if (modo === "reb") { ent = L; stop = largo ? L - sd : L + sd; }
+  else { ent = largo ? L + b : L - b; stop = largo ? L - sd : L + sd; }
+  // si hay otro nivel justo detrás del stop original, el stop va detrás de ese nivel
+  const Ls = niveles(k).filter(x => isFinite(x.v) && !/Mi alerta/.test(x.n) && Math.abs(x.v - L) > b);
+  const detras = Ls.filter(x => largo ? (x.v < ent && x.v >= stop - sd * 0.5) : (x.v > ent && x.v <= stop + sd * 0.5)).sort((a, c) => largo ? a.v - c.v : c.v - a.v)[0];
+  if (detras && (largo ? detras.v < ent - b : detras.v > ent + b)) stop = largo ? Math.min(stop, detras.v - b) : Math.max(stop, detras.v + b);
+  const R = Math.abs(ent - stop);
+  const objs = Ls.filter(x => largo ? x.v > ent + R * 0.5 : x.v < ent - R * 0.5).sort((a, c) => largo ? a.v - c.v : c.v - a.v)
+    .filter((x, i, arr) => !i || Math.abs(x.v - arr[i - 1].v) > b * 2).slice(0, 2)
+    .map(x => ({n: x.n, v: x.v, rr: Math.abs(x.v - ent) / R}));
+  // lote para Exness (precio del CFD ≈ contado = futuro − base)
+  const C = CALC, inst = PLAN_INST[k], vpp = C.vpp?.[inst] ?? CALC_INST[inst].vpp;
+  const dist = R + (C.spread || 0), riesgo = C.saldo * C.riesgo / 100;
+  const crudo = riesgo / (dist * vpp), lote = Math.floor(crudo / C.paso + 1e-9) * C.paso;
+  return {k, L, nombre, modo, largo, ent, stop, R, objs, p, d, base, sinEx, q, inst, lote, crudo, riesgo, real: lote * dist * vpp, dist, atr};
+}
+function planChecks(P) {
+  const C = [];
+  const s = semaforo();
+  if (s.nv === 2) C.push(["⛔", "dn", "Semáforo en <b>PELIGRO</b>: el día tiene demasiadas trampas. Mejor no operar o riesgo mínimo."]);
+  else if (s.nv === 1) C.push(["⚠", "w", `Semáforo en <b>CUIDADO</b>: considera la mitad del lote (<b>${fmt(Math.floor(P.lote / 2 / CALC.paso + 1e-9) * CALC.paso, 2)}</b>).`]);
+  else if (s.nv === 0) C.push(["✓", "u", "Semáforo en verde: día sin trampas."]);
+  const g = guardian();
+  if (g.nv === "stop") C.push(["⛔", "dn", `Guardián: <b>${esc(g.tit)}</b>. ${esc(g.txt)}`]);
+  else if (g.nv === "pausa") C.push(["⏸", "w", `Guardián: <b>${esc(g.tit)}</b>.`]);
+  else if (g.nv === "ok") C.push(["✓", "u", `Guardián: ${esc(g.txt)}`]);
+  const q = P.q;
+  if (q && q.ver === "sirve") C.push([P.modo === "rup" ? "⚠" : "✓", P.modo === "rup" ? "w" : "u", `${esc(P.nombre)} rebota <b>${q.reb}%</b> de las veces (un precio cualquiera ${q.ctrl}%).` + (P.modo === "rup" ? " Ojo: estás jugando la ruptura de un nivel que suele frenar." : "")]);
+  else if (q && q.ver === "se rompe") C.push([P.modo === "reb" ? "⚠" : "✓", P.modo === "reb" ? "w" : "u", `${esc(P.nombre)} se rompe <b>${q.rom}%</b> de las veces: ` + (P.modo === "reb" ? "un rebote aquí va contra la estadística." : "la ruptura va a favor de la estadística.")]);
+  else if (q && q.reb != null) C.push(["⚪", "", `${esc(P.nombre)} rebota ${q.reb}% — casi igual que un precio cualquiera (${q.ctrl}%). Necesitas otra confirmación (tu setup).`]);
+  else if (P.k !== "BTC") C.push(["⚪", "", "Este nivel no tiene medición histórica (opciones, alertas o niveles del día)."]);
+  const o = P.objs[0];
+  if (!o) C.push(["⚠", "w", "No hay un nivel claro como objetivo en esa dirección: usa 2R fijo."]);
+  else if (o.rr < 1.5) C.push(["⚠", "w", `El primer objetivo (${esc(o.n)}) está cerca: <b>${fmt(o.rr, 1)}R</b>. Vale poco el riesgo.`]);
+  else C.push(["✓", "u", `Primer objetivo a <b>${fmt(o.rr, 1)}R</b>.`]);
+  const ahora = Date.now() / 1000;
+  const ev = (DATA.agenda || []).find(e => e.pais === "USD" && e.impacto === "High" && new Date(e.t) / 1000 - ahora > -300 && new Date(e.t) / 1000 - ahora < 1800);
+  if (ev) C.push(["⚠", "w", `<b>${esc(ev.titulo)}</b> a las ${horaCL(ev.t)} Chile: no estés dentro al salir el dato.`]);
+  const dpx = Math.abs(P.L - P.p) / P.atr;
+  if (dpx > 0.8) C.push(["⚪", "", `El nivel está lejos (${fmt(Math.abs(P.L - P.p), P.d ? 1 : 0)} pts, ${fmt(dpx * 100, 0)}% del rango promedio): puede que hoy no llegue.`]);
+  if (P.lote < CALC.min) C.push(["⛔", "dn", `Con ${fmt(CALC.riesgo, 2)}% de riesgo el lote da ${fmt(P.crudo, 3)}, bajo el mínimo (${CALC.min}). El stop es muy grande para tu cuenta.`]);
+  return C;
+}
+function pintarPlan() {
+  if (!PLAN) return;
+  const P = planCalc(PLAN.k, PLAN.L, PLAN.n, PLAN.modo); if (!P) return;
+  PLAN.modo = P.modo;
+  const d = P.d, ex = v => fmt(v - P.base, d), dd = P.k === "BTC" ? 0 : 1, C = planChecks(P);
+  const malo = C.some(c => c[0] === "⛔"), warn = C.filter(c => c[0] === "⚠").length;
+  const ver = malo ? ["NO OPERAR", "dn"] : warn >= 2 ? ["DUDOSO", "w"] : warn ? ["CON CUIDADO", "w"] : ["SE PUEDE", "u"];
+  const fila = (n, v, extra, cls = "") => `<tr class="${cls}"><td>${n}</td><td class="m">${fmt(v, d)}</td><td class="m">${P.sinEx ? "" : ex(v)}</td><td class="m mut">${extra}</td></tr>`;
+  $("planB").innerHTML = `<div class="pl-h"><span class="tg2 ${P.largo ? "u" : "d"}" style="font-size:12px">${P.largo ? "LARGO ▲" : "CORTO ▼"}</span>` +
+    `<b>${P.k} · ${esc(P.nombre)} ${fmt(P.L, d)}</b><span class="mut">a ${fmt(Math.abs(P.L - P.p), dd)} pts del precio (${fmt(P.p, d)})</span>` +
+    `<span class="seg" id="plM" style="margin-left:auto"><button data-m="reb" class="${P.modo === "reb" ? "on" : ""}">Rebote</button><button data-m="rup" class="${P.modo === "rup" ? "on" : ""}">Ruptura</button></span></div>` +
+    `<div class="pl-g"><div><table class="pl-t"><tr><th></th><th>${P.k === "BTC" ? "Precio" : P.k}</th><th>${P.sinEx ? "" : "Exness ≈"}</th><th></th></tr>` +
+    fila(P.modo === "reb" ? "Entrada (orden límite)" : "Entrada (orden stop)", P.ent, P.modo === "reb" ? "en el nivel" : "al romper el nivel", "en") +
+    fila("Stop", P.stop, `${fmt(P.R, dd)} pts de riesgo`, "st") +
+    P.objs.map((o, i) => fila(`Objetivo ${i + 1} · ${esc(o.n)}`, o.v, `${fmt(o.rr, 1)}R`, "tp")).join("") +
+    (P.objs.length ? "" : fila("Objetivo 2R", P.largo ? P.ent + 2 * P.R : P.ent - 2 * P.R, "2R", "tp")) +
+    `</table><div class="mut" style="font-size:11px;margin-top:6px">${P.k === "BTC" ? "" : P.sinEx ? `Ahora no hay precio en vivo del contado para convertir a Exness (${P.inst}): ajusta los precios en MT5 con la diferencia futuro − contado.` : `Exness (${P.inst}) cotiza el índice contado: ≈ futuro − ${fmt(P.base, 1)}. Confirma en MT5 antes de poner la orden.`}</div></div>` +
+    `<div class="pl-l"><div class="n">Lote ${P.inst}</div><div class="v">${P.lote >= CALC.min ? fmt(P.lote, 2) : "—"}</div>` +
+    `<div class="s">riesgo ${fmt(CALC.riesgo, 2)}% de ${fmt(CALC.saldo, 0)} USD = ${fmt(P.riesgo, 2)} USD<br>real: ${fmt(P.real, 2)} USD · stop ${fmt(P.dist, dd)} pts con spread</div>` +
+    `<button class="cbt" id="plCfg">cambiar saldo / riesgo</button></div></div>` +
+    `<div class="pl-v ${ver[1]}">${ver[0]}</div><ul class="pl-c">${C.map(([i, c, t]) => `<li class="${c}"><span>${i}</span><span>${t}</span></li>`).join("")}</ul>` +
+    `<div class="pl-a"><button id="plAl">🔔 Avisarme cuando llegue a ${fmt(P.L, d)}</button><button id="plCalc">📋 Llevar a la calculadora</button><button id="plCp">Copiar plan</button></div>` +
+    `<p class="mut" style="font-size:11px;margin:10px 0 0">Plan automático con los niveles de la página: no es una señal ni una recomendación. El stop va ${fmt(P.R, dd)} pts detrás del nivel (≈ 6% del rango promedio + margen) o detrás del siguiente nivel si está pegado. Entra solo si tu setup lo confirma.</p>`;
+  $("plM").querySelectorAll("button").forEach(b => b.onclick = () => { PLAN.modo = b.dataset.m; pintarPlan(); });
+  $("plCfg").onclick = () => { cerrarPlan(); aplicarModoVer("lotajeSec"); };
+  $("plCalc").onclick = () => { CALC.inst = P.inst; CALC.entrada = (P.ent - P.base).toFixed(2); CALC.stop = (P.stop - P.base).toFixed(2); store.set("calc", CALC); calcUI(); cerrarPlan(); aplicarModoVer("lotajeSec"); };
+  $("plAl").onclick = () => { const p = precio(P.k);
+    if (!MISAL.some(a => a.k === P.k && Math.abs(a.v - P.L) < 1e-6)) { MISAL.push({k: P.k, v: +P.L.toFixed(d), dir: P.L > p ? 1 : -1}); misAlGuardar(); }
+    $("plAl").textContent = "✓ Alerta creada (página y Telegram)"; $("plAl").disabled = true; };
+  $("plCp").onclick = async () => {
+    const t = `${P.k} ${P.largo ? "LARGO" : "CORTO"} (${P.modo === "reb" ? "rebote" : "ruptura"} en ${P.nombre} ${fmt(P.L, d)})\nEntrada ${fmt(P.ent, d)}` + (P.sinEx ? "" : ` (Exness ≈ ${ex(P.ent)})`) +
+      `\nStop ${fmt(P.stop, d)}` + (P.sinEx ? "" : ` (≈ ${ex(P.stop)})`) + ` · ${fmt(P.R, dd)} pts\n` + P.objs.map((o, i) => `TP${i + 1} ${fmt(o.v, d)}` + (P.sinEx ? "" : ` (≈ ${ex(o.v)})`) + ` · ${fmt(o.rr, 1)}R`).join("\n") +
+      `\nLote ${P.inst}: ${fmt(P.lote, 2)} (${fmt(CALC.riesgo, 2)}% = ${fmt(P.riesgo, 2)} USD)`;
+    try { await navigator.clipboard.writeText(t); $("plCp").textContent = "✓ Copiado"; } catch (e) { $("plCp").textContent = "No se pudo copiar"; } };
+}
+function aplicarModoVer(id) {            // muestra una sección aunque el modo actual la oculte
+  const el = $(id); if (!el) return;
+  if (el.classList.contains("mx") || el.closest(".mx,.mx2")) { const m = (el.dataset.modo || "todo").split(" ")[0]; MODO_MAN = {m, auto: modoAuto()}; store.set("modoMan", MODO_MAN); aplicarModo(true); }
+  setTimeout(() => window.scrollTo({top: el.getBoundingClientRect().top + scrollY - 140, behavior: "smooth"}), 120);
+}
+function abrirPlan(k, L, n) { PLAN = {k, L, n, modo: null}; $("plan").classList.add("on"); document.body.style.overflow = "hidden"; pintarPlan(); }
+function cerrarPlan() { PLAN = null; $("plan").classList.remove("on"); document.body.style.overflow = ""; }
+function planUI() {
+  $("escal").addEventListener("click", e => { const g = e.target.closest(".esc-n"); if (g) abrirPlan(escK, +g.dataset.v, g.dataset.n); });
+  $("plan").addEventListener("click", e => { if (e.target.id === "plan" || e.target.id === "planX") cerrarPlan(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && PLAN) cerrarPlan(); });
+  setInterval(() => { if (PLAN) pintarPlan(); }, 3000);
+}
+
 (async function inicio() {
   opciones(); notisUI(); cableUI(); gmUI(); navUI(); relUI(); mapaUI(); calcUI(); misAlUI(); ntfyConectar();
-  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); hoyUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
+  setInterval(pintarMovers, 3000); setInterval(pintarRango, 3000); setInterval(pintarGap, 5000); setTimeout(pintarGap, 3000); diarioUI(); focoUI(); hoyUI(); planUI(); setInterval(pintarSesiones, 20000); setTimeout(pintarSesiones, 2500);
   setInterval(pintarPulso, 3000); setTimeout(() => pintarRel(true), 4000); setInterval(() => pintarRel(false), 30000);
   await cargarDatos(true);
   modosUI();
